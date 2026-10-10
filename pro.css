@@ -1,0 +1,3470 @@
+/* pro.css — پوستهٔ PRO در لایهٔ tsext-pro (بالاتر از components/patches) */
+@layer tsext-tokens, tsext-base, tsext-components, tsext-theme, tsext-patches, tsext-pro;
+
+@layer tsext-pro {
+
+/* pro.css — پوستهٔ PRO؛ selectorهای تکراری در ۱.۰.۰ ادغام کامل شدند (css-consolidate) */
+/* hide floating toggle instantly in PRO */
+html.tsext-pro #tsext-toggle,
+html.tsext-pro button#tsext-toggle,
+body.tsext-pro #tsext-toggle {
+  display:none !important; visibility:hidden !important; opacity:0 !important;
+  pointer-events:none !important; width:0 !important; height:0 !important;
+  max-width:0 !important; max-height:0 !important; overflow:hidden !important;
+  position:fixed !important; left:-9999px !important; bottom:auto !important;
+}
+/* ==========================================================================
+   pro.css — پوستهٔ حرفه‌ای تمام‌صفحه بازطراحی ۲.۰
+   --------------------------------------------------------------------------
+   گرید نهایی:
+     ┌───────────────── topbar (54px) ─────────────────┐
+     │  نوار بازار (36px) — ticker chips               │
+     ├──────────┬─split─┬──────────────┬─split─┬───────┤
+     │  سایدبار │   │   │   دیدبان      │   │   │جزئیات│
+     │  320px   │ 6px│   │   1fr         │ 6px │ 540px │
+     │  scroll-y│drag│   │ scroll-y+x  │drag │scroll │
+     ├──────────┴─────┴──────────────┴─────┴───────┤
+     │ status (28px)                                   │
+     └────────────────────────────────────────────────┘
+   ویژگی‌ها:
+   - detail بزرگ (540px پیش‌فرض، قابل drag تا 720px، 88% در موبایل)
+   - سایدبار قابل drag (240-420px)
+   - تک‌ سرچ سراسری (ورودی‌های tsext-underlying-* مخفی)
+   - اسکرول‌های حرفه‌ای هم افقی هم عمودی
+   - marketbar بدون شلوغی، chipهای مینیمال
+   ========================================================================== */
+
+:root{
+  /* یکدست‌شده با مقیاس رادیوس content.js (v1.22.0) — دیگر عدد مستقل ۱۰px موازی ندارد */
+  --pr-radius:var(--tsext-r-md, 11px);
+  --pr-radius-sm:var(--tsext-r-sm, 7px);
+  --pr-radius-lg:var(--tsext-r-lg, 14px);
+  --pr-line:1px solid var(--tsext-border, #20304f);
+  --pr-side-w:300px;
+  --pr-detail-w:600px;
+  --pr-disc-h:34px;
+  --pr-top-h:56px;
+  --pr-mbar-h:38px;
+  --pr-watch-h:42px;
+  --pr-wl-h:40px;
+  --pr-status-h:30px;
+  --pr-split-w:7px;
+}
+
+/* ---------- پایه ---------- */
+html.tsext-pro,
+html.tsext-pro body.tsext-pro{
+  margin:0; padding:0; width:100%; height:100%; overflow:hidden;
+}
+html.tsext-pro body.tsext-pro{
+  font-family:'Vazirmatn',Tahoma,Arial,sans-serif;
+  background:#0b1220;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+html.tsext-pro body.tsext-pro *,
+html.tsext-pro body.tsext-pro *::before,
+html.tsext-pro body.tsext-pro *::after{ box-sizing:border-box; }
+
+/* ---------- میزبان گرید ---------- */
+html.tsext-pro body.tsext-pro #tsext-host{
+  position:fixed !important;
+  inset:0 !important;
+  top:0 !important; left:0 !important; right:0 !important; bottom:0 !important;
+  width:100vw !important; height:100vh !important;
+  min-width:420px !important;
+  min-height:520px !important;
+  max-width:none !important; max-height:none !important;
+  margin:0 !important; border:none !important; border-radius:0 !important;
+  box-shadow:none !important;
+  contain:none !important; will-change:auto !important;
+  display:grid !important;
+  direction:rtl !important;
+  grid-template-areas:
+    "pr-disc  pr-disc  pr-disc   pr-disc  pr-disc"
+    "pr-top   pr-top   pr-top    pr-top   pr-top"
+    "pr-watch pr-watch pr-watch  pr-watch pr-watch"
+    "prside   pr-s1    pr-wl     pr-s2    pr-detail"
+    "prside   pr-s1    pr-list   pr-s2    pr-detail"
+    "prside   pr-s1    pr-status pr-s2    pr-detail";
+  grid-template-rows: var(--pr-disc-h) var(--pr-top-h) auto var(--pr-wl-h) 1fr var(--pr-status-h);
+  grid-template-columns: var(--pr-side-w) var(--pr-split-w) minmax(0,1fr) var(--pr-split-w) var(--pr-detail-w);
+  overflow:hidden !important;
+  background:var(--tsext-bg);
+  gap:0;
+}
+html.tsext-pro body.tsext-pro #tsext-maincol{ display:contents !important; }
+
+/* —— سلب‌مسئولیت: چیپ هم‌اندازهٔ متن، وسط بالاترین ردیف —— */
+html.tsext-pro #pr-disclaimer-bar {
+  grid-area: pr-disc !important;
+  justify-self: center !important;
+  align-self: center !important;
+  width: fit-content !important;
+  max-width: min(92vw, 720px) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 4px 12px !important;
+  margin: 4px 0 !important;
+  z-index: 50 !important;
+  box-sizing: border-box !important;
+  border-radius: 999px !important;
+  font-size: 11.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em !important;
+  line-height: 1.35 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  border: 1px solid color-mix(in srgb, #4f46e5 28%, #cbd5e1) !important;
+  color: #312e81 !important;
+  background: color-mix(in srgb, #eef2ff 88%, #fff) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06) !important;
+}
+html.tsext-pro #pr-disclaimer-bar .pr-disc-icon {
+  flex-shrink: 0 !important;
+  font-size: 12px !important;
+  opacity: 0.9 !important;
+}
+html.tsext-pro #pr-disclaimer-bar .pr-disc-text {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+/* تیره: بنفش ملایم خوانا */
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-disclaimer-bar {
+  color: #c7d2fe !important;
+  background: color-mix(in srgb, #312e81 55%, #0f172a) !important;
+  border-color: color-mix(in srgb, #818cf8 40%, #334155) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+}
+/* کنتراست: واضح بدون زرد تند */
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] #pr-disclaimer-bar {
+  color: #fff !important;
+  background: #1d4ed8 !important;
+  border: 2px solid #fff !important;
+  font-weight: 900 !important;
+  box-shadow: none !important;
+}
+html.tsext-pro #tsext-disclaimer {
+  display: none !important;
+}
+html.tsext-pro #pr-foot-extra {
+  display: none !important;
+}
+
+
+
+/* وقتی جزئیات بسته است، ستون detail و splitter دوم را جمع کن */
+html.tsext-pro body.tsext-pro #tsext-host:not(.tsext-with-ob){
+  grid-template-columns: var(--pr-side-w) var(--pr-split-w) minmax(0,1fr) 0 0 !important;
+}
+html.tsext-pro body.tsext-pro #tsext-host:not(.tsext-with-ob) #tsext-obpanel,
+html.tsext-pro body.tsext-pro #tsext-host:not(.tsext-with-ob) #pr-split-2{
+  display:none !important;
+}
+
+/* ---------- عناصر مخفی ---------- */
+html.tsext-pro #tsext-toggle,
+html.tsext-pro #tsext-rz-e, html.tsext-pro #tsext-rz-w,
+html.tsext-pro #tsext-rz-s, html.tsext-pro #tsext-rz-n,
+html.tsext-pro #tsext-rz-se, html.tsext-pro #tsext-rz-sw,
+html.tsext-pro #tsext-rz-ne, html.tsext-pro #tsext-rz-nw,
+html.tsext-pro #tsext-obpanel .tsext-resize-handle{ display:none !important; }
+
+/* مخفی‌سازی سرچ‌های تکراری داخل پنل استراتژی — فقط سرچ سراسری بماند
+   نکته: ردیف را مخفی نمی‌کنیم چون دکمه «تنظیمات» داخل همین ردیف است */
+html.tsext-pro #tsext-head .tsext-strategy-panel .tsext-row:has(input[id^="tsext-underlying-"]),
+html.tsext-pro #tsext-head .tsext-strategy-panel .tsext-row:has(#tsext-underlying-pospanj),
+html.tsext-pro #tsext-head .tsext-strategy-panel .tsext-row:has(#tsext-underlying-combo),
+html.tsext-pro #tsext-head .tsext-strategy-panel .tsext-row:has(#tsext-underlying-jamp),
+html.tsext-pro #tsext-head .tsext-strategy-panel .tsext-row:has(#tsext-underlying-tick) {
+  display:flex !important;
+  gap:8px !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+}
+/* fallback برای مرورگرهایی که :has را ندارند — مستقیم inputها را مخفی کن (نه ردیف) */
+html.tsext-pro input[id^="tsext-underlying-"],
+html.tsext-pro button[id^="tsext-search-pospanj"],
+html.tsext-pro button[id^="tsext-search-combo"],
+html.tsext-pro button[id^="tsext-search-jamp"],
+html.tsext-pro button[id^="tsext-search-tick"]{
+  display:none !important;
+}
+/* وقتی سرچ مخفی شد، ردیف فقط حاوی دکمه تنظیمات و ورودی دستی (manual) می‌ماند — دستی را نگه می‌داریم */
+html.tsext-pro #tsext-head .tsext-strategy-panel > .tsext-row:first-of-type{
+  margin-top:0 !important;
+}
+
+
+/* ---------- اسپلِیترها ---------- */
+
+html.tsext-pro #pr-split-1{ grid-area:pr-s1; border-left:var(--pr-line); border-right:var(--pr-line); }
+html.tsext-pro #pr-split-2{ grid-area:pr-s2; border-left:var(--pr-line); border-right:var(--pr-line); }
+html.tsext-pro .pr-split:hover{ background:color-mix(in srgb,var(--tsext-accent) 8%,var(--tsext-bg)); }
+html.tsext-pro .pr-split.dragging{ background:color-mix(in srgb,var(--tsext-accent) 18%,var(--tsext-bg)); }
+
+html.tsext-pro .pr-split:hover .pr-split-handle{ background:var(--tsext-accent); height:44px; }
+html.tsext-pro .pr-split.dragging .pr-split-handle{ background:var(--tsext-accent); height:56px; width:4px; }
+
+html.tsext-pro body.pr-col-resizing #tsext-list-body{ pointer-events:none; }
+
+/* ---------- نوار بالا ---------- */
+
+html.tsext-pro #pr-topbar::after{
+  content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px;
+  background:linear-gradient(90deg,transparent,var(--tsext-accent) 22%,var(--tsext-accent) 78%,transparent);
+  opacity:.55; pointer-events:none;
+}
+
+html.tsext-pro #pr-topbar .tsext-logo{
+  width:34px; height:34px; border-radius:var(--tsext-r-sm); flex-shrink:0;
+  background:linear-gradient(135deg,var(--tsext-accent),#1d4ed8 60%,var(--tsext-accent));
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:var(--tsext-fs-2xl); font-weight:900; box-shadow:0 4px 14px color-mix(in srgb,var(--tsext-accent) 30%,transparent);
+}
+html.tsext-pro #pr-topbar .tsext-title{ font-size:var(--tsext-fs-lg); font-weight:900; color:var(--tsext-bright); white-space:nowrap; letter-spacing:.01em }
+html.tsext-pro #pr-topbar .tsext-subtitle{ font-size:var(--tsext-fs-xs); font-weight:700; color:var(--tsext-muted); white-space:nowrap; margin-top:1px }
+
+/* سرچ سراسری حذف شد — به درخواست کاربر، فقط دیدبان چندنمادی می‌ماند */
+html.tsext-pro #pr-search{ display:none !important; visibility:hidden !important; pointer-events:none !important; width:0 !important; min-width:0 !important; max-width:0 !important; margin:0 !important; padding:0 !important; border:none !important; }
+html.tsext-pro #pr-search-hidden{ display:none !important; }
+/* سرچ سراسری — قهرمان (نگهداشته برای سازگاری، ولی مخفی) */
+html.tsext-pro #pr-search-legacy{
+  flex:1; max-width:520px; min-width:160px; margin-inline:auto;
+  background:var(--tsext-input); color:var(--tsext-bright);
+  border:1.5px solid var(--tsext-border); border-radius:var(--tsext-r-md);
+  padding:10px 16px 10px 44px; font-family:inherit; font-size:var(--tsext-fs-base); font-weight:800;
+  outline:none; text-align:center;
+  transition:border-color .15s, box-shadow .15s, background .15s, transform .08s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237f93b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-3.6-3.6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:12px center;
+}
+html.tsext-pro #pr-search::placeholder{ color:var(--tsext-muted); font-weight:700; font-size:var(--tsext-fs-md); opacity:.9 }
+html.tsext-pro #pr-search:hover{ border-color:color-mix(in srgb,var(--tsext-accent) 35%,var(--tsext-border)); }
+html.tsext-pro #pr-search:focus{
+  border-color:var(--tsext-accent);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--tsext-accent) 18%,transparent), 0 6px 18px color-mix(in srgb,var(--tsext-accent) 12%,transparent);
+  background-color:color-mix(in srgb,var(--tsext-input) 92%,var(--tsext-accent));
+}
+html.tsext-pro #pr-search.is-busy{ transform:scale(.985); opacity:.85; }
+
+/* گروه راست topbar */
+
+html.tsext-pro #pr-date-chip{
+  flex-shrink:0; font-size:var(--tsext-fs-xs); font-weight:800; color:var(--tsext-muted);
+  padding:5px 11px; border-radius:var(--tsext-r-pill); white-space:nowrap;
+  border:1px solid color-mix(in srgb,var(--tsext-border) 70%,transparent);
+  background:color-mix(in srgb,var(--tsext-input) 60%,transparent);
+}
+
+html.tsext-pro #pr-tools{
+  display:flex; gap:2px; align-items:center; flex-shrink:0;
+  background:color-mix(in srgb,var(--tsext-input) 85%,transparent);
+  border:var(--pr-line); border-radius:var(--tsext-r-md); padding:3px;
+}
+html.tsext-pro #pr-tools .tsext-btn{ min-width:30px; height:28px; padding:0 8px; display:inline-flex; align-items:center; justify-content:center; border-radius:var(--tsext-r-sm); font-size:var(--tsext-fs-md) }
+html.tsext-pro #pr-close{
+  flex-shrink:0; border:none; cursor:pointer; font-family:inherit;
+  background:transparent; color:var(--tsext-muted); border-radius:var(--tsext-r-sm);
+  font-size:var(--tsext-fs-base); font-weight:900; width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center;
+  transition:background .15s, color .15s, transform .08s;
+}
+html.tsext-pro #pr-close:hover{ background:var(--tsext-red); color:#fff; transform:scale(1.05) }
+html.tsext-pro #pr-close:active{ transform:scale(.95) }
+html.tsext-pro #pr-close-note{ font-size:var(--tsext-fs-xs); color:var(--tsext-muted); font-weight:700; margin-inline-start:4px; display:none; white-space:nowrap }
+
+/* ---------- نوار بازار (marketbar) — حالا داخل بالاترین نوار (topbar) ---------- */
+
+html.tsext-pro #pr-marketbar::before{ content:none; }
+html.tsext-pro .pr-mbar-scroll{
+  flex:1; min-width:0;
+  display:flex; align-items:center; gap:8px;
+  overflow-x:auto; overflow-y:hidden;
+  scrollbar-width:none; -ms-overflow-style:none;
+  scroll-behavior:smooth;
+  cursor:grab;
+  padding:2px 0;
+}
+html.tsext-pro .pr-mbar-scroll::-webkit-scrollbar{ display:none; }
+html.tsext-pro .pr-mbar-scroll.dragging{ cursor:grabbing; }
+
+html.tsext-pro .pr-mbar-chip:hover{ border-color:color-mix(in srgb,var(--tsext-accent) 45%,var(--tsext-border)); background:color-mix(in srgb,var(--tsext-accent) 7%,var(--tsext-input)); transform:translateY(-1px); }
+
+
+html.tsext-pro .pr-mbar-val.pos{ color:var(--tsext-green); }
+html.tsext-pro .pr-mbar-val.neg{ color:var(--tsext-red); }
+
+html.tsext-pro .pr-mbar-ch.pos{ color:var(--tsext-green); background:color-mix(in srgb,var(--tsext-green) 14%,transparent); border:1px solid color-mix(in srgb,var(--tsext-green) 30%,transparent); }
+html.tsext-pro .pr-mbar-ch.neg{ color:var(--tsext-red); background:color-mix(in srgb,var(--tsext-red) 12%,transparent); border:1px solid color-mix(in srgb,var(--tsext-red) 30%,transparent); }
+html.tsext-pro .pr-mbar-ch:empty{ display:none; }
+html.tsext-pro .pr-mbar-sep{ width:1px; height:18px; background:var(--tsext-border); opacity:.6; flex-shrink:0; }
+html.tsext-pro .pr-mbar-actions{
+  display:flex; align-items:center; gap:10px; flex-shrink:0;
+}
+html.tsext-pro .pr-mbar-live{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:var(--tsext-fs-xs); font-weight:900; color:var(--tsext-muted); white-space:nowrap;
+}
+html.tsext-pro .pr-mbar-live.is-open{ color:var(--tsext-green); }
+html.tsext-pro .pr-mbar-live.is-closed{ color:var(--tsext-orange); }
+html.tsext-pro .pr-mbar-dot{
+  width:7px; height:7px; border-radius:50%; background:currentColor;
+  box-shadow:0 0 0 0 currentColor; animation:prLivePulse 1.8s ease-out infinite;
+}
+
+@keyframes prLivePulse{
+  0%{ box-shadow:0 0 0 0 color-mix(in srgb,currentColor 60%,transparent); }
+  70%{ box-shadow:0 0 0 7px transparent; }
+  100%{ box-shadow:0 0 0 0 transparent; }
+}
+html.tsext-pro .pr-mbar-date{
+  font-size:var(--tsext-fs-xs); font-weight:800; color:var(--tsext-muted); white-space:nowrap;
+  background:color-mix(in srgb,var(--tsext-input) 80%,transparent);
+  border:var(--pr-line); border-radius:var(--tsext-r-pill); padding:4px 10px;
+}
+html.tsext-pro .breadth-up{ color:var(--tsext-green); font-weight:900; }
+html.tsext-pro .breadth-down{ color:var(--tsext-red); font-weight:900; }
+
+/* ---------- سایدبار ---------- */
+html.tsext-pro body.tsext-pro #tsext-head{
+  grid-area:prside;
+  display:flex !important; flex-direction:column !important;
+  position:relative !important; overflow-x:hidden !important; overflow-y:auto !important;
+  background:var(--tsext-panel) !important;
+  border-bottom:none !important;
+  border-inline-start:none !important;
+  border-inline-end:none !important;
+  flex-shrink:1 !important; min-height:0 !important;
+  padding:0 !important;
+}
+html.tsext-pro #tsext-head::before{ display:none !important; }
+html.tsext-pro #tsext-head > .tsext-titlebar{ display:none !important; }
+
+/* اسکرول داخلی سایدبار — همه به جز کپشن */
+
+html.tsext-pro #tsext-head::-webkit-scrollbar{ width:6px; height:6px; }
+html.tsext-pro #tsext-head::-webkit-scrollbar-thumb{ background:color-mix(in srgb,var(--tsext-border) 85%,transparent); border-radius:var(--tsext-r-pill); }
+html.tsext-pro #tsext-head::-webkit-scrollbar-thumb:hover{ background:var(--tsext-muted); }
+
+/* کپشن سایدبار */
+
+html.tsext-pro #pr-side-caption::after{
+  content:''; position:absolute; left:0; right:0; bottom:-1px; height:1px;
+  background:linear-gradient(90deg,transparent,var(--tsext-accent) 30%,transparent);
+  opacity:.35;
+}
+html.tsext-pro #pr-side-ver{
+  margin-inline-start:auto; font-size:var(--tsext-fs-xxs); font-weight:900; letter-spacing:.08em;
+  color:var(--tsext-accent); background:color-mix(in srgb,var(--tsext-accent) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--tsext-accent) 30%,transparent);
+  border-radius:var(--tsext-r-pill); padding:2px 7px;
+}
+
+/* تب‌های استراتژی — عمودی، کارت‌مانند */
+html.tsext-pro #tsext-head > .tsext-row:has(#tsext-tabs){ margin-top:0 !important; flex-shrink:0; }
+html.tsext-pro #tsext-tabs{
+   
+    margin:0 !important;
+  align-items:stretch !important; 
+  background:transparent !important; border:none !important; box-shadow:none !important;
+  position:sticky; top:42px; z-index:1; background:var(--tsext-panel) !important;
+}
+html.tsext-pro #tsext-tabs .tsext-tab{
+   align-items:center; gap:12px;
+
+  text-align:right; justify-content:flex-start;
+
+  transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  position:relative; overflow:visible;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+html.tsext-pro #tsext-tabs .tsext-tab::before{
+  font-size:var(--tsext-fs-base); width:24px; height:24px; border-radius:var(--tsext-r-sm);
+  display:inline-flex; align-items:center; justify-content:center;
+  flex-shrink:0; color:var(--tsext-muted); background:color-mix(in srgb,var(--tsext-input) 85%,transparent);
+  border:1px solid color-mix(in srgb,var(--tsext-border) 60%,transparent);
+  transition:all .15s;
+}
+html.tsext-pro #tsext-tabs .tsext-tab[data-s="pospanj"]::before{ content:'◐' }
+html.tsext-pro #tsext-tabs .tsext-tab[data-s="combo"]::before{ content:'⇄' }
+html.tsext-pro #tsext-tabs .tsext-tab[data-s="jamp"]::before{ content:'⇑' }
+html.tsext-pro #tsext-tabs .tsext-tab[data-s="tick"]::before{ content:'↯' }
+html.tsext-pro #tsext-tabs .tsext-tab:hover{
+  
+  
+  color:var(--tsext-bright) !important;
+  background:color-mix(in srgb,var(--tsext-accent) 8%,var(--tsext-panel2)) !important;
+  box-shadow:0 6px 16px color-mix(in srgb,var(--tsext-accent) 10%,transparent);
+}
+html.tsext-pro #tsext-tabs .tsext-tab:hover::before{ background:var(--tsext-accent); color:#fff; border-color:var(--tsext-accent); }
+html.tsext-pro #tsext-tabs .tsext-tab.active{
+
+}
+html.tsext-pro #tsext-tabs .tsext-tab.active::before{ background:var(--tsext-accent); color:#fff; border-color:var(--tsext-accent); }
+html.tsext-pro #tsext-tabs .tsext-tab::after{ content:none !important; display:none !important }
+
+/* کارت تنظیمات استراتژی فعال — بزرگتر و خواناتر */
+
+
+html.tsext-pro #tsext-head .tsext-input{
+  font-size:var(--tsext-fs-base) !important; border-radius:var(--tsext-r-sm) !important; padding:7px 10px !important;
+}
+
+html.tsext-pro #tsext-head .tsext-strategy-panel [id^="tsext-go-"]{
+  width:100%; margin-top:6px; border-radius:var(--tsext-r-md) !important; padding:10px 14px !important;
+  font-size:var(--tsext-fs-base) !important; font-weight:900 !important;
+  box-shadow:0 6px 14px color-mix(in srgb,var(--tsext-accent) 25%,transparent) !important;
+}
+html.tsext-pro #tsext-head .tsext-strategy-panel [id^="tsext-go-"]:hover{ transform:translateY(-1px); filter:saturate(1.08); }
+
+/* تنظیمات — همیشه باز (بدون جمع‌شونده) */
+html.tsext-pro #tsext-head .tsext-settings-body{ display:block !important; border-radius:var(--tsext-r-md) !important; max-height:none !important; overflow:visible !important; }
+
+/* کشویی ترکیبی/جامپ — overflow نگیره تا native dropdown کار کنه */
+html.tsext-pro #tsext-head .tsext-strategy-panel,
+html.tsext-pro #tsext-head .tsext-strategy-panel .tsext-row,
+html.tsext-pro #tsext-head .tsext-strategy-panel select.tsext-select {
+  overflow: visible !important;
+}
+html.tsext-pro #tsext-head .tsext-strategy-panel select.tsext-select {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 20 !important;
+  min-height: 32px !important;
+  cursor: pointer !important;
+}
+
+
+html.tsext-pro #tsext-head .tsext-priceinfo{ font-size:var(--tsext-fs-sm) !important; line-height:1.9; background:color-mix(in srgb,var(--tsext-input) 70%,transparent); border:1px solid color-mix(in srgb,var(--tsext-border) 60%,transparent); border-radius:var(--tsext-r-md); padding:8px 10px; margin-top:8px !important; }
+html.tsext-pro #tsext-head .tsext-priceinfo b{ color:var(--tsext-accent); }
+
+/* انتهای سایدبار: وضعیت + پیام */
+
+
+html.tsext-pro #tsext-priceinfo{ margin:8px 12px 8px !important; font-size:var(--tsext-fs-xs) !important; line-height:1.8 }
+
+/* ---------- نوار عنوان دیدبان ---------- */
+
+html.tsext-pro #pr-wl-title{
+  font-size:var(--tsext-fs-base); font-weight:900; color:var(--tsext-bright);
+  display:flex; align-items:center; gap:7px; white-space:nowrap;
+}
+html.tsext-pro #pr-wl-title::before{
+  content:''; width:3px; height:14px; border-radius:var(--tsext-r-xxs); background:var(--tsext-accent);
+}
+html.tsext-pro #pr-count{
+  font-size:var(--tsext-fs-xs); font-weight:900; color:var(--tsext-accent);
+  background:color-mix(in srgb,var(--tsext-accent) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--tsext-accent) 28%,transparent);
+  border-radius:var(--tsext-r-pill); padding:3px 10px; white-space:nowrap;
+}
+html.tsext-pro #pr-wl-hint{
+  font-size:11px; font-weight:700; color:var(--tsext-muted);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; min-width:0;
+  /* جاسازی کنار دیدبان — همیشه دیده شود */
+  display:inline-flex; align-items:center;
+}
+html.tsext-pro #pr-wlbar #pr-wl-title{
+  flex-shrink:0;
+}
+html.tsext-pro #pr-wlbar{
+  grid-area: pr-wl;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: var(--tsext-panel);
+  border-bottom: var(--pr-line);
+  min-width: 0;
+  height: var(--pr-wl-h);
+  min-height: var(--pr-wl-h);
+  flex-wrap: nowrap;
+}
+
+/* ---------- دیدبان ---------- */
+
+/* ===== تنظیمات نمایش فشرده (یک ردیف بالای لیست) ===== */
+
+html.tsext-pro #tsext-display-settings{
+  flex-shrink:0 !important;
+  padding:5px 12px !important;
+  border-bottom:1px solid color-mix(in srgb,var(--tsext-border) 70%,transparent) !important;
+  background:color-mix(in srgb,var(--tsext-panel) 94%,var(--tsext-input)) !important;
+}
+html.tsext-pro #tsext-display-settings .tsext-ds-row{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  gap:8px 12px !important;
+  align-items:center !important;
+  margin:0 !important;
+}
+html.tsext-pro #tsext-display-settings .tsext-ds-inline{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:5px !important;
+  flex-shrink:0 !important;
+  margin:0 !important;
+}
+html.tsext-pro #tsext-display-settings .tsext-ds-select{
+  width:auto !important;
+  min-width:100px !important;
+  max-width:150px !important;
+  height:28px !important;
+  padding:2px 8px !important;
+  font-size:var(--tsext-fs-xs) !important;
+}
+html.tsext-pro #tsext-display-settings .tsext-class-filter-host{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+  overflow:hidden !important;
+}
+html.tsext-pro #tsext-display-settings .tsext-class-filter-host .tsext-legend{
+  padding:0 !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:none !important;
+  gap:3px 6px !important;
+  flex-wrap:nowrap !important;
+  overflow-x:auto !important;
+  scrollbar-width:none !important;
+}
+html.tsext-pro #tsext-display-settings .tsext-legend .tsext-chip{
+  padding:2px 8px !important;
+  font-size:var(--tsext-fs-xxs) !important;
+}
+
+html.tsext-pro body.tsext-pro #tsext-list{
+  grid-area: pr-list;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: var(--tsext-bg) !important;
+}
+
+html.tsext-pro #tsext-list-hdr::-webkit-scrollbar{ height:6px; }
+html.tsext-pro #tsext-list-hdr .tsext-hdr{ white-space:normal; }
+
+html.tsext-pro #tsext-list-body::-webkit-scrollbar{ width:8px; height:8px; }
+html.tsext-pro #tsext-list-body::-webkit-scrollbar-thumb{ background:color-mix(in srgb,var(--tsext-border) 85%,transparent); border-radius:var(--tsext-r-pill); border:2px solid transparent; background-clip:padding-box; }
+html.tsext-pro #tsext-list-body::-webkit-scrollbar-thumb:hover{ background:var(--tsext-muted); background-clip:padding-box; }
+html.tsext-pro #tsext-list-body::-webkit-scrollbar-corner{ background:transparent; }
+html.tsext-pro #tsext-list-hdr::-webkit-scrollbar-thumb{ background:color-mix(in srgb,var(--tsext-border) 85%,transparent); border-radius:var(--tsext-r-pill); }
+
+/* ردیف‌ها — حرفه‌ای، قابل اسکرول افقی */
+
+
+html.tsext-pro #tsext-list-body .tsext-bar.active-ob{
+  border-color:var(--tsext-accent) !important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--tsext-accent) 22%,transparent), 0 6px 18px color-mix(in srgb,var(--tsext-accent) 14%,transparent) !important;
+  background:color-mix(in srgb,var(--tsext-accent) 9%,var(--tsext-panel)) !important;
+}
+
+html.tsext-pro #tsext-list-body .tsext-bar-cell{ font-size:var(--tsext-fs-base) !important; }
+
+/* دکمه show more */
+html.tsext-pro .tsext-show-more{
+  border-radius:var(--tsext-r-md) !important; padding:12px !important; font-weight:900 !important;
+  border:1.5px dashed color-mix(in srgb,var(--tsext-border) 70%,transparent) !important;
+  background:color-mix(in srgb,var(--tsext-panel) 80%,transparent) !important;
+}
+html.tsext-pro .tsext-show-more:hover{ border-color:var(--tsext-accent) !important; color:var(--tsext-accent) !important; background:color-mix(in srgb,var(--tsext-accent) 6%,transparent) !important; }
+
+/* ---------- نوار وضعیت پایین ---------- */
+
+html.tsext-pro #pr-foot-extra::before{
+  content:'⤢'; font-size:var(--tsext-fs-sm); opacity:.6;
+}
+
+/* ---------- پنل جزئیات: بزرگ، داک‌شده، با حداکثر استفاده فضا ---------- */
+html.tsext-pro body.tsext-pro #tsext-obpanel{
+  grid-area:pr-detail;
+  position:relative !important;
+  top:auto !important; left:auto !important; right:auto !important; bottom:auto !important;
+  width:auto !important; max-width:none !important;
+  height:auto !important; max-height:none !important;
+  min-height:0 !important;
+  margin:0 !important;
+  border:none !important; border-radius:0 !important;
+  border-inline-start:var(--pr-line) !important;
+  box-shadow:none !important;
+  background:var(--tsext-panel) !important;
+  overflow:hidden !important;
+  z-index:auto !important;
+  flex-direction:column !important;
+  display:none !important;
+}
+html.tsext-pro body.tsext-pro #tsext-host.tsext-with-ob #tsext-obpanel{ display:flex !important; }
+
+
+html.tsext-pro #tsext-obpanel .tsext-obpanel-head .tsext-btn{
+  width:30px; height:30px; border-radius:var(--tsext-r-sm); display:inline-flex; align-items:center; justify-content:center;
+  background:color-mix(in srgb,var(--tsext-input) 85%,transparent); border:var(--pr-line);
+}
+html.tsext-pro #tsext-obpanel .tsext-obpanel-head .tsext-btn:hover{ background:var(--tsext-red); color:#fff; border-color:var(--tsext-red); }
+
+/* بدنه detail — دو ستون با اسکرول مستقل و عرض منعطف */
+
+
+html.tsext-pro #tsext-obpanel-body.tsext-ob-split.tsext-ob-solo{
+  grid-template-columns:1fr !important;
+}
+
+
+html.tsext-pro #tsext-ob-calc::-webkit-scrollbar,
+html.tsext-pro #tsext-ob-books::-webkit-scrollbar{ width:7px; height:7px; }
+html.tsext-pro #tsext-ob-calc::-webkit-scrollbar-thumb,
+html.tsext-pro #tsext-ob-books::-webkit-scrollbar-thumb{ background:color-mix(in srgb,var(--tsext-border) 85%,transparent); border-radius:var(--tsext-r-pill); border:2px solid transparent; background-clip:padding-box; }
+html.tsext-pro #tsext-ob-calc::-webkit-scrollbar-thumb:hover,
+html.tsext-pro #tsext-ob-books::-webkit-scrollbar-thumb:hover{ background:var(--tsext-muted); background-clip:padding-box; }
+
+/* هیرو سود — بزرگتر */
+
+/* گرید جزئیات — دو ستونه برای استفاده بهینه فضا در جزئیات بزرگ */
+
+html.tsext-pro #tsext-ob-calc .tsext-note{ grid-column:1 / -1; font-size:var(--tsext-fs-xs) !important; line-height:1.8 !important; }
+
+/* جداول سفارشات — خواناتر */
+
+
+html.tsext-pro #tsext-ob-books .tsext-ob-table th,
+html.tsext-pro #tsext-ob-books .tsext-ob-table td{ font-size:var(--tsext-fs-sm) !important; padding:5px 6px !important; }
+
+
+html.tsext-pro #tsext-ob-books.tsext-ob-books-1 .tsext-ob-slot{ flex:1 1 auto !important; }
+
+/* ---------- اسکرولبار سراسری ---------- */
+/* ---------- دیدبان چندنمادی ---------- */
+
+html.tsext-pro .pr-wl-title::before{ content:'◈'; color:var(--tsext-accent); font-size:var(--tsext-fs-xs); }
+
+html.tsext-pro .pr-wl-chips{
+  flex:1; min-width:0;
+  display:flex; align-items:center; gap:7px;
+  overflow-x:auto; overflow-y:hidden;
+  scrollbar-width:none; -ms-overflow-style:none;
+  scroll-behavior:smooth; padding:2px 0;
+}
+html.tsext-pro .pr-wl-chips::-webkit-scrollbar{ display:none; }
+html.tsext-pro .pr-wl-chip{
+  display:inline-flex; align-items:center; gap:6px;
+  flex-shrink:0; white-space:nowrap;
+  background:var(--tsext-panel2); border:1.5px solid color-mix(in srgb,var(--tsext-border) 70%,transparent);
+  border-radius:var(--tsext-r-pill); padding:4px 5px 4px 9px;
+  font-size:var(--tsext-fs-md); font-weight:700; color:var(--tsext-fg);
+  cursor:pointer; transition:all .15s; user-select:none;
+}
+html.tsext-pro .pr-wl-chip:hover{ border-color:color-mix(in srgb,var(--tsext-accent) 50%,var(--tsext-border)); transform:translateY(-1px); box-shadow:0 4px 12px color-mix(in srgb,var(--tsext-accent) 10%,transparent); }
+html.tsext-pro .pr-wl-chip.is-active{ background:color-mix(in srgb,var(--tsext-accent) 14%,var(--tsext-panel2)); border-color:var(--tsext-accent); color:var(--tsext-bright); box-shadow:0 4px 14px color-mix(in srgb,var(--tsext-accent) 18%,transparent); }
+html.tsext-pro .pr-wl-dot{ width:7px; height:7px; border-radius:50%; background:var(--tsext-muted); flex-shrink:0; transition:background .2s, box-shadow .2s; }
+html.tsext-pro .pr-wl-chip.has-opp .pr-wl-dot{ background:var(--tsext-green); box-shadow:0 0 0 3px color-mix(in srgb,var(--tsext-green) 28%,transparent); }
+html.tsext-pro .pr-wl-chip.no-opp .pr-wl-dot{ background:var(--tsext-muted); }
+html.tsext-pro .pr-wl-chip.is-active .pr-wl-dot{ background:var(--tsext-accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--tsext-accent) 22%,transparent); animation:prLivePulse 1.6s ease-out infinite; }
+html.tsext-pro .pr-wl-chip.is-active.has-opp .pr-wl-dot{ background:var(--tsext-green); box-shadow:0 0 0 3px color-mix(in srgb,var(--tsext-green) 30%,transparent); }
+html.tsext-pro .pr-wl-chip.is-dragging{ opacity:.55; }
+html.tsext-pro .pr-wl-chip.drag-over{ border-color:var(--tsext-accent); box-shadow:0 0 0 2px color-mix(in srgb,var(--tsext-accent) 35%,transparent); }
+html.tsext-pro .pr-wl-chip-label{ max-width:90px; overflow:hidden; text-overflow:ellipsis; }
+html.tsext-pro .pr-wl-mkt{
+  font-size:var(--tsext-fs-xxs); font-weight:800; white-space:nowrap; margin-top:3px;
+  padding:2px 7px; border-radius:999px; border:1px solid transparent;
+}
+html.tsext-pro .pr-wl-mkt.is-open{ color:#0a7a5a; background:color-mix(in srgb,var(--tsext-green) 14%,transparent); border-color:color-mix(in srgb,var(--tsext-green) 38%,transparent); }
+html.tsext-pro .pr-wl-mkt.is-preopen{ color:#b45309; background:color-mix(in srgb,var(--tsext-orange) 12%,transparent); border-color:color-mix(in srgb,var(--tsext-orange) 40%,transparent); }
+html.tsext-pro .pr-wl-mkt.is-closed, html.tsext-pro .pr-wl-mkt.is-holiday{ color:var(--tsext-muted); background:color-mix(in srgb,var(--tsext-input) 80%,transparent); border-color:var(--tsext-border); }
+html.tsext-pro .pr-wl-clear{
+  margin-top:4px; font-size:10px; font-weight:800; cursor:pointer;
+  border:1px solid color-mix(in srgb,var(--tsext-red) 35%,var(--tsext-border));
+  background:color-mix(in srgb,var(--tsext-red) 8%,transparent); color:#b91c1c;
+  border-radius:6px; padding:2px 6px; line-height:1.4;
+}
+html.tsext-pro .pr-wl-clear:hover{ background:color-mix(in srgb,var(--tsext-red) 16%,transparent); }
+html.tsext-pro #pr-market.is-preopen{ color:#b45309; background:color-mix(in srgb,var(--tsext-orange) 12%,transparent); border-color:color-mix(in srgb,var(--tsext-orange) 40%,transparent); }
+html.tsext-pro .pr-wl-chip-close{
+  width:18px; height:18px; border-radius:50%; border:none; flex-shrink:0;
+  background:color-mix(in srgb,var(--tsext-border) 70%,transparent); color:var(--tsext-muted);
+  font-size:var(--tsext-fs-xs); font-weight:900; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+  transition:all .12s;
+}
+html.tsext-pro .pr-wl-chip-close:hover{ background:var(--tsext-red); color:#fff; }
+html.tsext-pro .pr-wl-empty{ font-size:var(--tsext-fs-sm); font-weight:700; color:var(--tsext-muted); white-space:nowrap; padding:4px 8px; background:color-mix(in srgb,var(--tsext-input) 70%,transparent); border:1px dashed color-mix(in srgb,var(--tsext-border) 70%,transparent); border-radius:var(--tsext-r-pill); }
+
+html.tsext-pro #pr-wl-add-btn:active{ transform:scale(.96); }
+
+/* ---------- بهبود جداول سفارشات — واضح‌تر کنار متن ---------- */
+
+
+html.tsext-pro #tsext-ob-books .tsext-ob-title::before{
+  content:'◈'; color:var(--tsext-accent); font-size:var(--tsext-fs-sm);
+}
+
+html.tsext-pro #tsext-ob-books .tsext-ob-table tbody tr:hover{
+  background:color-mix(in srgb,var(--tsext-accent) 7%,transparent) !important;
+}
+
+html.tsext-pro #tsext-ob-books .vol-bar{ opacity:.22 !important; }
+html.tsext-pro #tsext-ob-books .vol-bar.ask{ background:linear-gradient(90deg,transparent, var(--tsext-red)) !important; }
+html.tsext-pro #tsext-ob-books .vol-bar.bid{ background:linear-gradient(90deg, var(--tsext-green), transparent) !important; }
+
+/* برای حالت دو ستونه، ارتفاع کتاب‌ها با متن هم‌تراز شود */
+
+
+html.tsext-pro *{
+  scrollbar-width:thin;
+  scrollbar-color: color-mix(in srgb,var(--tsext-border) 80%,transparent) transparent;
+}
+html.tsext-pro *::-webkit-scrollbar{ width:8px; height:8px; }
+html.tsext-pro *::-webkit-scrollbar-thumb{ background:color-mix(in srgb,var(--tsext-border) 80%,transparent); border-radius:var(--tsext-r-pill); border:2px solid transparent; background-clip:padding-box; }
+html.tsext-pro *::-webkit-scrollbar-thumb:hover{ background:var(--tsext-muted); background-clip:padding-box; }
+html.tsext-pro *::-webkit-scrollbar-track{ background:transparent; }
+html.tsext-pro *::-webkit-scrollbar-corner{ background:transparent; }
+
+/* ---------- ریسپانسیو ---------- */
+@media (max-width:1280px){
+  :root{ --pr-detail-w:520px; }
+  html.tsext-pro #tsext-ob-calc .tsext-grid{ grid-template-columns:1fr !important; }
+}
+@media (max-width:1150px){
+  :root{ --pr-side-w:300px; --pr-detail-w:420px; }
+  html.tsext-pro #pr-wl-hint{ display:none; }
+  html.tsext-pro .pr-mbar-date{ display:none; }
+}
+@media (max-width:980px){
+  html.tsext-pro body.tsext-pro #tsext-host{
+    grid-template-areas:
+      "pr-disc  pr-disc"
+      "pr-top   pr-top"
+      "pr-watch pr-watch"
+      "prside   prside"
+      "pr-wl    pr-wl"
+      "pr-list  pr-list"
+      "pr-status pr-status" !important;
+    grid-template-rows: var(--pr-disc-h) var(--pr-top-h) auto auto var(--pr-wl-h) 1fr var(--pr-status-h) !important;
+    grid-template-columns:1fr 0 !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host.tsext-with-ob{
+    grid-template-areas:
+      "pr-disc  pr-disc"
+      "pr-top   pr-top"
+      "pr-watch pr-watch"
+      "prside   prside"
+      "pr-wl    pr-wl"
+      "pr-list  pr-list"
+      "pr-status pr-status" !important;
+  }
+  html.tsext-pro #pr-split-1, html.tsext-pro #pr-split-2{ display:none !important; }
+  html.tsext-pro body.tsext-pro #tsext-head{
+    flex-direction:column !important; flex-wrap:nowrap !important;
+    overflow-x:hidden !important; overflow-y:auto !important;
+    padding:0 10px 10px !important; gap:6px;
+    border-bottom:var(--pr-line) !important;
+    align-items:stretch;
+    max-height:none !important;
+  }
+  html.tsext-pro #pr-side-caption{ position:static !important; border-bottom:none !important; padding-inline:4px !important; white-space:nowrap; }
+  html.tsext-pro #tsext-tabs{ flex-direction:column !important; gap:12px !important; padding:14px 12px !important; position:static !important; flex-wrap:nowrap !important; overflow:visible !important; }
+  html.tsext-pro #tsext-tabs .tsext-tab{ width:100% !important; padding:13px 14px !important; white-space:normal; min-height:46px !important; }
+  html.tsext-pro #tsext-head .tsext-strategy-panel{ display:block !important; margin:6px 8px 8px !important; }
+  html.tsext-pro #tsext-head .tsext-strategy-panel.active{ display:block !important; }
+  html.tsext-pro #tsext-head > .tsext-row:has(#tsext-market-wrap),
+  html.tsext-pro #tsext-priceinfo{ display:none !important; }
+  
+
+  html.tsext-pro body.tsext-pro #tsext-obpanel{
+    position:fixed !important; inset-inline-end:0 !important; inset-inline-start:auto !important;
+    top:var(--pr-top-h) !important; bottom:0 !important;
+    width:min(88vw, 560px) !important; max-width:88vw !important;
+    z-index:60 !important; box-shadow:-16px 0 40px rgba(0,0,0,.35) !important;
+    border-inline-start:var(--pr-line) !important; border-radius:var(--tsext-r-lg) 0 0 14px !important;
+    overflow:hidden !important;
+  }
+  html.tsext-pro #tsext-obpanel-body.tsext-ob-split{ grid-template-columns:1fr !important; grid-template-rows:minmax(220px, 0.45fr) minmax(240px, 0.55fr) !important; }
+  html.tsext-pro #tsext-ob-calc{ border-left:none !important; border-bottom:var(--pr-line) !important; }
+  html.tsext-pro #pr-search{ max-width:320px; font-size:var(--tsext-fs-md); }
+  html.tsext-pro #pr-topbar{ padding:0 10px; gap:8px; }
+  html.tsext-pro #pr-top-right{ gap:6px; }
+  html.tsext-pro .pr-mbar-scroll{ gap:8px; }
+  html.tsext-pro .pr-mbar-chip{ padding:4px 10px; }
+}
+@media (max-width:560px){
+  html.tsext-pro body.tsext-pro #tsext-host{ min-width:0 !important; }
+  html.tsext-pro #pr-topbar .tsext-subtitle{ display:none; }
+  html.tsext-pro #pr-clock-wrap{ display:none; }
+  html.tsext-pro #pr-market{ font-size:var(--tsext-fs-xs); padding:4px 9px; }
+  html.tsext-pro #pr-search{ max-width:none; flex:1; margin-inline:8px; padding:9px 12px 9px 36px; font-size:var(--tsext-fs-md); }
+  html.tsext-pro #pr-search::placeholder{ font-size:var(--tsext-fs-xs); }
+  html.tsext-pro body.tsext-pro #tsext-obpanel{ width:100vw !important; max-width:100vw !important; border-radius:0 !important; }
+  html.tsext-pro #tsext-list-body .tsext-bar{ min-width:560px; }
+}
+
+/* ---------- پولیش نهایی ---------- */
+/* قبلاً اینجا یک :empty::after «در حال بارگذاری…» داشتیم که در حالت اولیه (قبل از رندر راهنما) یک لحظه سیاهی نشان می‌داد — حذف شد تا راهنمای اصلی موتور دیده شود */
+html.tsext-pro .tsext-empty{ border-radius:var(--tsext-r-lg) !important; border:1.5px dashed color-mix(in srgb,var(--tsext-border) 70%,transparent) !important; }
+html.tsext-pro .tsext-bar .tsext-bar-strip{ width:4px !important; min-width:4px !important; }
+html.tsext-pro #tsext-head .tsext-strategy-panel .tsext-row:has(.tsext-settings-toggle){
+  justify-content: center !important;
+  justify-content: center;
+}
+
+/* 2) درگ و اسکرول روان — همه نواحی */
+html.tsext-pro #tsext-head,
+html.tsext-pro #tsext-list-body,
+html.tsext-pro #tsext-ob-calc,
+html.tsext-pro #tsext-ob-books,
+html.tsext-pro .pr-mbar-scroll,
+html.tsext-pro .pr-wl-chips {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+html.tsext-pro .pr-split {
+  background: var(--tsext-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: col-resize;
+  position: relative;
+  z-index: 40;
+  user-select: none;
+  transition: background .15s;
+  will-change: background;
+  /* ناحیهٔ کلیک عریض‌تر از خط باریک */
+  min-width: 10px !important;
+  margin-inline: -2px;
+}
+html.tsext-pro .pr-split-handle {
+  width: 4px;
+  height: 40px;
+  border-radius: var(--tsext-r-pill);
+  background: color-mix(in srgb,var(--tsext-border) 85%,transparent);
+  will-change: transform, height, background;
+  transition: all .12s cubic-bezier(.4,0,.2,1);
+  pointer-events: none;
+}
+html.tsext-pro body.pr-col-resizing {
+  cursor: col-resize !important;
+}
+html.tsext-pro body.pr-col-resizing iframe,
+html.tsext-pro body.pr-col-resizing #tsext-list-body,
+html.tsext-pro body.pr-col-resizing #tsext-obpanel {
+  pointer-events: none !important;
+}
+html.tsext-pro body.pr-col-resizing {
+  user-select: none !important;
+}
+/* نوار اسکرول نازک‌تر و روان */
+html.tsext-pro #tsext-list-body,
+html.tsext-pro #tsext-ob-calc,
+html.tsext-pro #tsext-ob-books {
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+
+/* 3) جداول سفارشات کنار متن — همیشه دو ستونه تا 980px */
+
+@media (max-width: 1280px) {
+  html.tsext-pro #tsext-obpanel-body.tsext-ob-split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+  html.tsext-pro #tsext-ob-calc .tsext-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+@media (max-width: 1024px) {
+  html.tsext-pro #tsext-obpanel-body.tsext-ob-split {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+  }
+  html.tsext-pro #tsext-ob-calc { border-left: none !important; border-bottom: 1.5px solid var(--tsext-border) !important; }
+}
+
+/* 4) ساعت جذاب‌تر — بزرگ و سرزنده */
+html.tsext-pro #pr-clock-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 1.15;
+  min-width: 118px;
+  background: color-mix(in srgb,var(--tsext-input) 85%,transparent);
+  border: 1px solid color-mix(in srgb,var(--tsext-border) 70%,transparent);
+  border-radius: var(--tsext-r-md);
+  padding: 4px 8px;
+  min-width: 138px !important;
+  padding: 6px 10px !important;
+  background: linear-gradient(135deg, color-mix(in srgb,var(--tsext-accent) 12%, var(--tsext-panel)), var(--tsext-panel)) !important;
+  border: 1.5px solid color-mix(in srgb,var(--tsext-accent) 28%, var(--tsext-border)) !important;
+  box-shadow: 0 4px 12px color-mix(in srgb,var(--tsext-accent) 10%, transparent) !important;
+  border-radius: var(--tsext-r-md) !important;
+}
+html.tsext-pro #pr-clock {
+  font-size: var(--tsext-fs-base);
+  font-weight: 900;
+  color: var(--tsext-bright);
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  letter-spacing: .02em;
+  line-height: 1;
+  font-size: var(--tsext-fs-xl) !important;
+  font-weight: 900 !important;
+  letter-spacing: .04em !important;
+  background: linear-gradient(135deg, var(--tsext-bright), color-mix(in srgb,var(--tsext-accent) 70%, var(--tsext-bright)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+html.tsext-pro #pr-clock-sub {
+  font-size: var(--tsext-fs-xxs);
+  font-weight: 800;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  direction: rtl;
+  margin-top: 2px;
+  padding: 2px 6px;
+  border-radius: var(--tsext-r-pill);
+  transition: all .15s;
+  font-size: var(--tsext-fs-xs) !important;
+  font-weight: 800 !important;
+  padding: 3px 8px !important;
+  border-radius: var(--tsext-r-pill) !important;
+  margin-top: 4px !important;
+  letter-spacing: .02em !important;
+  text-transform: none !important;
+  min-width: 110px;
+  text-align: center;
+}
+html.tsext-pro #pr-clock-sub.is-open {
+  color: #065f46;
+  background: color-mix(in srgb,var(--tsext-green) 14%,transparent);
+  border: 1px solid color-mix(in srgb,var(--tsext-green) 30%,transparent);
+  color: #065f46 !important;
+  background: linear-gradient(135deg, color-mix(in srgb,var(--tsext-green) 18%, transparent), color-mix(in srgb,var(--tsext-green) 8%, transparent)) !important;
+  border: 1px solid color-mix(in srgb,var(--tsext-green) 35%, transparent) !important;
+  box-shadow: 0 2px 8px color-mix(in srgb,var(--tsext-green) 12%, transparent) !important;
+}
+
+
+/* 5) تم روشن رسمی — هم‌تراز THEMES.light */
+html.tsext-pro body.tsext-pro[data-tsext-theme="light"] #tsext-host,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] {
+  --tsext-bg: #eef1f6;
+  --tsext-panel: #ffffff;
+  --tsext-panel2: #f5f7fa;
+}
+
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-topbar::after {
+  opacity: .5 !important;
+  background: var(--tsext-accent) !important;
+  height: 2px !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-marketbar {
+  background: transparent !important;
+  border: none !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .pr-mbar-chip {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 2px rgba(15,23,42,.04) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .pr-mbar-chip:hover {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 4px 12px rgba(6,182,214,.12) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-watchlist {
+  background: linear-gradient(180deg, #ffffff, #f1f5f9) !important;
+  border-bottom: 1.5px solid #e2e8f0 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .pr-wl-chip {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 2px rgba(15,23,42,.05) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .pr-wl-chip.is-active {
+  background: linear-gradient(135deg, color-mix(in srgb,#06b6d4 14%, #ffffff), #ffffff) !important;
+  border-color: #06b6d4 !important;
+  color: #0f172a !important;
+}
+
+/* دکمه‌های زوم و تم — سرزنده */
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-tools {
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-tools .tsext-btn {
+
+  box-shadow: 0 1px 2px rgba(15,23,42,.04) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-tools .tsext-btn:hover {
+
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(6,182,214,.25) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-head {
+  background: #ffffff !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-side-caption {
+  background: #ffffff !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-tabs .tsext-tab {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-tabs .tsext-tab:hover {
+  background: #ffffff !important;
+  border-color: #06b6d4 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 12px rgba(6,182,214,.10) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-tabs .tsext-tab.active {
+  background: linear-gradient(135deg, #ecfeff, #ffffff) !important;
+  border-color: #06b6d4 !important;
+  color: #0f172a !important;
+  box-shadow: 0 6px 16px rgba(6,182,214,.15), inset 3px 0 0 #06b6d4 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-head .tsext-strategy-panel {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,.04) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .tsext-empty {
+  background: linear-gradient(135deg, #f0f9ff, #ffffff) !important;
+  border-color: #bae6fd !important;
+  color: #334155 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-list {
+  background: #f1f5f9 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-list-hdr {
+  background: #f1f5f9 !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-list-body .tsext-bar:hover {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 6px 16px rgba(6,182,214,.12) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-obpanel {
+  background: #ffffff !important;
+  border-left-color: #e2e8f0 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-obpanel .tsext-obpanel-head {
+  background: linear-gradient(135deg, #ecfeff, #f8fafc) !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
+/* تم روشن: متن‌ها واضح‌تر */
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .tsext-mini,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .tsext-legend,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-wl-hint {
+  color: #475569 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .pr-mbar-lbl,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .pr-wl-sub {
+  color: #64748b !important;
+}
+
+/* دکمه‌های زوم/تم در حالت دارک هم سرزنده */
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-tools .tsext-btn:hover {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #2adcc8 !important;
+}
+
+/* ===== FIX جزئیات دو ستونه واحد — نوشته راست، جدول چپ ===== */
+
+html.tsext-pro #tsext-obpanel #tsext-obpanel-body.tsext-ob-split{
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr) !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
+  align-items: stretch !important;
+}
+
+
+/* فشرده‌سازی تا همه‌چیز بدون اسکرول جا بشه */
+
+html.tsext-pro #tsext-ob-calc .tsext-hero-card,
+html.tsext-pro #tsext-ob-calc .tsext-hero-card.main{
+  border: 1.5px solid color-mix(in srgb,var(--tsext-border) 70%,transparent) !important;
+  box-shadow: 0 6px 18px color-mix(in srgb,#000 6%,transparent) !important;
+  padding: 8px 10px !important;
+  border-radius: var(--tsext-r-md) !important;
+}
+
+
+html.tsext-pro #tsext-ob-calc .tsext-grid{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 4px 6px !important;
+}
+
+html.tsext-pro #tsext-ob-calc .tsext-sec{
+  grid-column: 1 / -1;
+  margin-top: 5px !important;
+  padding-top: 4px !important;
+}
+
+html.tsext-pro #tsext-obpanel-body.tsext-ob-split #tsext-ob-books{
+  border-inline-start: 1px solid var(--tsext-border);
+  border-inline-start: none !important;
+}
+/* وقتی تک ستونه (سولو) دوباره تمام عرض */
+html.tsext-pro #tsext-obpanel #tsext-obpanel-body.tsext-ob-split.tsext-ob-solo{
+  grid-template-columns: minmax(0,1fr) !important;
+}
+html.tsext-pro #tsext-obpanel #tsext-obpanel-body.tsext-ob-split.tsext-ob-solo #tsext-ob-calc{
+  border-inline-end: none !important;
+}
+
+/* اطمینان از اینکه بازار بسته اعداد ثابت می‌مانند — نقطه زنده خاموش */
+html.tsext-pro #pr-marketbar.is-closed .pr-mbar-val,
+html.tsext-pro #pr-marketbar.is-closed .pr-mbar-ch{
+  opacity: .85;
+}
+
+/* ===== درخواست‌های جدید 2026-09-14 — حذف سرچ بالا، بازار بالا، افزودن برجسته، فونت تایمز، هشدار برجسته، هدر از نو ===== */
+
+/* 1) حذف کامل نوار جستجوی بالا — اطلاعات بازار جایگزین */
+html.tsext-pro #pr-search,
+html.tsext-pro #pr-search.is-busy {
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+html.tsext-pro #pr-topbar .tsext-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex-shrink: 0;
+  flex: 0 0 auto !important;
+}
+html.tsext-pro #pr-top-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  min-width: 0;
+  gap: 10px !important;
+  flex: 0 0 auto !important;
+  justify-content: flex-end !important;
+}
+/* بازار و ساعت برجسته‌تر در بالا — چیپ‌های بازار داخل همان topbar */
+html.tsext-pro #pr-marketbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  padding: 0;
+  position: relative;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  min-height: 0 !important;
+  margin-inline-start: 4px;
+}
+html.tsext-pro .pr-mbar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  background: color-mix(in srgb,var(--tsext-input) 88%,transparent);
+  border: 1px solid color-mix(in srgb,var(--tsext-border) 70%,transparent);
+  border-radius: var(--tsext-r-pill);
+  padding: 5px 12px 5px 10px;
+  transition: border-color .15s, background .15s, transform .08s;
+  padding: 4px 10px !important;
+  font-size: var(--tsext-fs-md) !important;
+  border-width: 1px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05) !important;
+}
+html.tsext-pro .pr-mbar-lbl {
+  font-size: var(--tsext-fs-xs);
+  font-weight: 800;
+  color: var(--tsext-muted);
+  letter-spacing: .02em;
+  font-size: var(--tsext-fs-xs) !important;
+}
+html.tsext-pro .pr-mbar-val {
+  font-size: var(--tsext-fs-md);
+  font-weight: 900;
+  color: var(--tsext-bright);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--tsext-fs-md) !important;
+}
+html.tsext-pro .pr-mbar-ch {
+  font-size: var(--tsext-fs-xs);
+  font-weight: 900;
+  padding: 2px 7px;
+  border-radius: var(--tsext-r-pill);
+  letter-spacing: .01em;
+  font-size: var(--tsext-fs-xs) !important;
+  padding: 2px 7px !important;
+}
+
+/* پایین خلوت‌تر — فوتر جمع‌وجور */
+html.tsext-pro #pr-foot-extra {
+  margin-inline-start: auto;
+  font-size: var(--tsext-fs-xxs);
+  font-weight: 700;
+  color: var(--tsext-muted);
+  opacity: .75;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  
+}
+html.tsext-pro body.tsext-pro #tsext-status {
+  grid-area: pr-status;
+  background: var(--tsext-panel2) !important;
+  border-top: 1px solid var(--tsext-border) !important;
+  color: var(--tsext-fg) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  min-height: 32px !important;
+  height: 32px !important;
+  padding: 0 14px !important;
+  opacity: 1 !important;
+  z-index: 5 !important;
+}
+html.tsext-pro #tsext-status:empty {
+  padding: 0 !important;
+  min-height: 6px;
+  height: 6px;
+  min-height: 4px !important;
+  height: 4px !important;
+}
+
+/* 2) افزودن نماد — اندازه متناسب و جمع‌وجور */
+
+html.tsext-pro .pr-wl-add {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  background: var(--tsext-input);
+  border: 1.5px solid var(--tsext-border);
+  border-radius: var(--tsext-r-pill);
+  padding: 3px 3px 3px 8px;
+  padding: 2px 3px 2px 8px !important;
+  border-width: 1.5px !important;
+  border-color: color-mix(in srgb, var(--tsext-accent) 55%, var(--tsext-border)) !important;
+  background: color-mix(in srgb, var(--tsext-input) 90%, var(--tsext-accent)) !important;
+  box-shadow: none !important;
+  border-radius: var(--tsext-r-pill) !important;
+  transform: none !important;
+  transition: border-color .12s, background .12s;
+}
+html.tsext-pro .pr-wl-add:hover {
+  border-color:var(--tsext-accent) !important;
+  box-shadow:none !important;
+  transform:none !important;
+}
+html.tsext-pro #pr-wl-input {
+  width: 110px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--tsext-bright);
+  font-family: inherit;
+  font-size: var(--tsext-fs-md);
+  font-weight: 800;
+  text-align: center;
+  width: 100px !important;
+  font-size: var(--tsext-fs-sm) !important;
+  font-weight: 700 !important;
+  padding: 3px 6px !important;
+}
+html.tsext-pro #pr-wl-input::placeholder {
+  color: var(--tsext-muted);
+  font-weight: 700;
+  font-size: var(--tsext-fs-xs);
+  font-size: var(--tsext-fs-xs) !important;
+  opacity: .75;
+}
+html.tsext-pro #pr-wl-add-btn {
+  border: none;
+  background: var(--tsext-accent);
+  color: #fff;
+  border-radius: var(--tsext-r-pill);
+  padding: 5px 10px;
+  font-family: inherit;
+  font-size: var(--tsext-fs-sm);
+  font-weight: 900;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform .08s, filter .12s;
+  padding: 4px 10px !important;
+  font-size: var(--tsext-fs-xs) !important;
+  font-weight: 800 !important;
+  border-radius: var(--tsext-r-pill) !important;
+  box-shadow: none !important;
+  letter-spacing: 0 !important;
+}
+html.tsext-pro #pr-wl-add-btn:hover {
+  transform: none !important;
+  filter: saturate(1.1);
+}
+html.tsext-pro .pr-wl-head {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  line-height: 1.1;
+  padding-inline-end: 8px;
+  border-inline-end: 1px solid var(--tsext-border);
+  min-width: 90px !important;
+}
+html.tsext-pro .pr-wl-title {
+  font-size: var(--tsext-fs-sm);
+  font-weight: 800;
+  color: var(--tsext-bright);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: var(--tsext-fs-sm) !important;
+}
+html.tsext-pro .pr-wl-sub {
+  font-size: var(--tsext-fs-xxs);
+  font-weight: 700;
+  color: var(--tsext-muted);
+  white-space: nowrap;
+  font-size: var(--tsext-fs-xxs) !important;
+}
+
+/* 3) جزئیات — دو بخش مساوی، نوشته راست، جدول چپ (قبلا درست بود، تضمین) */
+html.tsext-pro #tsext-obpanel-body.tsext-ob-split {
+  display: grid !important;
+  grid-template-rows: 1fr !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+  gap: 0 !important;
+  align-items: start !important;
+}
+
+html.tsext-pro #tsext-ob-books {
+  display: flex !important;
+  flex-direction: column !important;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  min-height: 0 !important;
+  padding: 10px 10px 12px !important;
+  border-left: none !important;
+  gap: 8px !important;
+  background: color-mix(in srgb, var(--tsext-panel2) 45%, var(--tsext-panel)) !important;
+}
+
+/* 4) اعداد و متون انگلیسی — فونت تایمز */
+html.tsext-pro .tsext-bar-profit,
+html.tsext-pro .tsext-bar-strike,
+html.tsext-pro .tsext-bar-days,
+html.tsext-pro .tsext-bar-date,
+html.tsext-pro .pr-mbar-val,
+html.tsext-pro .pr-mbar-ch,
+html.tsext-pro #pr-clock,
+html.tsext-pro #pr-clock-sub,
+html.tsext-pro #tsext-ob-calc .tsext-cell .val,
+html.tsext-pro #tsext-ob-calc .h-val,
+html.tsext-pro #tsext-ob-calc .tsext-cell,
+html.tsext-pro #tsext-list-body .tsext-bar-cell,
+html.tsext-pro .tsext-bar-class,
+html.tsext-pro .pr-mbar-lbl,
+html.tsext-pro .tsext-ob-table td,
+html.tsext-pro .tsext-ob-table th {
+  font-feature-settings:"tnum" !important;
+}
+html.tsext-pro .tsext-bar-profit,
+html.tsext-pro .tsext-bar-strike,
+html.tsext-pro .pr-mbar-val,
+html.tsext-pro .pr-mbar-ch,
+html.tsext-pro #pr-clock,
+html.tsext-pro #tsext-ob-calc .h-val,
+html.tsext-pro #tsext-ob-calc .tsext-cell .val,
+html.tsext-pro .tsext-ob-table td,
+html.tsext-pro .tsext-ob-table th,
+html.tsext-pro .tsext-ob-table .px-ask,
+html.tsext-pro .tsext-ob-table .px-bid,
+html.tsext-pro .tsext-ob-table .vol-txt,
+html.tsext-pro .tsext-bar-days,
+html.tsext-pro .tsext-ob-foot {
+  font-family: inherit !important; /* وزیرمتن — یکدست با بقیه */
+  letter-spacing: 0 !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: "tnum" !important;
+}
+
+/* نوار رنگی 5px دقیق */
+
+/* کلاس، نام، اعمال، روز، تاریخ، ریسک، سود، اکشن — یکسان برای هدر و بدنه */
+html.tsext-pro .tsext-cols .tsext-col,
+html.tsext-pro .tsext-cols .tsext-bar-name,
+html.tsext-pro .tsext-cols .tsext-bar-strike,
+html.tsext-pro .tsext-cols .tsext-bar-days,
+html.tsext-pro .tsext-cols .tsext-bar-date,
+html.tsext-pro .tsext-cols .tsext-bar-risk,
+html.tsext-pro .tsext-cols .tsext-bar-profit,
+html.tsext-pro .tsext-cols .tsext-cols-class,
+html.tsext-pro .tsext-cols .tsext-cols-actions,
+html.tsext-pro .tsext-bar-main .tsext-bar-class,
+html.tsext-pro .tsext-bar-main .tsext-bar-name,
+html.tsext-pro .tsext-bar-main .tsext-bar-strike,
+html.tsext-pro .tsext-bar-main .tsext-bar-days,
+html.tsext-pro .tsext-bar-main .tsext-bar-date,
+html.tsext-pro .tsext-bar-main .tsext-bar-risk,
+html.tsext-pro .tsext-bar-main .tsext-bar-profit,
+html.tsext-pro .tsext-bar-main .tsext-bar-actions {
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  text-align:center !important;
+  justify-self:stretch !important;
+}
+html.tsext-pro .tsext-cols .tsext-bar-name,
+html.tsext-pro .tsext-bar-main .tsext-bar-name {
+  text-align:start !important;
+  justify-self:stretch !important;
+  padding-inline-start:6px !important;
+}
+/* هدر استایل یکدست */
+
+/* ریسپانسیو: اگر جادار نبود، اسکرول افقی حفظ می‌شود */
+
+/* ===== درخواست 2026-09-14 — سرستون 10px چپ، شاخص کل بالا، هشدار قرمز، زنده سبز ===== */
+
+/* 2) کپسول تکی «شاخص کل» بالای topbar حذف شد — به‌جای آن کل چیپ‌های نوار بازار
+      (شاخص کل، هم‌وزن، ارزش معاملات، ورود پول، سرانه، نمادهای مثبت) در همان نوار بالا می‌نشینند */
+
+/* 4) زنده سبز */
+html.tsext-pro .pr-mbar-live.is-open,
+html.tsext-pro #pr-top-live.is-open {
+  color:var(--tsext-green) !important;
+}
+html.tsext-pro .pr-mbar-live.is-open .pr-mbar-dot,
+html.tsext-pro #pr-top-live.is-open .pr-mbar-dot {
+  background:var(--tsext-green) !important;
+  box-shadow:0 0 0 0 color-mix(in srgb, var(--tsext-green) 60%, transparent) !important;
+  animation:prLivePulse 1.8s ease-out infinite !important;
+}
+html.tsext-pro .pr-mbar-live.is-closed .pr-mbar-dot {
+  animation: none;
+  opacity: .9;
+  background: var(--tsext-muted) !important;
+  animation: none !important;
+}
+
+/* ===== REBUILD TABLE FROM SCRATCH — تمیزکاری کامل جدول ===== */
+/* این بلوک همه تعریف‌های قبلی جدول را بازنویسی می‌کند تا جدول سالم و هم‌تراز شود */
+
+/* متغیرهای ستون — یکسان برای هدر و بدنه */
+
+
+/* هدر و بدنه — یک گرید واحد، یک باکس مدل */
+html.tsext-pro #tsext-list-hdr {
+  flex-shrink: 0 !important;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  padding: 8px 12px !important;
+  background: var(--tsext-bg) !important;
+  border-bottom: 1px solid var(--tsext-border) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+
+html.tsext-pro #tsext-list-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+  scroll-behavior: auto; /* smooth روی لیست بلند حس لگ می‌دهد */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb,var(--tsext-border) 85%,transparent) transparent;
+  padding: 10px 12px 16px !important;
+  background: var(--tsext-bg) !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+}
+
+/* نوار باریک 5px */
+html.tsext-pro .tsext-cols-strip,
+html.tsext-pro .tsext-bar-strip {
+  width: 5px !important;
+  min-width: 5px !important;
+  max-width: 5px !important;
+  min-height: 18px !important;
+  justify-self: stretch !important;
+  align-self: stretch !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+  border-radius: var(--tsext-r-xxs) !important;
+}
+
+/* سلول‌های هدر */
+html.tsext-pro .tsext-cols .tsext-col,
+html.tsext-pro .tsext-cols [data-resize] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 28px !important;
+  padding: 0 4px !important;
+  margin: 0 !important;
+  font-size: var(--tsext-fs-sm) !important;
+  font-weight: 800 !important;
+  color: var(--tsext-accent) !important;
+  background: color-mix(in srgb, var(--tsext-accent) 10%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--tsext-accent) 18%, transparent) !important;
+  border-radius: var(--tsext-r-xs) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+/* نماد در هدر — چپ‌چین */
+html.tsext-pro .tsext-cols [data-resize="name"],
+html.tsext-pro .tsext-cols .tsext-col[data-resize="name"] {
+  justify-content:flex-start !important;
+  padding-inline-start:8px !important;
+  text-align:start !important;
+}
+
+/* سلول‌های بدنه */
+html.tsext-pro .tsext-bar-main > * {
+  min-width:0 !important;
+  overflow:hidden !important; text-overflow:ellipsis !important; white-space:nowrap !important;
+  text-align:center !important;
+  justify-self:stretch !important;
+  box-sizing:border-box !important;
+  padding:0 2px !important;
+}
+html.tsext-pro .tsext-bar-main .tsext-bar-name {
+  text-align:start !important;
+  justify-self:stretch !important;
+  padding-inline-start:6px !important;
+  font-weight:800 !important; color:var(--tsext-bright) !important;
+}
+html.tsext-pro .tsext-bar-main .tsext-bar-class {
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  font-size:var(--tsext-fs-xs) !important; font-weight:800 !important;
+  border-radius:var(--tsext-r-xs) !important; padding:2px 4px !important;
+}
+html.tsext-pro .tsext-bar-main .tsext-bar-profit {
+  font-weight:900 !important; font-size:var(--tsext-fs-base) !important;
+  padding-inline-end:4px !important;
+}
+html.tsext-pro .tsext-bar-main .tsext-bar-actions {
+  display:flex !important; align-items:center !important; justify-content:flex-end !important;
+  gap:4px !important; min-width:0 !important;
+}
+
+/* اسکرول همگام — فقط هدر overflow-y مخفی؛ بدنه باید عمودی اسکرول شود */
+html.tsext-pro #tsext-list-hdr {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: color-mix(in srgb, var(--tsext-border) 70%, transparent) transparent !important;
+}
+html.tsext-pro #tsext-list-body {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: color-mix(in srgb, var(--tsext-border) 70%, transparent) transparent !important;
+}
+html.tsext-pro #tsext-list-hdr::-webkit-scrollbar,
+html.tsext-pro #tsext-list-body::-webkit-scrollbar { height:7px; width:7px; }
+html.tsext-pro #tsext-list-hdr::-webkit-scrollbar-thumb,
+html.tsext-pro #tsext-list-body::-webkit-scrollbar-thumb { background:color-mix(in srgb, var(--tsext-border) 70%, transparent); border-radius:var(--tsext-r-pill); }
+
+/* --------------------------------------------------------------------------
+   v1.9.0 — کنتراست قوی‌تر سود/زیان در تم تیره و کنتراست
+   -------------------------------------------------------------------------- */
+html.tsext-pro #tsext-host[data-tsext-theme="dark"],
+html.tsext-pro[data-tsext-theme="dark"],
+html.tsext-pro .tsext-pro[data-tsext-theme="dark"] {
+  --tsext-green: #34d399 !important;
+  --tsext-red: #fb7185 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"],
+html.tsext-pro[data-tsext-theme="contrast"] {
+  --tsext-green: #4ade80 !important;
+  --tsext-red: #fb7185 !important;
+}
+
+/* اعداد سود/زیان در لیست و کارت‌ها — خوانایی بیشتر در تم تیره */
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-bar-profit.pos,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-cell .val.pos,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-hero-card.pos .h-val,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-verdict.pos,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-bar-delta.up {
+  color: #34d399 !important;
+  font-weight: 800;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-bar-profit.neg,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-cell .val.neg,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-hero-card.neg .h-val,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-verdict.neg,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-bar-delta.down {
+  color: #fb7185 !important;
+  font-weight: 800;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] .tsext-bar-profit.pos,
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] .tsext-cell .val.pos,
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] .tsext-hero-card.pos .h-val {
+  color: #4ade80 !important;
+  font-weight: 900;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] .tsext-bar-profit.neg,
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] .tsext-cell .val.neg,
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] .tsext-hero-card.neg .h-val {
+  color: #fb7185 !important;
+  font-weight: 900;
+}
+
+/* ---------- v1.11: نشان «سن داده» کنار جدول‌های سفارشات ---------- */
+html.tsext-pro .pr-age{
+  display:inline-block; font-size:var(--tsext-fs-xxs); font-weight:800; color:var(--tsext-muted);
+  background:color-mix(in srgb,var(--tsext-input) 70%,transparent);
+  border:1px solid color-mix(in srgb,var(--tsext-border) 60%,transparent);
+  border-radius:var(--tsext-r-pill); padding:1px 8px; margin:0 0 4px 6px; vertical-align:middle;
+  font-variant-numeric:tabular-nums; letter-spacing:.02em;
+}
+html.tsext-pro .pr-age:empty{ display:none; }
+html.tsext-pro .pr-age.is-fresh{
+  color:var(--tsext-green);
+  border-color:color-mix(in srgb,var(--tsext-green) 35%,transparent);
+  background:color-mix(in srgb,var(--tsext-green) 10%,transparent);
+}
+
+/* ---------- v1.11: تطبیق با ارتفاع (container query) — بدون اسکرول حتی در صفحه‌های کوتاه ---------- */
+html.tsext-pro #tsext-obpanel #tsext-obpanel-body{
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: var(--tsext-panel) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  container-type: size;
+  container-name: obbody;
+}
+@container obbody (max-height:660px){
+  #tsext-ob-calc .tsext-cell{ padding:5px 7px !important; }
+  #tsext-ob-calc .tsext-cell .val{ font-size:var(--tsext-fs-md) !important; }
+  #tsext-ob-calc .tsext-grid{ gap:6px !important; }
+  #tsext-ob-books .tsext-ob-table td,
+  #tsext-ob-books .tsext-ob-table th{ padding:3px 4px !important; font-size:var(--tsext-fs-xs) !important; }
+  #tsext-ob-books .tsext-ob-title{ margin:4px 0 !important; font-size:var(--tsext-fs-sm) !important; }
+}
+@container obbody (max-height:520px){
+  #tsext-ob-calc .tsext-cell{ padding:3px 5px !important; }
+  #tsext-ob-calc .tsext-cell .val{ font-size:var(--tsext-fs-sm) !important; }
+  #tsext-ob-calc .tsext-cell .lbl{ font-size:var(--tsext-fs-xxs) !important; }
+  #tsext-ob-books .tsext-ob-table td,
+  #tsext-ob-books .tsext-ob-table th{ padding:2px 3px !important; font-size:var(--tsext-fs-xs) !important; }
+  #tsext-ob-books .tsext-ob-title{ margin:2px 0 !important; font-size:var(--tsext-fs-xs) !important; }
+}
+
+/* =========================================================
+   v1.12 — سبک پنل کارگزاری: تایپوگرافی یک‌دست، پالت روشن دلچسب، جزییات چیدمان
+   ========================================================= */
+
+/* فونت وزیرمتن روی همهٔ کنترل‌ها + اعداد هم‌عرض (tabular) برای ستون‌های عددی */
+html.tsext-pro body.tsext-pro button,
+html.tsext-pro body.tsext-pro input,
+html.tsext-pro body.tsext-pro select,
+html.tsext-pro body.tsext-pro textarea{
+  font-family:'Vazirmatn',Tahoma,Arial,sans-serif !important;
+}
+html.tsext-pro .tsext-bar-cell,
+html.tsext-pro .tsext-col,
+html.tsext-pro #pr-clock,
+html.tsext-pro #pr-clock-sub,
+html.tsext-pro .tsext-ob-table td,
+html.tsext-pro .tsext-ob-table th,
+html.tsext-pro .tsext-cell .val,
+html.tsext-pro .pr-age{
+  font-variant-numeric:tabular-nums;
+}
+
+/* پالت روشن ایزی‌تریدر-مانند — هم‌تراز THEMES.light */
+html.tsext-pro #tsext-host[data-tsext-theme="light"]{
+  --tsext-bg:#f4f6f8;
+  --tsext-panel:#ffffff;
+  --tsext-panel2:#eef1f5;
+  --tsext-fg:#1e293b;
+  --tsext-bright:#0f172a;
+  --tsext-muted:#475569;
+  --tsext-border:#dde3ea;
+  --tsext-input:#ffffff;
+  --tsext-accent:#1565c0;
+  --tsext-green:#2e7d32;
+  --tsext-red:#c62828;
+  --tsext-orange:#ef6c00;
+  --tsext-shadow:0 4px 16px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-topbar{
+  background: #ffffff !important;
+  border-bottom: 1px solid #e1e6ee !important;
+  box-shadow: none !important;
+  background: #ffffff;
+  border-bottom: 1px solid var(--tsext-border);
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-list-body{
+  background:var(--tsext-bg) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-list-body .tsext-bar{
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,.06) !important;
+  box-shadow: none;
+}
+
+/* نوار بالا: ارتفاع و ریتم یک‌دست */
+html.tsext-pro #pr-topbar{
+  grid-area: pr-top;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: linear-gradient(180deg, color-mix(in srgb,var(--tsext-panel) 96%,var(--tsext-accent)), var(--tsext-panel));
+  border-bottom: var(--pr-line);
+  direction: rtl;
+  z-index: 10;
+  min-width: 0;
+  gap: 10px !important;
+  padding: 0 14px !important;
+  justify-content: space-between !important;
+  min-height: 46px;
+  gap: 10px;
+  padding-inline: 12px;
+}
+
+/* سرستون: نوار پس‌زمینهٔ ملایم + تایپوگرافی-muted */
+html.tsext-pro #tsext-list-hdr .tsext-cols{
+  display: grid !important;
+  grid-template-columns: var(--tsext-grid-cols) !important;
+  
+  row-gap: 0 !important;
+  
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  align-items: center !important;
+  justify-items: stretch !important;
+  background: transparent !important;
+  border: none !important;
+  background: color-mix(in srgb, var(--tsext-panel2) 85%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--tsext-border) 80%, transparent);
+}
+html.tsext-pro .tsext-col{ font-size:var(--tsext-fs-sm); font-weight:800; color:var(--tsext-muted); }
+html.tsext-pro .tsext-col.on{ color:var(--tsext-accent); }
+
+/* ردیف‌ها: کارت‌های مرتب با زبرا و هاور ملایم */
+
+html.tsext-pro #tsext-list-body .tsext-bar:nth-child(even){
+  background:color-mix(in srgb, var(--tsext-panel2) 60%, var(--tsext-panel)) !important;
+}
+html.tsext-pro #tsext-list-body .tsext-bar:hover{
+  transform: translateY(-1px) !important;
+  border-color: color-mix(in srgb,var(--tsext-accent) 40%,var(--tsext-border)) !important;
+  box-shadow: 0 6px 18px color-mix(in srgb,var(--tsext-accent) 10%,transparent), 0 1px 3px color-mix(in srgb,#000 6%,transparent) !important;
+  background: color-mix(in srgb, var(--tsext-accent) 6%, var(--tsext-panel)) !important;
+}
+
+/* پنل جزئیات: عنوان‌ها با نوار تأکید */
+html.tsext-pro .tsext-ob-title{
+  font-size:var(--tsext-fs-sm); font-weight:800; color:var(--tsext-muted);
+  border-inline-start:3px solid var(--tsext-accent); padding-inline-start:8px;
+}
+html.tsext-pro .tsext-cell{ border-radius:var(--tsext-r-sm); }
+
+/* ===== v1.13: جدول ثابت و دقیق — بدون ریسایز، بدون زوم ===== */
+html.tsext-pro .tsext-col-grip{ display:none !important; }
+html.tsext-pro .tsext-col[data-resize]{ cursor:default !important; padding-inline-end:0 !important; }
+html.tsext-pro #tsext-ob-zoom-dec, html.tsext-pro #tsext-ob-zoom-inc{ display:none !important; }
+
+/* ساعت: حذف شمارش معکوس «تا بازشدن» */
+html.tsext-pro #pr-clock-sub.is-closed{
+  color: #92400e;
+  background: color-mix(in srgb,var(--tsext-orange) 14%,transparent);
+  border: 1px solid color-mix(in srgb,var(--tsext-orange) 30%,transparent);
+  color: #9a3412 !important;
+  background: linear-gradient(135deg, color-mix(in srgb,var(--tsext-orange) 16%, transparent), color-mix(in srgb,var(--tsext-orange) 8%, transparent)) !important;
+  border: 1px solid color-mix(in srgb,var(--tsext-orange) 32%, transparent) !important;
+  display: none !important;
+}
+
+/* اعداد لیست قراردادها: هم‌اندازهٔ ستون سررسید (۱۰٫۵/۶۰۰/tabular) */
+/* اعداد پنل جزئیات و جداول سفارشات — همان فونت/وزن/tabular لیست */
+html.tsext-pro #tsext-ob-calc .tsext-cell .val,
+html.tsext-pro #tsext-ob-calc .tsext-hero-card .h-val,
+html.tsext-pro #tsext-ob-calc .tsext-price-basis,
+html.tsext-pro #tsext-ob-books .tsext-ob-slot,
+html.tsext-pro #tsext-ob-books table,
+html.tsext-pro #tsext-ob-books td,
+html.tsext-pro #tsext-ob-books th,
+html.tsext-pro #tsext-status,
+html.tsext-pro #tsext-updated,
+html.tsext-pro .tsext-compare-h {
+  font-size:var(--tsext-fs-xs) !important;
+  font-weight:600 !important;
+  font-variant-numeric:tabular-nums !important;
+  font-family:inherit !important;
+  letter-spacing:0 !important;
+}
+
+html.tsext-pro #tsext-list-body .tsext-bar-cell,
+html.tsext-pro #tsext-list-body .tsext-bar-class,
+html.tsext-pro #tsext-list-body .tsext-bar-profit,
+html.tsext-pro #tsext-list-body .tsext-bar-risk{
+  font-size:var(--tsext-fs-xs) !important; font-weight:600 !important; font-variant-numeric:tabular-nums;
+}
+
+/* رنگ ریسک = رنگ کلاس همان ردیف — v1.19 فیکس: A خیلی‌کم‌ریسک سبز پررنگ، B کم‌ریسک سبز کم‌رنگ */
+html.tsext-pro #tsext-host .tsext-bar[data-c="A"] .tsext-bar-risk{
+  color:var(--tsext-sw-A) !important;
+  background:color-mix(in srgb,var(--tsext-sw-A) 16%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-A) 38%,transparent) !important;
+}
+html.tsext-pro #tsext-host .tsext-bar[data-c="B"] .tsext-bar-risk{
+  color:var(--tsext-sw-B) !important;
+  background:color-mix(in srgb,var(--tsext-sw-B) 14%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-B) 34%,transparent) !important;
+}
+html.tsext-pro #tsext-host .tsext-bar[data-c="X"] .tsext-bar-risk{
+  color:var(--tsext-sw-X) !important;
+  background:color-mix(in srgb,var(--tsext-sw-X) 14%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-X) 34%,transparent) !important;
+}
+html.tsext-pro #tsext-host .tsext-bar[data-c="−B"] .tsext-bar-risk,
+html.tsext-pro #tsext-host .tsext-bar[data-c="-B"] .tsext-bar-risk,
+html.tsext-pro #tsext-host .tsext-bar[data-c="B-"] .tsext-bar-risk{
+  color:var(--tsext-sw-mB) !important;
+  background:color-mix(in srgb,var(--tsext-sw-mB) 14%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-mB) 34%,transparent) !important;
+}
+html.tsext-pro #tsext-host .tsext-bar[data-c="−A"] .tsext-bar-risk,
+html.tsext-pro #tsext-host .tsext-bar[data-c="-A"] .tsext-bar-risk,
+html.tsext-pro #tsext-host .tsext-bar[data-c="A-"] .tsext-bar-risk{
+  color:var(--tsext-sw-mA) !important;
+  background:color-mix(in srgb,var(--tsext-sw-mA) 16%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-mA) 38%,transparent) !important;
+}
+
+/* جدول‌های سفارشات: بدون افتادن اعداد روی هم (حتی با زوم مرورگر) */
+
+html.tsext-pro #tsext-ob-books .tsext-ob-table{ table-layout:auto !important; min-width:max-content; }
+html.tsext-pro #tsext-ob-books .tsext-ob-table td,
+html.tsext-pro #tsext-ob-books .tsext-ob-table th{ white-space:nowrap !important; }
+
+/* ===== v1.14 ===== */
+/* حذف «مشاهده در tsetmc» */
+html.tsext-pro .tsext-bar-open{ display:none !important; }
+
+/* یکدستی کامل اعداد اعمال/روزمانده/سود با سررسید و نماد */
+html.tsext-pro #tsext-list-body .tsext-bar-strike,
+html.tsext-pro #tsext-list-body .tsext-bar-days,
+html.tsext-pro #tsext-list-body .tsext-bar-profit{
+  font-size:var(--tsext-fs-xs) !important; font-weight:600 !important;
+  font-family:'Vazirmatn',Tahoma,Arial,sans-serif !important;
+  letter-spacing:0 !important; font-variant-numeric:tabular-nums;
+}
+html.tsext-pro #tsext-list-body .tsext-bar-strike,
+html.tsext-pro #tsext-list-body .tsext-bar-days{ color:var(--tsext-fg) !important; }
+
+/* افزودن نماد: سمت راست نوار (در RTL = ابتدای ردیف)، چیپ‌ها وسط، عنوان چپ */
+html.tsext-pro #pr-watchlist{
+  grid-area: pr-watch;
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: linear-gradient(180deg, color-mix(in srgb,var(--tsext-panel) 98%,var(--tsext-accent)), var(--tsext-panel));
+  border-bottom: var(--pr-line);
+  min-width: 0;
+  overflow: hidden;
+  gap: 12px;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 5px 12px !important;
+  direction: rtl !important;
+}
+/* RTL: اول = راست → دیدبان | افزودن | چیپ‌ها */
+
+html.tsext-pro #pr-watchlist .pr-wl-title{
+  font-size:var(--tsext-fs-md) !important;
+  font-weight:900 !important;
+  color:var(--tsext-accent) !important;
+  letter-spacing:0 !important;
+  white-space:nowrap !important;
+}
+html.tsext-pro #pr-watchlist .pr-wl-title::before{
+  content:'◈ ' !important;
+  font-size:var(--tsext-fs-sm) !important;
+}
+html.tsext-pro #pr-watchlist .pr-wl-sub{ display:none !important; }
+html.tsext-pro #pr-watchlist .pr-wl-add{
+  order:2 !important;
+  flex-shrink:0 !important;
+  margin:0 !important;
+}
+html.tsext-pro #pr-watchlist .pr-wl-chips{
+  order:3 !important;
+  flex:1 1 auto !important;
+  flex-basis:auto !important;
+  min-width:0 !important;
+}
+html.tsext-pro #pr-watchlist .pr-wl-add input{
+  width:90px !important;
+  font-size:var(--tsext-fs-sm) !important;
+}
+html.tsext-pro #pr-watchlist .pr-wl-add button{
+  white-space:nowrap !important;
+  font-size:var(--tsext-fs-xs) !important;
+  padding:4px 8px !important;
+}
+
+html.tsext-pro .tsext-bar-actions{ display:flex !important; justify-content:center !important; gap:4px; }
+
+/* ===== v1.17 ===== */
+html.tsext-pro #tsext-host[data-tsext-theme="dark"]{
+  --tsext-bg:#0f1419;
+  --tsext-panel:#1a222d;
+  --tsext-panel2:#151c26;
+  --tsext-fg:#c5cdd8;
+  --tsext-bright:#eef2f6;
+  --tsext-muted:#c5cdd8;
+  --tsext-border:#2a3444;
+  --tsext-input:#121820;
+  --tsext-accent:#2b7de9;
+  --tsext-green:#26a69a;
+  --tsext-red:#ef5350;
+  --tsext-orange:#ffa726;
+  --tsext-shadow:0 4px 16px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2);
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-topbar{
+  background:#1a222d;
+  border-bottom:1px solid var(--tsext-border);
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #tsext-list-body .tsext-bar{
+  box-shadow:none;
+}
+
+/* اسکلتون به‌جای «در حال دریافت…» */
+html.tsext-pro #tsext-ob-books .tsext-ob-slot.tsext-ob-loading{
+  color:transparent !important;
+  min-height:132px;
+  position:relative; overflow:hidden; border-radius:var(--tsext-r-md);
+  background:
+    repeating-linear-gradient(to bottom,
+      color-mix(in srgb, var(--tsext-border) 60%, transparent) 0 16px,
+      transparent 16px 34px);
+  background-size:92% auto; background-position:center 8px; background-repeat:no-repeat;
+}
+html.tsext-pro #tsext-ob-books .tsext-ob-slot.tsext-ob-loading::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--tsext-panel) 75%, transparent) 50%, transparent 70%);
+  animation:prShimmer 1.3s infinite;
+}
+@keyframes prShimmer{ from{ transform:translateX(-60%);} to{ transform:translateX(60%);} }
+
+/* چیپ سلامت لیست */
+
+html.tsext-pro .pr-list-age.is-stale{
+  color:var(--tsext-orange);
+  border-color:color-mix(in srgb, var(--tsext-orange) 40%, transparent);
+  background:color-mix(in srgb, var(--tsext-orange) 12%, transparent);
+}
+
+/* popover تنظیمات نمایش */
+html.tsext-pro #pr-prefs-btn{
+  font-size:var(--tsext-fs-sm); font-weight:800; padding:5px 12px; border-radius:var(--tsext-r-pill);
+  border:1px solid var(--tsext-border); background:var(--tsext-input); color:var(--tsext-muted); cursor:pointer;
+}
+html.tsext-pro #pr-prefs-pop{
+  display:none; position:absolute; top:44px; inset-inline-end:96px; z-index:60;
+  min-width:230px; padding:10px 12px; border-radius:var(--tsext-r-md);
+  background:var(--tsext-panel); border:1px solid var(--tsext-border);
+  box-shadow:0 12px 32px rgba(0,0,0,.18);
+  flex-direction:column; gap:8px;
+}
+html.tsext-pro #pr-prefs-pop.is-open{ display:flex; }
+html.tsext-pro #pr-prefs-pop .pr-pf-row{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-size:var(--tsext-fs-sm); font-weight:700; color:var(--tsext-fg);
+}
+html.tsext-pro #pr-prefs-pop label{ display:inline-flex; gap:4px; align-items:center; font-weight:600; color:var(--tsext-muted); }
+html.tsext-pro #pr-prefs-pop input[type="range"]{ width:110px; }
+
+/* v1.18 — توست خطا، پالس زنده، وضعیت آفلاین، بازنشانی تنظیمات */
+html.tsext-pro #pr-toasts{
+  position:fixed; bottom:18px; inset-inline-start:18px; z-index:2147483000;
+  display:flex; flex-direction:column; gap:8px; pointer-events:none;
+}
+html.tsext-pro .pr-toast{
+  font-family:Vazirmatn,Tahoma,sans-serif; font-size:var(--tsext-fs-md); font-weight:800; line-height:1.6;
+  color:#fff; background:color-mix(in srgb, var(--tsext-red,#dc2626) 86%, #000);
+  border:1px solid color-mix(in srgb, var(--tsext-red,#dc2626) 55%, #000);
+  padding:9px 14px; border-radius:var(--tsext-r-md); box-shadow:0 10px 28px rgba(0,0,0,.35);
+  animation:prToastIn .3s ease-out; transition:opacity .35s, transform .35s;
+}
+html.tsext-pro .pr-toast.is-ok{
+  background:color-mix(in srgb, var(--tsext-green,#15803d) 86%, #000);
+  border-color:color-mix(in srgb, var(--tsext-green,#15803d) 55%, #000);
+}
+html.tsext-pro .pr-toast.is-out{ opacity:0; transform:translateY(6px); }
+@keyframes prToastIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
+
+/* نقطهٔ پالس داخل چیپ سلامت لیست */
+html.tsext-pro .pr-list-age{
+  margin-inline-start: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+html.tsext-pro .pr-list-age .pr-dot{
+  width:6px; height:6px; border-radius:50%; flex:none;
+  background:var(--tsext-green,#16a34a); opacity:.35; transition:opacity .3s;
+}
+html.tsext-pro .pr-list-age.is-fresh .pr-dot{ opacity:1; }
+html.tsext-pro .pr-list-age.is-stale .pr-dot{ background:var(--tsext-orange,#b45309); opacity:.85; }
+html.tsext-pro .pr-list-age .pr-dot.is-pulse{ animation:prDotPulse .7s ease-out; }
+@keyframes prDotPulse{
+  0%{ opacity:1; box-shadow:0 0 0 0 color-mix(in srgb, var(--tsext-green,#16a34a) 60%, transparent); }
+  100%{ opacity:.35; box-shadow:0 0 0 7px transparent; }
+}
+
+/* دکمهٔ بازنشانی در popover نمایش */
+html.tsext-pro #pr-prefs-pop .pr-pf-act{
+  justify-content:flex-end; border-top:1px solid var(--tsext-border); padding-top:8px;
+}
+html.tsext-pro #pr-pf-reset{
+  font-family:inherit; font-size:var(--tsext-fs-sm); font-weight:800; padding:5px 12px; border-radius:var(--tsext-r-pill); cursor:pointer;
+  border:1px solid var(--tsext-border); background:var(--tsext-input); color:var(--tsext-muted);
+}
+html.tsext-pro #pr-pf-reset:hover{ color:var(--tsext-bright); border-color:var(--tsext-accent); }
+
+/* احترام به prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce){
+  html.tsext-pro #tsext-ob-books .tsext-ob-slot.tsext-ob-loading::after{ animation:none !important; }
+  html.tsext-pro .pr-list-age .pr-dot.is-pulse{ animation:none !important; opacity:1; }
+  html.tsext-pro .pr-toast{ animation:none !important; transition:none !important; }
+  html.tsext-pro .pr-mbar-dot{ animation:none !important; }
+}
+
+/* v1.19 — حذف پیام‌های اتصال/قطع (کاربر: روی اعصاب است) — چیپ و توست مخفی */
+html.tsext-pro #pr-list-age,
+html.tsext-pro #pr-toasts,
+html.tsext-pro .pr-list-age{ display:none !important; }
+
+/* سوییچ ارقام — جایگزین popover نمایش */
+html.tsext-pro #pr-digits-btn{
+  font-size:var(--tsext-fs-md) !important; font-weight:800 !important; font-variant-numeric:tabular-nums !important;
+  padding:4px 10px !important; border-radius:var(--tsext-r-sm) !important; cursor:pointer !important;
+  border:1px solid var(--tsext-border) !important;
+  background:color-mix(in srgb,var(--tsext-input) 90%,transparent) !important;
+  color:var(--tsext-bright) !important; font-family:inherit !important; min-width:42px !important;
+}
+html.tsext-pro #pr-digits-btn:hover{ border-color:var(--tsext-accent) !important; color:var(--tsext-accent) !important; }
+html.tsext-pro #pr-prefs-btn, html.tsext-pro #pr-prefs-pop{ display:none !important; }
+
+/* پرریسک = رنگ کلاس −B در همهٔ تم‌ها و جزئیات */
+html.tsext-pro #tsext-host .tsext-risk-high,
+html.tsext-pro #tsext-host .tsext-bar-risk.tsext-risk-high,
+html.tsext-pro #tsext-host .tsext-cell .val.tsext-risk-high,
+html.tsext-pro #tsext-host #tsext-ob-calc .tsext-cell .val.tsext-risk-high,
+html.tsext-pro #tsext-host .tsext-bar[data-c="−B"] .tsext-bar-risk,
+html.tsext-pro #tsext-host .tsext-bar[data-c="-B"] .tsext-bar-risk,
+html.tsext-pro #tsext-host .tsext-bar[data-c="B-"] .tsext-bar-risk {
+  color: var(--tsext-sw-mB) !important;
+}
+html.tsext-pro #tsext-host .tsext-risk-vhigh,
+html.tsext-pro #tsext-host .tsext-bar-risk.tsext-risk-vhigh,
+html.tsext-pro #tsext-host .tsext-cell .val.tsext-risk-vhigh,
+html.tsext-pro #tsext-host #tsext-ob-calc .tsext-cell .val.tsext-risk-vhigh {
+  color: var(--tsext-sw-mA) !important;
+}
+
+/* جدول سفارشات: فونت اعداد یکدست + همیشه ارتفاع ۵ سرخط */
+html.tsext-pro #tsext-ob-books .tsext-ob-table,
+html.tsext-pro .tsext-ob-table.tsext-ob-fixed5 {
+  table-layout: auto !important;
+  width: 100% !important;
+}
+html.tsext-pro #tsext-ob-books .tsext-ob-table td,
+html.tsext-pro #tsext-ob-books .tsext-ob-table th,
+html.tsext-pro #tsext-ob-books .tsext-ob-table .px-ask,
+html.tsext-pro #tsext-ob-books .tsext-ob-table .px-bid,
+html.tsext-pro #tsext-ob-books .tsext-ob-table .vol-txt,
+html.tsext-pro #tsext-ob-books .tsext-ob-foot {
+  font-size: var(--tsext-fs-xs) !important;
+  font-weight: 600 !important;
+  font-family: inherit !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: 0 !important;
+}
+
+
+html.tsext-pro #tsext-ob-books .tsext-ob-table .px-ask,
+html.tsext-pro #tsext-ob-books .tsext-ob-table .px-bid {
+  white-space: nowrap !important;
+  font-size: var(--tsext-fs-xs) !important;
+  font-weight: 600 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+html.tsext-pro #tsext-ob-books .tsext-ob-table tbody {
+  /* ۵ ردیف × ۲۴px = ۱۲۰px — ثابت */
+  height: 120px !important;
+}
+html.tsext-pro #tsext-ob-books .tsext-ob-table tbody tr.tsext-ob-row {
+  height: 24px !important;
+}
+html.tsext-pro #tsext-ob-books .tsext-ob-table tbody tr.tsext-ob-empty-row td {
+  opacity: 0.45;
+}
+
+
+/* ===== v1.20: وضعیت بازار، سلب‌مسئولیت، فشرده، اسکلتون، درباره ===== */
+html.tsext-pro #pr-market{
+  flex-shrink: 0;
+  font-size: var(--tsext-fs-sm);
+  font-weight: 900;
+  padding: 5px 12px;
+  border-radius: var(--tsext-r-pill);
+  white-space: nowrap;
+  border: 1px solid transparent;
+  letter-spacing: .01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--tsext-fs-sm) !important;
+  font-weight: 800 !important;
+  padding: 4px 10px !important;
+  border-radius: var(--tsext-r-pill) !important;
+  border: 1px solid var(--tsext-border) !important;
+  white-space: nowrap !important;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html.tsext-pro #pr-market.is-open{
+  color: #0a7a5a;
+  background: color-mix(in srgb,var(--tsext-green) 14%,transparent);
+  border-color: color-mix(in srgb,var(--tsext-green) 38%,transparent);
+  color: #166534 !important;
+  background: color-mix(in srgb,#22c55e 16%,transparent) !important;
+  border-color: color-mix(in srgb,#22c55e 40%,transparent) !important;
+}
+html.tsext-pro #pr-market.is-closed{
+  color: #b45309;
+  background: color-mix(in srgb,var(--tsext-orange) 12%,transparent);
+  border-color: color-mix(in srgb,var(--tsext-orange) 40%,transparent);
+  color: #9a3412 !important;
+  background: color-mix(in srgb,#f97316 12%,transparent) !important;
+  border-color: color-mix(in srgb,#f97316 30%,transparent) !important;
+}
+html.tsext-pro #pr-market.is-holiday{
+  color:#6b21a8 !important; background:color-mix(in srgb,#a855f7 14%,transparent) !important;
+  border-color:color-mix(in srgb,#a855f7 32%,transparent) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-market.is-open{ color:#86efac !important; }
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-market.is-closed{ color:#fdba74 !important; }
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-market.is-holiday{ color:#e9d5ff !important; }
+
+/* تراکم فشرده */
+
+/* اسکلتون */
+html.tsext-pro .tsext-skel-label{ color:var(--tsext-muted) !important; }
+html.tsext-pro .tsext-skel-row .sk{
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--tsext-border) 70%,transparent),
+    color-mix(in srgb,var(--tsext-muted) 22%,transparent),
+    color-mix(in srgb,var(--tsext-border) 70%,transparent)) !important;
+  background-size:200% 100% !important;
+}
+
+/* پس‌زمینه پرریسک = رنگ کلاس −B (لیست + جزئیات) */
+
+html.tsext-pro #tsext-host .tsext-cell .val.tsext-risk-high,
+html.tsext-pro #tsext-host #tsext-ob-calc .tsext-cell .val.tsext-risk-high,
+html.tsext-pro #tsext-host #tsext-obpanel-body .tsext-cell .val.tsext-risk-high {
+  color: var(--tsext-sw-mB) !important;
+  background: color-mix(in srgb, var(--tsext-sw-mB) 18%, transparent) !important;
+  border-color: color-mix(in srgb, var(--tsext-sw-mB) 36%, transparent) !important;
+}
+
+/* مرتب‌سازی فرم‌های جامپ/تیک: بدون بیرون‌زدگی + اسکرول قابل‌دسترس */
+html.tsext-pro #tsext-head{
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb,var(--tsext-border) 85%,transparent) transparent;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.tsext-pro #tsext-head .tsext-settings-body.open,
+html.tsext-pro #tsext-head .tsext-settings-body{
+  display:block !important;
+  max-height:none !important;
+  overflow:visible !important;
+  padding-bottom:8px !important;
+}
+
+html.tsext-pro #tsext-head .tsext-jamp-manual-grid .tsext-field .tsext-input,
+html.tsext-pro #tsext-head .tsext-settings-grid .tsext-field .tsext-input,
+html.tsext-pro #tsext-head .tsext-settings-grid .tsext-field .tsext-select{
+  width:100% !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+}
+html.tsext-pro #tsext-head .tsext-row{
+  flex-wrap:wrap !important;
+  gap:6px !important;
+}
+html.tsext-pro #tsext-head .tsext-row > .tsext-input,
+html.tsext-pro #tsext-head .tsext-row > .tsext-select{
+  min-width:0 !important;
+  flex:1 1 auto !important;
+}
+html.tsext-pro #tsext-head .tsext-tickmode-note{
+  word-break:break-word !important;
+  overflow-wrap:anywhere !important;
+  max-width:100% !important;
+}
+/* وقتی تنظیمات باز است، استیکی پایین مانع اسکرول نشود */
+html.tsext-pro #tsext-head > .tsext-row:has(#tsext-market-wrap){
+  margin-top: auto !important;
+  padding: 10px 14px 6px !important;
+  border-top: 1px solid color-mix(in srgb,var(--tsext-border) 55%,transparent);
+  flex-wrap: wrap;
+  gap: 6px;
+  position: sticky;
+  bottom: 0;
+  background: var(--tsext-panel);
+  z-index: 1;
+  position: relative !important;
+}
+
+/* SETTINGS SCROLL FIX — تیک‌سود و سایر استراتژی‌ها */
+html.tsext-pro body.tsext-pro #tsext-head,
+html.tsext-pro #tsext-head{
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  overscroll-behavior:contain !important;
+}
+html.tsext-pro #tsext-head .tsext-settings-body.open{
+  display:block !important;
+  max-height:none !important; /* اسکرول با خودِ سایدبار */
+  overflow:visible !important;
+  margin-bottom:12px !important;
+  padding-bottom:16px !important;
+}
+
+/* نوار پایین سایدبار دیگر sticky نباشد تا تنظیمات زیرش گیر نکند */
+html.tsext-pro #tsext-head > .tsext-row:has(#tsext-market-wrap),
+html.tsext-pro #tsext-head > .tsext-row:has(#tsext-status){
+  position:relative !important;
+  bottom:auto !important;
+}
+
+/* NO PRICE BOX — بدون کادر دور قیمت سفارشات */
+html.tsext-pro #tsext-ob-books .tsext-ob-table .px-ask,
+html.tsext-pro #tsext-ob-books .tsext-ob-table .px-bid,
+html.tsext-pro .tsext-ob-table .px-ask,
+html.tsext-pro .tsext-ob-table .px-bid,
+html.tsext-pro .tsext-ob-table tbody tr.tsext-ob-best .px-ask,
+html.tsext-pro .tsext-ob-table tbody tr.tsext-ob-best .px-bid{
+  background:transparent !important;
+  border:none !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  min-width:0 !important;
+  display:inline !important;
+}
+
+/* ===== v1.21 ظاهر: خلوت سایدبار + سلسله‌مراتب + فاصله یکدست ===== */
+html.tsext-pro #tsext-head .tsext-strategy-panel{
+  border: 1.5px solid color-mix(in srgb,var(--tsext-border) 70%,transparent) !important;
+  background: linear-gradient(180deg, var(--tsext-panel2), color-mix(in srgb,var(--tsext-panel2) 96%,var(--tsext-panel))) !important;
+  overflow: visible !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
+  margin: 6px 10px 8px !important;
+  padding: 10px 10px 8px !important;
+  border-radius: var(--tsext-r-md) !important;
+  box-shadow: 0 2px 10px color-mix(in srgb,#000 5%,transparent) !important;
+}
+
+html.tsext-pro #tsext-head .tsext-tickmode-note,
+html.tsext-pro #tsext-head .tsext-settings-hint{
+  font-size:var(--tsext-fs-xs) !important;
+  line-height:1.55 !important;
+  padding:6px 8px !important;
+  margin-top:6px !important;
+  border-radius:var(--tsext-r-sm) !important;
+  opacity:.92;
+}
+html.tsext-pro #tsext-head .tsext-input,
+html.tsext-pro #tsext-head .tsext-select{
+  font-size:var(--tsext-fs-md) !important;
+  padding:6px 8px !important;
+  border-radius:var(--tsext-r-sm) !important;
+}
+html.tsext-pro #tsext-head .tsext-mini{
+  font-size: var(--tsext-fs-xs) !important;
+  font-weight: 700 !important;
+  letter-spacing: .01em;
+}
+html.tsext-pro #tsext-head .tsext-settings-toggle{
+  display: none !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 8px !important;
+  font-size: var(--tsext-fs-sm) !important;
+  border-radius: var(--tsext-r-sm) !important;
+}
+
+/* سود / عدد اصلی لیست — یک پله برجسته‌تر */
+
+
+html.tsext-pro #tsext-list-body .tsext-bar-main{
+  display: grid !important;
+  grid-template-columns: var(--tsext-grid-cols) !important;
+  row-gap: 0 !important;
+  column-gap: 4px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  justify-items: stretch !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 7px 8px !important;
+}
+html.tsext-pro #tsext-list-hdr .tsext-cols{
+  column-gap: 4px !important;
+  padding: 6px 8px !important;
+}
+html.tsext-pro #tsext-list-body .tsext-bar{
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* شعاع و فاصله مشترک جزئیات */
+
+html.tsext-pro #tsext-ob-books .tsext-ob-slot{
+  border: 1.5px solid var(--tsext-border) !important;
+  background: var(--tsext-panel) !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 16px color-mix(in srgb,#000 6%,transparent), 0 1px 3px color-mix(in srgb,#000 4%,transparent) !important;
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-x: auto !important;
+  flex: 0 0 auto !important;
+  min-height: 0 !important;
+  border-radius: var(--tsext-r-md) !important;
+}
+
+/* ===== v1.21.1 نردبان تایپ یکدست ===== */
+html.tsext-pro #tsext-host{
+  --tsext-fs-base:13px;
+  --tsext-fs-md:12px;
+  --tsext-fs-sm:11px;
+  --tsext-fs-xs:10.5px;
+  --tsext-fs-xxs:9.5px;
+  --tsext-fs-lg:14px;
+  --tsext-fs-xl:15px;
+  font-size:var(--tsext-fs-base) !important;
+  line-height:1.55 !important;
+  font-family:"Vazirmatn","Segoe UI",Tahoma,Arial,sans-serif !important;
+}
+/* بدنه / دکمه‌های اصلی */
+html.tsext-pro #tsext-host .tsext-btn,
+html.tsext-pro #tsext-host [id^="tsext-go-"],
+html.tsext-pro #tsext-status{
+  font-size:var(--tsext-fs-base) !important;
+}
+/* ورودی‌ها و سلول‌های لیست */
+html.tsext-pro #tsext-head .tsext-input,
+html.tsext-pro #tsext-head .tsext-select,
+html.tsext-pro #tsext-list-body .tsext-bar-cell,
+html.tsext-pro #tsext-list-body .tsext-bar-name,
+html.tsext-pro #tsext-list-body .tsext-bar-strike,
+html.tsext-pro #tsext-list-body .tsext-bar-days,
+html.tsext-pro #tsext-list-body .tsext-bar-date,
+html.tsext-pro #tsext-list-body .tsext-bar-class{
+  font-size:var(--tsext-fs-md) !important;
+}
+/* تب‌ها، چیپ‌ها، راهنما */
+html.tsext-pro #tsext-tabs .tsext-tab,
+html.tsext-pro #tsext-head .tsext-modes-row .tsext-tab,
+html.tsext-pro #tsext-head .tsext-settings-toggle,
+html.tsext-pro #tsext-head .tsext-tickmode-note,
+html.tsext-pro #tsext-head .tsext-settings-hint,
+html.tsext-pro #pr-market,
+html.tsext-pro #pr-clock,
+html.tsext-pro #tsext-updated{
+  font-size:var(--tsext-fs-sm) !important;
+}
+/* برچسب فیلد و جدول سفارشات */
+html.tsext-pro #tsext-head .tsext-mini,
+html.tsext-pro #tsext-ob-books .tsext-ob-table td,
+html.tsext-pro #tsext-ob-books .tsext-ob-table th,
+html.tsext-pro #tsext-ob-books .tsext-ob-table .px-ask,
+html.tsext-pro #tsext-ob-books .tsext-ob-table .px-bid,
+html.tsext-pro #tsext-ob-calc .tsext-cell .lbl,
+html.tsext-pro #tsext-ob-calc .tsext-cell .val,
+html.tsext-pro #tsext-list-body .tsext-bar-risk{
+  font-size:var(--tsext-fs-xs) !important;
+}
+html.tsext-pro #tsext-list-hdr .tsext-col,
+html.tsext-pro #tsext-ob-books .tsext-ob-table th{
+  font-size:var(--tsext-fs-xxs) !important;
+}
+/* سود و مقادیر کلیدی */
+html.tsext-pro #tsext-list-body .tsext-bar-profit{
+  letter-spacing: -.01em !important;
+  font-size: var(--tsext-fs-xl) !important;
+  font-weight: 800 !important;
+}
+
+/* وزن یکدست اعداد */
+html.tsext-pro #tsext-list-body .tsext-bar-cell,
+html.tsext-pro #tsext-ob-calc .tsext-cell .val,
+html.tsext-pro #tsext-ob-books .tsext-ob-table td{
+  font-variant-numeric:tabular-nums !important;
+  font-feature-settings:"tnum" !important;
+}
+
+/* ===== v1.21.2 فرم و چیدمان ===== */
+html.tsext-pro #tsext-head .tsext-settings-grid{
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px 10px !important;
+  align-items: start !important;
+}
+html.tsext-pro #tsext-head .tsext-field{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:4px !important;
+  margin:0 !important;
+  min-width:0 !important;
+}
+html.tsext-pro #tsext-head .tsext-field > label,
+html.tsext-pro #tsext-head .tsext-mini{
+  font-size:var(--tsext-fs-xs, 10.5px) !important;
+  font-weight:700 !important;
+  color:var(--tsext-muted) !important;
+  line-height:1.3 !important;
+  margin:0 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+html.tsext-pro #tsext-head .tsext-field .tsext-input,
+html.tsext-pro #tsext-head .tsext-field .tsext-select{
+  width:100% !important;
+  min-height:32px !important;
+  box-sizing:border-box !important;
+}
+/* v1.25: فیلد پنهان (کارمزد در جامپ چالشی) باید بر display:flex بالا غلبه کند · برچسب چندخطی برای نام‌های بلند */
+html.tsext-pro #tsext-head .tsext-field.tsext-field-hidden{ display:none !important }
+html.tsext-pro #tsext-head .tsext-mini.tsext-mini-wrap{ white-space:normal !important; overflow:visible !important; text-overflow:clip !important }
+html.tsext-pro #tsext-head .tsext-settings-grid .tsext-field-wide{ grid-column:1 / -1 !important }
+html.tsext-pro #tsext-head .tsext-modes-row{
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 3px !important;
+  padding: 2px !important;
+  margin-top: 6px !important;
+  border-radius: var(--tsext-r-sm) !important;
+}
+html.tsext-pro #tsext-head .tsext-modes-row .tsext-tab{
+  flex: 1 1 calc(50% - 4px) !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-weight: 700 !important;
+  min-height: 26px !important;
+  padding: 3px 5px !important;
+  font-size: var(--tsext-fs-sm, 11px) !important;
+  border-radius: var(--tsext-r-sm) !important;
+  line-height: 1.25 !important;
+}
+html.tsext-pro #tsext-head .tsext-strategy-panel > .tsext-row{
+  margin-top: 6px !important;
+  gap: 6px !important;
+}
+html.tsext-pro #tsext-head .tsext-input::placeholder,
+html.tsext-pro #tsext-head .tsext-select{
+  text-overflow:ellipsis;
+}
+html.tsext-pro #tsext-head .tsext-jamp-manual-grid{
+  margin-top:6px !important;
+  gap:8px 10px !important;
+}
+
+/* ==========================================================================
+   بهبودهای ۱.۲۱.۳ — خوانایی پنل جزئیات + tabular-nums یکدست + هشدار نقدشوندگی
+   ========================================================================== */
+
+/* --- tabular-nums یکدست روی همه اعداد --- */
+html.tsext-pro .tsext-num,
+html.tsext-pro .tsext-input.tsext-num,
+html.tsext-pro .tsext-bar .tsext-profit,
+html.tsext-pro .tsext-bar .tsext-strike,
+html.tsext-pro .tsext-bar .tsext-days,
+html.tsext-pro .tsext-bar .tsext-date,
+html.tsext-pro .tsext-cell .val,
+html.tsext-pro .tsext-hero-card .h-val,
+html.tsext-pro .tsext-sum-card .s-val,
+html.tsext-pro .tsext-ob-table td,
+html.tsext-pro .tsext-ob-table th,
+html.tsext-pro #pr-clock,
+html.tsext-pro .pr-mbar-val,
+html.tsext-pro .tsext-live-age,
+html.tsext-pro [data-num],
+html.tsext-pro .tsext-price,
+html.tsext-pro .tsext-vol {
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: "tnum" 1 !important;
+}
+
+/* --- پنل جزئیات خلوت‌تر و خواناتر --- */
+html.tsext-pro #tsext-obpanel .tsext-obpanel-head {
+  cursor: default !important;
+  background: linear-gradient(135deg, color-mix(in srgb,var(--tsext-panel2) 95%,var(--tsext-accent)), var(--tsext-panel2)) !important;
+  border-bottom: var(--pr-line) !important;
+  box-shadow: inset 3px 0 0 var(--tsext-accent) !important;
+  flex-shrink: 0;
+  padding: 10px 12px !important;
+}
+html.tsext-pro #tsext-obpanel #tsext-obpanel-title {
+  font-weight: 900 !important;
+  letter-spacing: .01em;
+  font-size: var(--tsext-fs-base) !important;
+  line-height: 1.35 !important;
+}
+html.tsext-pro #tsext-ob-calc {
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb,var(--tsext-border) 85%,transparent) transparent;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  min-height: 0 !important;
+  border-left: none !important;
+  border-inline-end: 2px solid var(--tsext-border) !important;
+  padding: 8px 10px !important;
+}
+html.tsext-pro #tsext-ob-calc .tsext-cell {
+  background: color-mix(in srgb,var(--tsext-input) 65%,transparent) !important;
+  border: 1px solid color-mix(in srgb,var(--tsext-border) 55%,transparent) !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  border-radius: var(--tsext-r-sm) !important;
+  padding: 4px 0 !important;
+  gap: 1px !important;
+}
+html.tsext-pro #tsext-ob-calc .tsext-cell .lbl {
+  color: var(--tsext-muted) !important;
+  font-size: var(--tsext-fs-xs) !important;
+  font-weight: 600 !important;
+  opacity: 0.85;
+  letter-spacing: 0;
+}
+html.tsext-pro #tsext-ob-calc .tsext-cell .val {
+  font-size: var(--tsext-fs-sm) !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+}
+html.tsext-pro #tsext-ob-calc .tsext-hero {
+  margin: 0 0 6px !important;
+  margin-bottom: 8px !important;
+  gap: 6px !important;
+}
+html.tsext-pro #tsext-ob-calc .tsext-hero-card {
+  padding: 8px 10px !important;
+  border-radius: var(--tsext-r-md) !important;
+}
+html.tsext-pro #tsext-ob-calc .tsext-hero-card .h-lbl {
+  font-weight: 800 !important;
+  font-size: var(--tsext-fs-xxs) !important;
+  margin-bottom: 2px !important;
+}
+html.tsext-pro #tsext-ob-calc .tsext-hero-card .h-val {
+  letter-spacing: -.02em !important;
+  font-weight: 800 !important;
+  font-size: var(--tsext-fs-lg) !important;
+  line-height: 1.25 !important;
+}
+
+/* جدول سفارشات فشرده‌تر و ثابت‌تر */
+html.tsext-pro #tsext-ob-books .tsext-ob-title {
+  background: linear-gradient(135deg, color-mix(in srgb,var(--tsext-panel2) 92%,var(--tsext-accent)), var(--tsext-panel2)) !important;
+  border-bottom: 1.5px solid var(--tsext-border) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: var(--tsext-fs-xs) !important;
+  padding: 6px 8px !important;
+  font-weight: 800 !important;
+}
+html.tsext-pro #tsext-ob-books .tsext-ob-table th {
+  background: color-mix(in srgb,var(--tsext-panel2) 85%,transparent) !important;
+  letter-spacing: .02em;
+  font-weight: 700 !important;
+  font-size: var(--tsext-fs-xxs) !important;
+  padding: 4px 3px !important;
+  height: 22px !important;
+}
+html.tsext-pro #tsext-ob-books .tsext-ob-table td {
+  font-weight: 800 !important;
+  font-size: var(--tsext-fs-xs) !important;
+  padding: 2px 3px !important;
+  height: 22px !important;
+  font-variant-numeric: tabular-nums !important;
+}
+html.tsext-pro #tsext-ob-books .tsext-ob-empty,
+html.tsext-pro #tsext-ob-books .tsext-ob-loading {
+  font-size: var(--tsext-fs-xs) !important;
+  padding: 8px 6px !important;
+}
+
+/* هشدار نقدشوندگی / ریسک اعمال (چیپ‌های کوچک) */
+
+html.tsext-pro .tsext-liq-warn {
+  background: color-mix(in srgb, #f59e0b 18%, transparent);
+  color: #b45309;
+  border: 1px solid color-mix(in srgb, #f59e0b 35%, transparent);
+}
+html.tsext-pro .tsext-exer-warn {
+  background: color-mix(in srgb, #ef4444 14%, transparent);
+  color: #b91c1c;
+  border: 1px solid color-mix(in srgb, #ef4444 30%, transparent);
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-liq-warn {
+  background: color-mix(in srgb, #f59e0b 22%, transparent);
+  color: #fbbf24;
+  border-color: color-mix(in srgb, #f59e0b 40%, transparent);
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-exer-warn {
+  background: color-mix(in srgb, #ef4444 20%, transparent);
+  color: #fca5a5;
+  border-color: color-mix(in srgb, #ef4444 35%, transparent);
+}
+
+/* ریسپانسیو کوچک‌تر: جزئیات خلوت‌تر */
+@media (max-width: 1150px) {
+  html.tsext-pro #tsext-ob-calc .tsext-cell .lbl { font-size: var(--tsext-fs-xxs) !important; }
+  html.tsext-pro #tsext-ob-calc .tsext-cell .val { font-size: var(--tsext-fs-xs) !important; }
+  html.tsext-pro #tsext-ob-calc .tsext-hero-card .h-val { font-size: var(--tsext-fs-base) !important; }
+  html.tsext-pro #tsext-ob-books .tsext-ob-table th { font-size: var(--tsext-fs-xxs) !important; }
+  html.tsext-pro #tsext-ob-books .tsext-ob-table td { font-size: var(--tsext-fs-xxs) !important; height: 20px !important; }
+}
+@media (max-width: 900px) {
+  html.tsext-pro #tsext-obpanel .tsext-obpanel-head { padding: 8px 10px !important; }
+  html.tsext-pro #tsext-ob-calc { padding: 6px 8px !important; }
+  html.tsext-pro #tsext-ob-calc .tsext-hero-card { padding: 6px 8px !important; }
+}
+
+/* ---------- visibility fix: اعداد کامل دیده شوند ---------- */
+html.tsext-pro .tsext-ob-table {
+  table-layout: auto !important;
+}
+html.tsext-pro .tsext-ob-table td,
+html.tsext-pro .tsext-ob-table th {
+  white-space: nowrap !important;
+}
+html.tsext-pro .tsext-ob-table .px-ask,
+html.tsext-pro .tsext-ob-table .px-bid {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  max-width: none !important;
+}
+html.tsext-pro .tsext-bar-profit,
+html.tsext-pro .tsext-bar-cell.tsext-bar-profit {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  min-width: 4.5em !important;
+}
+html.tsext-pro #tsext-ob-books .tsext-ob {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+/* ========== سود ماهانه لیست قراردادها — کامل و خوانا ========== */
+
+
+html.tsext-pro #tsext-list-body .tsext-bar {
+  box-shadow: 0 1px 3px color-mix(in srgb,#000 4%,transparent) !important;
+  transition: border-color .15s, box-shadow .15s, background .15s, transform .08s !important;
+  display: block !important;
+  background: var(--tsext-panel) !important;
+  border: 1.5px solid color-mix(in srgb, var(--tsext-border) 55%, transparent) !important;
+  box-sizing: border-box !important;
+  margin-block: 3px;
+  border-radius: var(--tsext-r-md);
+  border-radius: var(--tsext-r-md) !important;
+  margin-bottom: 5px !important;
+  overflow: visible !important;
+}
+html.tsext-pro #tsext-list-body .tsext-bar-profit,
+html.tsext-pro #tsext-list-body .tsext-bar-cell.tsext-bar-profit,
+html.tsext-pro .tsext-bar-profit,
+html.tsext-pro .tsext-bar-cell.tsext-bar-profit {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  max-width: none !important;
+  min-width: 4.8em !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 900 !important;
+  box-sizing: border-box !important;
+}
+
+/* ========== ستون ریسک + برچسب کم‌عمق — کامل دیده شود ========== */
+html.tsext-pro {
+  /* لیست جمع‌وجور و متناسب — فاصلهٔ ستون‌ها کم */
+  --tsext-col-class: 34px;
+  --tsext-col-name: 120px;
+  --tsext-col-strike: 56px;
+  --tsext-col-days: 40px;
+  --tsext-col-date: 72px;
+  --tsext-col-risk: 92px;
+  --tsext-col-profit: 84px;
+  --tsext-col-actions: 70px;
+  --tsext-row-pad: 8px;
+  --tsext-grid-gap: 4px;
+  --tsext-grid-cols: 4px
+      var(--tsext-col-class)
+      minmax(72px, 1.15fr)
+      var(--tsext-col-strike)
+      var(--tsext-col-days)
+      var(--tsext-col-date)
+      var(--tsext-col-risk)
+      var(--tsext-col-profit)
+      var(--tsext-col-actions);
+  --tsext-grid-cols-narrow: 4px 28px minmax(0,1.2fr) 48px 36px 64px 80px 72px 64px;
+}
+html.tsext-pro #tsext-list-hdr .tsext-cols,
+html.tsext-pro #tsext-list-body .tsext-bar-main {
+  grid-template-columns: var(--tsext-grid-cols) !important;
+}
+html.tsext-pro #tsext-list-body .tsext-bar-risk,
+html.tsext-pro .tsext-bar-risk,
+html.tsext-pro .tsext-bar-main .tsext-bar-risk {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  max-width: none !important;
+  min-width: 5.5em !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: nowrap !important;
+  gap: 3px !important;
+}
+
+
+/* ===== v1.21.4 — ستون «ریسک» و «سود ماهانه»: بدون هم‌پوشانی ===== */
+/* عرض هر دو ستون بیشتر شد (ریسک 204px · سود 152px) و فاصلهٔ ستون‌ها 10px شد.
+   ضمناً هیچ سلولی از عرض ستون خودش بیرون نمی‌زند: اگر جا کم بیاید متن ریسک
+   به خط دوم می‌رود به‌جای افتادن روی ستون سود ماهانه. */
+html.tsext-pro #tsext-list-body .tsext-bar-main .tsext-bar-risk,
+html.tsext-pro #tsext-list-hdr .tsext-cols .tsext-bar-risk{
+  max-width:100% !important;
+  white-space:normal !important;
+  flex-wrap:wrap !important;
+  row-gap:2px !important;
+  column-gap:3px !important;
+  line-height:1.35 !important;
+  text-align:center !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+}
+html.tsext-pro #tsext-list-body .tsext-bar-main .tsext-bar-profit,
+html.tsext-pro #tsext-list-hdr .tsext-cols .tsext-bar-profit{
+  max-width:100% !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  white-space:nowrap !important;
+}
+html.tsext-pro .tsext-liq-warn,
+html.tsext-pro .tsext-exer-warn{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--tsext-fs-xxs);
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--tsext-r-xs);
+  line-height: 1.3;
+  margin-inline-start: 4px;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  flex-shrink: 0 !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+
+  /* ================= v1.21.5 — قفل هم‌ترازی سرستون‌ها با ستون‌ها ================= */
+  /* الف) ظرف هدر و بدنه: عرض داخلی دقیقاً یکسان (جبران اسکرول‌بار عمودی بدنه) */
+  html.tsext-pro #tsext-host #tsext-list-hdr,
+  html.tsext-pro #tsext-host #tsext-list-body{
+    padding-inline-start:12px !important;
+    padding-inline-end:12px !important;
+    box-sizing:border-box !important;
+    overflow-x:auto !important;
+  }
+  html.tsext-pro #tsext-host #tsext-list-hdr{
+    padding-inline-end:calc(12px + var(--tsext-sbw, 0px)) !important;
+  }
+  /* ب) ردیف هدر و ردیف داده: بردر/مارجین/پدینگ یکسان */
+  html.tsext-pro #tsext-host .tsext-cols,
+  html.tsext-pro #tsext-host #tsext-list-body .tsext-bar{
+    margin-inline:0 !important;
+    border-width:1px !important;
+    border-style:solid !important;
+    box-sizing:border-box !important;
+  }
+  html.tsext-pro #tsext-host .tsext-cols,
+  html.tsext-pro #tsext-host .tsext-bar-main{
+    display:grid !important;
+    grid-template-columns:var(--tsext-grid-cols) !important;
+    column-gap:var(--tsext-grid-gap) !important;
+    padding-inline:11px !important;
+    margin-inline:0 !important;
+    align-items:center !important;
+    box-sizing:border-box !important;
+  }
+  /* ج) سلول‌های هدر: پدینگ نامتقارن حذف شد (دستگیرهٔ تغییر عرض absolute است و جا نمی‌گیرد) */
+  html.tsext-pro #tsext-host .tsext-cols .tsext-col,
+  html.tsext-pro #tsext-host .tsext-cols .tsext-col[data-resize]{
+    padding-inline:0 !important;
+    margin-inline:0 !important;
+    text-align:center !important;
+    justify-content:center !important;
+  }
+  html.tsext-pro #tsext-host .tsext-col-grip{
+    position:absolute !important;
+    inset-inline-end:-5px !important;
+    width:10px !important;
+  }
+  /* د) تراز هر ستون: هدر و بدنه دقیقاً یک رفتار */
+  html.tsext-pro #tsext-host .tsext-cols .tsext-cols-strip,
+  html.tsext-pro #tsext-host .tsext-bar-main .tsext-bar-strip{ justify-self:stretch !important; }
+
+  html.tsext-pro #tsext-host .tsext-cols .tsext-bar-name,
+  html.tsext-pro #tsext-host .tsext-bar-main .tsext-bar-name{
+    justify-self:stretch !important;
+    text-align:start !important;
+    justify-content:flex-start !important;
+    padding-inline-start:6px !important;
+    padding-inline-end:0 !important;
+  }
+  html.tsext-pro #tsext-host .tsext-cols .tsext-bar-strike,
+  html.tsext-pro #tsext-host .tsext-bar-main .tsext-bar-strike,
+  html.tsext-pro #tsext-host .tsext-cols .tsext-bar-days,
+  html.tsext-pro #tsext-host .tsext-bar-main .tsext-bar-days,
+  html.tsext-pro #tsext-host .tsext-cols .tsext-bar-date,
+  html.tsext-pro #tsext-host .tsext-bar-main .tsext-bar-date{
+    justify-self:stretch !important;
+    text-align:center !important;
+    justify-content:center !important;
+    padding-inline:0 !important;
+    margin-inline:0 !important;
+  }
+  html.tsext-pro #tsext-host .tsext-cols .tsext-cols-class,
+  html.tsext-pro #tsext-host .tsext-bar-main .tsext-bar-class,
+  html.tsext-pro #tsext-host .tsext-cols .tsext-bar-risk,
+  html.tsext-pro #tsext-host .tsext-bar-main .tsext-bar-risk,
+  html.tsext-pro #tsext-host .tsext-cols .tsext-bar-profit,
+  html.tsext-pro #tsext-host .tsext-bar-main .tsext-bar-profit{
+    justify-self:center !important;
+    margin-inline:0 !important;
+    text-align:center !important;
+  }
+  html.tsext-pro #tsext-host .tsext-cols .tsext-cols-actions,
+  html.tsext-pro #tsext-host .tsext-bar-main .tsext-bar-actions{
+  justify-self: stretch !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 0 !important;
+  padding-inline: 0 !important;
+  margin-inline: 0 !important;
+  text-align: center !important;
+}
+
+/* ===== جزئیات + لیست: ریسک = رنگ و پس‌زمینه کلاس (اولویت نهایی) ===== */
+html.tsext-pro #tsext-ob-calc .tsext-cell .val[class*="tsext-risk-"],
+html.tsext-pro #tsext-obpanel-body .tsext-cell .val[class*="tsext-risk-"]{
+  display:inline-block !important;
+  padding:2px 8px !important;
+  border-radius:6px !important;
+  border:1px solid transparent !important;
+  font-weight:800 !important;
+}
+html.tsext-pro #tsext-host #tsext-ob-calc .tsext-cell .val.tsext-risk-vlow,
+html.tsext-pro #tsext-host #tsext-obpanel-body .tsext-cell .val.tsext-risk-vlow{
+  color:var(--tsext-sw-A) !important;
+  background:color-mix(in srgb,var(--tsext-sw-A) 22%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-A) 42%,transparent) !important;
+}
+html.tsext-pro #tsext-host #tsext-ob-calc .tsext-cell .val.tsext-risk-low,
+html.tsext-pro #tsext-host #tsext-obpanel-body .tsext-cell .val.tsext-risk-low{
+  color:var(--tsext-sw-B) !important;
+  background:color-mix(in srgb,var(--tsext-sw-B) 22%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-B) 42%,transparent) !important;
+}
+html.tsext-pro #tsext-host #tsext-ob-calc .tsext-cell .val.tsext-risk-mid,
+html.tsext-pro #tsext-host #tsext-obpanel-body .tsext-cell .val.tsext-risk-mid{
+  color:var(--tsext-sw-X) !important;
+  background:color-mix(in srgb,var(--tsext-sw-X) 22%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-X) 42%,transparent) !important;
+}
+html.tsext-pro #tsext-host #tsext-ob-calc .tsext-cell .val.tsext-risk-high,
+html.tsext-pro #tsext-host #tsext-obpanel-body .tsext-cell .val.tsext-risk-high{
+  color:var(--tsext-sw-mB) !important;
+  background:color-mix(in srgb,var(--tsext-sw-mB) 22%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-mB) 42%,transparent) !important;
+}
+html.tsext-pro #tsext-host #tsext-ob-calc .tsext-cell .val.tsext-risk-vhigh,
+html.tsext-pro #tsext-host #tsext-obpanel-body .tsext-cell .val.tsext-risk-vhigh{
+  color:var(--tsext-sw-mA) !important;
+  background:color-mix(in srgb,var(--tsext-sw-mA) 22%,transparent) !important;
+  border-color:color-mix(in srgb,var(--tsext-sw-mA) 42%,transparent) !important;
+}
+html.tsext-pro #tsext-host .tsext-bar-risk.tsext-risk-vlow{ color:var(--tsext-sw-A) !important; background:color-mix(in srgb,var(--tsext-sw-A) 22%,transparent) !important; }
+html.tsext-pro #tsext-host .tsext-bar-risk.tsext-risk-low{ color:var(--tsext-sw-B) !important; background:color-mix(in srgb,var(--tsext-sw-B) 22%,transparent) !important; }
+html.tsext-pro #tsext-host .tsext-bar-risk.tsext-risk-mid{ color:var(--tsext-sw-X) !important; background:color-mix(in srgb,var(--tsext-sw-X) 22%,transparent) !important; }
+html.tsext-pro #tsext-host .tsext-bar-risk.tsext-risk-high,
+html.tsext-pro #tsext-host .tsext-bar[data-c="−B"] .tsext-bar-risk,
+html.tsext-pro #tsext-host .tsext-bar[data-c="-B"] .tsext-bar-risk{
+  border-radius: var(--tsext-r-pill) !important;
+  padding: 3px 7px !important;
+  color: var(--tsext-sw-mB) !important;
+  background: color-mix(in srgb,var(--tsext-sw-mB) 22%,transparent) !important;
+}
+html.tsext-pro #tsext-host .tsext-bar-risk.tsext-risk-vhigh,
+html.tsext-pro #tsext-host .tsext-bar[data-c="−A"] .tsext-bar-risk,
+html.tsext-pro #tsext-host .tsext-bar[data-c="-A"] .tsext-bar-risk{
+  color:var(--tsext-sw-mA) !important;
+  background:color-mix(in srgb,var(--tsext-sw-mA) 22%,transparent) !important;
+}
+
+/* ===== دیدبان + افزودن نماد پایه — وضوح و برجستگی ===== */
+html.tsext-pro #pr-watchlist .pr-wl-title,
+html.tsext-pro .pr-wl-title {
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  color: var(--tsext-accent) !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.2 !important;
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--tsext-accent) 12%, transparent);
+}
+html.tsext-pro #pr-watchlist .pr-wl-title::before,
+html.tsext-pro .pr-wl-title::before {
+  content: '◈ ' !important;
+  font-size: 14px !important;
+  color: var(--tsext-accent) !important;
+  font-weight: 900 !important;
+  opacity: 1 !important;
+}
+html.tsext-pro #pr-watchlist .pr-wl-head {
+  order: 1 !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 3px 8px !important;
+  border-radius: 8px !important;
+  background: color-mix(in srgb, var(--tsext-accent) 10%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--tsext-accent) 28%, transparent) !important;
+}
+
+/* دکمه افزودن — متن همیشه سفید و خوانا */
+html.tsext-pro #pr-wl-add-btn,
+html.tsext-pro #pr-watchlist .pr-wl-add button,
+html.tsext-pro .pr-wl-add #pr-wl-add-btn {
+  color: #ffffff !important;
+  background: var(--tsext-accent) !important;
+  background-image: none !important;
+  font-weight: 900 !important;
+  font-size: 12px !important;
+  border: none !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,.18);
+}
+html.tsext-pro #pr-wl-add-btn:hover,
+html.tsext-pro #pr-watchlist .pr-wl-add button:hover {
+  color: #ffffff !important;
+  filter: brightness(1.08) saturate(1.12);
+}
+
+/* تم روشن: اکسنت تیره‌تر برای خوانایی دکمه و عنوان */
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-watchlist .pr-wl-title,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .pr-wl-title {
+  color: #1d4ed8 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-watchlist .pr-wl-title::before,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .pr-wl-title::before {
+  color: #1d4ed8 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-watchlist .pr-wl-head {
+  background: color-mix(in srgb, #1d4ed8 12%, #ffffff) !important;
+  border-color: color-mix(in srgb, #1d4ed8 35%, #e2e8f0) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-wl-add-btn,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-watchlist .pr-wl-add button {
+  color: #ffffff !important;
+  background: #1d4ed8 !important;
+  background-image: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+}
+
+/* v1.24: زوم ذخیره‌شدهٔ قدیمی در حالت PRO همیشه خنثی (به‌جای تایمر ۶۰۰ms در pro.js) */
+html.tsext-pro #tsext-obpanel-body, html.tsext-pro #tsext-list { zoom: 1 !important; }
+/* v1.24: دکمهٔ پشتیبان در نوار ابزار PRO */
+html.tsext-pro #pr-tools #tsext-backup-btn { margin-inline-start: 4px; }
+html.tsext-pro #tsext-backup-menu { font-family: inherit; }
+
+/* v1.28.1 — وضعیت بازار کنار عنوان «استراتژی‌های معاملاتی» (یک ردیف کمتر) */
+html.tsext-pro #pr-side-caption{
+  flex-shrink: 0;
+  padding: 13px 14px 11px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  font-size: var(--tsext-fs-sm);
+  font-weight: 900;
+  color: var(--tsext-bright);
+  letter-spacing: .02em;
+  background: var(--tsext-panel);
+  border-bottom: 1px solid color-mix(in srgb,var(--tsext-border) 70%,transparent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: saturate(1.2);
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+html.tsext-pro #pr-side-caption #tsext-market-wrap{
+  margin:0 !important; margin-inline-start:auto !important; flex-shrink:0;
+  font-size:var(--tsext-fs-xs) !important; font-weight:700; white-space:nowrap;
+}
+/* ردیف بازار اگر چیزی جز چیپ‌های خالی نداشت، دیگر جا نگیرد */
+html.tsext-pro #tsext-head > #tsext-market-row:not(:has(#tsext-updated:not(:empty))):not(:has(#tsext-errbadge:not(:empty))){
+  display:none !important;
+}
+
+/* v1.29: آیکون عنوان کناری (قبلاً inline توسط pro.js) */
+html.tsext-pro #pr-side-caption .tsext-cap-icon{ color:var(--tsext-accent) }
+
+
+/* تب‌های استراتژی: کارت‌های جدا با فاصلهٔ واضح */
+html.tsext-pro #tsext-tabs{
+  
+  
+  flex-wrap: nowrap !important;
+  
+  width: 100% !important;
+  overflow: visible !important;
+  
+  box-sizing: border-box !important;
+}
+html.tsext-pro #tsext-tabs .tsext-tab{
+  
+  flex: 0 0 auto !important;
+  text-align: right !important;
+  white-space: normal !important;
+
+}
+html.tsext-pro #tsext-head > .tsext-row:has(#tsext-tabs){
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+/* پشتیبان حذف شد */
+html.tsext-pro #tsext-backup-btn,
+#tsext-backup-btn,
+#tsext-backup-menu{ display:none !important; }
+
+/* list/detail clip fix — لیست زیر جزئیات نرود */
+html.tsext-pro #tsext-list,
+html.tsext-pro #tsext-list-body,
+html.tsext-pro #pr-list {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}
+html.tsext-pro #tsext-obpanel {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+html.tsext-pro body.tsext-pro #tsext-host {
+  --pr-side-w: 300px;
+  --pr-detail-w: 600px;
+}
+
+
+/* =========================================================
+   contrast-fix — دکمه‌های اکشن و متن در هر سه تم
+   ========================================================= */
+
+/* دکمه افزودن نماد پایه — همیشه متن سفید روی پس‌زمینهٔ اکسنت */
+html.tsext-pro #pr-wl-add-btn,
+html.tsext-pro #pr-watchlist .pr-wl-add button,
+html.tsext-pro .pr-wl-add button,
+html.tsext-pro button#pr-wl-add-btn,
+html.tsext-pro body.tsext-pro #pr-wl-add-btn {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #4f46e5 !important;
+  background-image: linear-gradient(135deg, #4f46e5, #6366f1) !important;
+  border: none !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  font-weight: 900 !important;
+}
+html.tsext-pro #pr-wl-add-btn:hover,
+html.tsext-pro #pr-watchlist .pr-wl-add button:hover,
+html.tsext-pro .pr-wl-add button:hover {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #4338ca !important;
+  background-image: linear-gradient(135deg, #4338ca, #4f46e5) !important;
+  filter: none !important;
+}
+
+/* تم روشن: اکسنت تیره‌تر برای کنتراست بهتر */
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-wl-add-btn,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-watchlist .pr-wl-add button,
+html.tsext-pro body.tsext-pro[data-tsext-theme="light"] #pr-wl-add-btn,
+html.tsext-pro body[data-tsext-theme="light"] #pr-wl-add-btn {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #1d4ed8 !important;
+  background-image: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-wl-add-btn:hover,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-watchlist .pr-wl-add button:hover {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #1e40af !important;
+  background-image: none !important;
+}
+
+/* تم تیره / کنتراست */
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-wl-add-btn,
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] #pr-wl-add-btn,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-watchlist .pr-wl-add button,
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] #pr-watchlist .pr-wl-add button {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #6366f1 !important;
+  background-image: linear-gradient(135deg, #6366f1, #818cf8) !important;
+}
+
+/* دکمه‌های اصلی اکشن (جستجو / اجرا / go) — متن سفید */
+html.tsext-pro [id^="tsext-go-"],
+html.tsext-pro button[id^="tsext-go-"],
+html.tsext-pro #tsext-head [id^="tsext-go-"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(135deg, #4f46e5, #6366f1) !important;
+  border: none !important;
+  opacity: 1 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] [id^="tsext-go-"],
+html.tsext-pro #tsext-host[data-tsext-theme="light"] button[id^="tsext-go-"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] [id^="tsext-go-"],
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] [id^="tsext-go-"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(135deg, #6366f1, #818cf8) !important;
+}
+
+/* دکمه‌های جزئیات روی ردیف */
+html.tsext-pro .tsext-bar-obbtn {
+  color: var(--tsext-bright) !important;
+  background: var(--tsext-surface2, var(--tsext-panel2)) !important;
+  border: 1px solid var(--tsext-border) !important;
+  opacity: 1 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .tsext-bar-obbtn {
+  color: #1e293b !important;
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-bar-obbtn,
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] .tsext-bar-obbtn {
+  color: #e2e8f0 !important;
+  background: color-mix(in srgb, var(--tsext-panel2) 80%, #000) !important;
+  border-color: color-mix(in srgb, var(--tsext-border) 90%, transparent) !important;
+}
+
+/* تب‌های استراتژی و حالت جامپ — خوانایی */
+html.tsext-pro #tsext-tabs .tsext-tab:not(.active),
+html.tsext-pro #tsext-jamp-modes .tsext-tab:not(.active) {
+  color: var(--tsext-fg) !important;
+  opacity: 1 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-tabs .tsext-tab:not(.active),
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-jamp-modes .tsext-tab:not(.active) {
+  color: #334155 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #tsext-tabs .tsext-tab:not(.active),
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] #tsext-tabs .tsext-tab:not(.active) {
+  color: #cbd5e1 !important;
+}
+
+/* placeholder ورودی نماد پایه */
+html.tsext-pro #pr-wl-input::placeholder {
+  color: var(--tsext-muted) !important;
+  opacity: 0.85 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-wl-input {
+  color: #0f172a !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-wl-input::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+/* دکمه‌های نوار ابزار تم/زوم — کنتراست */
+html.tsext-pro #pr-tools .tsext-btn {
+  opacity: 1 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-tools .tsext-btn {
+  color: #334155 !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-tools .tsext-btn:hover {
+  color: #ffffff !important;
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-tools .tsext-btn,
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] #pr-tools .tsext-btn {
+  color: #e2e8f0 !important;
+}
+
+/* چیپ‌های کلاس — متن خوانا */
+html.tsext-pro .tsext-chip {
+  opacity: 1 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] .tsext-chip.off {
+  color: #64748b !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] .tsext-chip.off,
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] .tsext-chip.off {
+  color: #94a3b8 !important;
+}
+
+/* وقتی کشویی استراتژی باز است — overflow نگیرد تا لیست به پایین دیده شود */
+html.tsext-pro #tsext-host.tsext-select-expanded #tsext-head,
+html.tsext-pro #tsext-host.tsext-select-expanded .tsext-strategy-panel,
+html.tsext-pro #tsext-host.tsext-select-expanded .tsext-strategy-panel .tsext-row {
+  overflow: visible !important;
+}
+html.tsext-pro #tsext-host.tsext-select-expanded select.tsext-select.tsext-select-open,
+html.tsext-pro #tsext-host.tsext-select-expanded select.tsext-select[size]:not([size="1"]) {
+  z-index: 300 !important;
+  position: relative !important;
+}
+
+html.tsext-pro #tsext-status{
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  height: 32px !important;
+  min-height: 32px !important;
+}
+
+/* نوار وضعیت — ساده و همیشه خوانا در هر سه تم */
+html.tsext-pro #tsext-status,
+html.tsext-pro #tsext-status #pr-status-text,
+html.tsext-pro #pr-status-text {
+  color: var(--tsext-fg) !important;
+  opacity: 1 !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  -webkit-text-fill-color: unset !important;
+  visibility: visible !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-status {
+  background: #eceff1 !important;
+  color: #263238 !important;
+  border-top: 1px solid #cfd8dc !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #tsext-status #pr-status-text,
+html.tsext-pro #tsext-host[data-tsext-theme="light"] #pr-status-text {
+  color: #263238 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #tsext-status {
+  background: #263238 !important;
+  color: #eceff1 !important;
+  border-top: 1px solid #455a64 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #tsext-status #pr-status-text,
+html.tsext-pro #tsext-host[data-tsext-theme="dark"] #pr-status-text {
+  color: #eceff1 !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] #tsext-status {
+  background: #111 !important;
+  color: #fff !important;
+  border-top: 1px solid #fff !important;
+}
+html.tsext-pro #tsext-host[data-tsext-theme="contrast"] #pr-status-text {
+  color: #fff !important;
+}
+
+/* ========== استراتژی‌ها: بزرگ‌تر و برجسته‌تر ========== */
+html.tsext-pro #tsext-tabs {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  padding: 20px 14px 26px !important;
+}
+html.tsext-pro #tsext-tabs .tsext-tab {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  width: 100% !important;
+  min-height: 64px !important;
+  padding: 18px 20px !important;
+  margin: 0 0 18px 0 !important;
+  border-radius: 14px !important;
+  border: 2px solid var(--tsext-border) !important;
+  background: var(--tsext-panel2) !important;
+  color: var(--tsext-fg) !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  letter-spacing: .01em !important;
+  line-height: 1.4 !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,.08) !important;
+  box-sizing: border-box !important;
+}
+html.tsext-pro #tsext-tabs .tsext-tab:last-child {
+  margin-bottom: 8px !important;
+}
+html.tsext-pro #tsext-tabs .tsext-tab::before {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 15px !important;
+  border-radius: 10px !important;
+  flex-shrink: 0 !important;
+}
+html.tsext-pro #tsext-tabs .tsext-tab.active {
+  border-color: var(--tsext-accent) !important;
+  background: color-mix(in srgb, var(--tsext-accent) 16%, var(--tsext-panel)) !important;
+  color: var(--tsext-bright) !important;
+  font-size: 14.5px !important;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--tsext-accent) 28%, transparent), inset 5px 0 0 var(--tsext-accent) !important;
+}
+html.tsext-pro #tsext-tabs .tsext-tab:hover {
+  border-color: color-mix(in srgb, var(--tsext-accent) 55%, var(--tsext-border)) !important;
+  box-shadow: 0 5px 14px rgba(0,0,0,.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+
+/* FIX: لیست قراردادها باید عمودی اسکرول شود */
+html.tsext-pro #tsext-list-body {
+  overflow-y: auto !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+}
+html.tsext-pro #tsext-list {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+
+
+/* اسکرول روان‌تر لیست قراردادها و جزئیات */
+html.tsext-pro #tsext-list-body,
+html.tsext-pro #tsext-ob-calc,
+html.tsext-pro #tsext-ob-books {
+  scroll-behavior: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  touch-action: pan-x pan-y !important;
+}
+html.tsext-pro #tsext-list-body .tsext-bar {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 44px;
+}
+
+}
