@@ -1,0 +1,2915 @@
+/* mobile.css — موبایل مرتب + فضای بیشتر برای لیست + سلب‌مسئولیت کامل */
+@layer tsext-mobile, tsext-tokens, tsext-base, tsext-components, tsext-theme, tsext-patches, tsext-pro;
+
+@layer tsext-mobile {
+  #m-settings-btn { display: none; }
+  #m-filters-btn { display: none; }
+
+  @media (max-width: 820px) {
+    :root {
+      --pr-disc-h: 0px;
+      --pr-top-h: 46px;
+      --m-nav-h: 50px;
+      --pr-status-h: 16px;
+      --m-safe-bottom: env(safe-area-inset-bottom, 0px);
+      --m-safe-top: env(safe-area-inset-top, 0px);
+    }
+
+    html, body {
+      -webkit-text-size-adjust: 100%;
+      overscroll-behavior: none;
+      touch-action: manipulation;
+      overflow-x: hidden !important;
+    }
+    html.m-panel-open, html.m-panel-open body {
+      overflow: hidden !important;
+      height: 100% !important;
+    }
+
+    html.tsext-pro body.tsext-pro #tsext-host {
+      min-width: 0 !important; min-height: 0 !important;
+      width: 100% !important;
+      height: 100vh !important; height: 100dvh !important;
+      padding-bottom: calc(var(--m-nav-h) + var(--m-safe-bottom)) !important;
+      padding-top: var(--m-safe-top) !important;
+      grid-template-columns: minmax(0, 1fr) !important;
+      grid-template-areas: "pr-top" "pr-watch" "prside" "pr-wl" "pr-list" "pr-status" !important;
+      grid-template-rows: var(--pr-top-h) auto 0 auto minmax(0, 1fr) var(--pr-status-h) !important;
+      overflow: hidden !important;
+    }
+    html.tsext-pro body.tsext-pro #tsext-host.tsext-with-ob {
+      grid-template-columns: minmax(0, 1fr) !important;
+      grid-template-areas: "pr-top" "pr-watch" "prside" "pr-wl" "pr-list" "pr-status" !important;
+    }
+    html.tsext-pro #pr-split-1, html.tsext-pro #pr-split-2 { display: none !important; }
+
+    /* ---- سلب‌مسئولیت: مخفی برای فضای بیشتر ---- */
+    html.tsext-pro #pr-disclaimer-bar {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      max-height: 0 !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      border: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    html.tsext-pro #pr-disclaimer-bar .pr-disc-text {
+      display: none !important;
+    }
+
+    /* نوار بالا */
+    html.tsext-pro #pr-topbar {
+      padding: 0 8px !important;
+      gap: 5px !important;
+      height: var(--pr-top-h) !important;
+      min-height: var(--pr-top-h) !important;
+      max-height: var(--pr-top-h) !important;
+      align-items: center !important;
+    }
+    html.tsext-pro #pr-topbar .tsext-subtitle,
+    html.tsext-pro #pr-clock-wrap,
+    html.tsext-pro #pr-date-chip,
+    html.tsext-pro #pr-close,
+    html.tsext-pro #pr-close-note { display: none !important; }
+    html.tsext-pro #pr-topbar .tsext-logo { width: 22px !important; height: 22px !important; }
+    html.tsext-pro #pr-top-right {
+      gap: 4px !important;
+      margin-inline-start: auto !important;
+      flex-wrap: nowrap !important;
+      width: auto !important;
+      align-items: center !important;
+    }
+    html.tsext-pro #pr-tools { gap: 3px !important; }
+    html.tsext-pro #m-settings-btn,
+    html.tsext-pro #m-filters-btn {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      min-height: 34px;
+      height: 34px;
+      padding: 0 8px;
+      border-radius: 8px;
+      font: 800 12px/1 Vazirmatn, Tahoma, sans-serif;
+      color: var(--tsext-fg);
+      background: color-mix(in srgb, var(--tsext-input) 85%, transparent);
+      border: 1px solid var(--tsext-border);
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+    }
+    html.tsext-pro #tsext-host.m-settings-open #m-settings-btn,
+    html.tsext-pro #tsext-host.m-filters-open #m-filters-btn {
+      background: var(--tsext-accent);
+      color: #fff;
+      border-color: var(--tsext-accent);
+    }
+    html.tsext-pro #pr-digits-btn,
+    html.tsext-pro #tsext-theme-cycle {
+      min-height: 34px !important;
+      min-width: 34px !important;
+    }
+    html.tsext-pro #pr-topbar .tsext-brand { flex: 0 0 auto !important; min-width: 0 !important; }
+    html.tsext-pro #pr-topbar .tsext-brand > div:not(.tsext-logo) { display: none !important; }
+    html.tsext-pro #pr-topbar .tsext-title { display: none !important; }
+
+    /* دیدبان نماد — ردیف ورودی + ردیف چیپ‌ها (چند نماد بدون اسکرول افقی) */
+    html.tsext-pro #pr-watchlist {
+      display: flex !important;
+      flex-direction: column !important;
+      flex-wrap: nowrap !important;
+      height: auto !important;
+      padding: 6px 8px 4px !important;
+      gap: 6px !important;
+      align-items: stretch !important;
+    }
+    html.tsext-pro #pr-watchlist .pr-wl-head,
+    html.tsext-pro #pr-wl-hint { display: none !important; }
+    html.tsext-pro #pr-watchlist .pr-wl-add {
+      flex: 0 0 auto !important;
+      width: 100% !important;
+      display: flex !important;
+      gap: 6px !important;
+      align-items: center !important;
+      min-width: 0 !important;
+      order: 1 !important;
+    }
+    html.tsext-pro #pr-wl-input {
+      font-size: 14px !important;
+      height: 34px !important;
+      min-height: 34px !important;
+      min-width: 0 !important;
+      flex: 1 1 auto !important;
+      border-radius: 8px !important;
+      padding: 0 10px !important;
+    }
+    html.tsext-pro #pr-wl-add-btn {
+      min-height: 34px !important;
+      min-width: 64px !important;
+      border-radius: 8px !important;
+      font-weight: 800 !important;
+      font-size: 12px !important;
+      padding: 0 12px !important;
+      flex: 0 0 auto !important;
+    }
+    /* چیپ‌ها: یک ردیف + اسکرول افقی وقتی زیاد می‌شوند */
+    html.tsext-pro #pr-wl-chips {
+      flex: 0 0 auto !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      order: 2 !important;
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      -webkit-overflow-scrolling: touch !important;
+      overscroll-behavior-x: contain !important;
+      scroll-behavior: smooth !important;
+      padding: 2px 0 4px !important;
+      gap: 6px !important;
+      align-items: center !important;
+      scrollbar-width: thin !important;
+    }
+    html.tsext-pro #pr-wl-chips::-webkit-scrollbar {
+      height: 3px !important;
+    }
+    html.tsext-pro #pr-wl-chips::-webkit-scrollbar-thumb {
+      background: color-mix(in srgb, var(--tsext-muted) 50%, transparent) !important;
+      border-radius: 999px !important;
+    }
+    html.tsext-pro .pr-wl-chip {
+      flex: 0 0 auto !important;
+      flex-shrink: 0 !important;
+      min-height: 28px !important;
+      padding: 3px 10px !important;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      border-radius: 999px !important;
+      max-width: none !important;
+      white-space: nowrap !important;
+    }
+    html.tsext-pro .pr-wl-empty {
+      font-size: 11px !important;
+      padding: 2px 4px !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: unset !important;
+      max-width: none !important;
+      width: 100% !important;
+      color: var(--tsext-muted) !important;
+    }
+
+    /* عنوان دیدبان */
+    html.tsext-pro #pr-wlbar {
+      height: 28px !important;
+      min-height: 28px !important;
+      max-height: 28px !important;
+      padding: 0 8px !important;
+      gap: 5px !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+    html.tsext-pro #pr-wl-title { font-size: 12px !important; font-weight: 800 !important; }
+    html.tsext-pro #pr-wlbar .tsext-btn,
+    html.tsext-pro #pr-wlbar button {
+      min-height: 26px !important;
+      min-width: 26px !important;
+      width: 26px !important;
+      height: 26px !important;
+      padding: 0 !important;
+      font-size: 12px !important;
+    }
+
+    /* هد */
+    html.tsext-pro body.tsext-pro #tsext-head {
+      height: 0 !important; min-height: 0 !important; max-height: 0 !important;
+      padding: 0 !important; margin: 0 !important; border: 0 !important; overflow: visible !important;
+    }
+    html.tsext-pro #tsext-head > *:not(:has(#tsext-tabs)):not(.tsext-strategy-panel) { display: none !important; }
+    html.tsext-pro #tsext-head > .tsext-row:has(#tsext-tabs) {
+      display: block !important; height: 0 !important; margin: 0 !important; padding: 0 !important;
+    }
+
+    /* نوار پایین استراتژی — فاصله از لبه + ارتفاع بیشتر */
+    html.tsext-pro #tsext-tabs {
+      position: fixed !important;
+      inset: auto 0 calc(12px + var(--m-safe-bottom)) 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: calc(12px + var(--m-safe-bottom)) !important;
+      width: auto !important;
+      height: var(--m-nav-h) !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      gap: 5px !important;
+      padding: 6px 10px !important;
+      margin: 0 !important;
+      z-index: 90 !important;
+      background: var(--tsext-panel) !important;
+      border: 0 !important;
+      border-top: 1px solid var(--tsext-border) !important;
+      border-bottom: 1px solid var(--tsext-border) !important;
+      border-radius: 0 !important;
+      box-shadow: 0 -4px 18px rgba(0, 0, 0, .18) !important;
+    }
+    html.tsext-pro #tsext-tabs .tsext-tab {
+      flex: 1 1 0 !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 6px 4px !important;
+      border-radius: 12px !important;
+      border-width: 1px !important;
+      font-size: 11.5px !important;
+      line-height: 1.25 !important;
+      text-align: center !important;
+      white-space: normal !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 3px !important;
+      box-shadow: none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html.tsext-pro #tsext-tabs .tsext-tab::before {
+      width: 22px !important;
+      height: 22px !important;
+      font-size: 13px !important;
+      border-radius: 7px !important;
+    }
+
+    /* تنظیمات استراتژی */
+    html.tsext-pro #tsext-head .tsext-strategy-panel,
+    html.tsext-pro #tsext-head .tsext-strategy-panel.active { display: none !important; }
+    html.tsext-pro #tsext-host.m-settings-open #tsext-head .tsext-strategy-panel.active {
+      display: block !important;
+      position: fixed !important;
+      inset: calc(var(--pr-top-h) + var(--m-safe-top) + 28px) 0 calc(var(--m-nav-h) + var(--m-safe-bottom)) 0 !important;
+      z-index: 85 !important;
+      margin: 0 !important;
+      padding: 10px 8px !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+      background: var(--tsext-panel) !important;
+      border-top: 1px solid var(--tsext-border) !important;
+    }
+    html.tsext-pro #tsext-head .tsext-strategy-panel input,
+    html.tsext-pro #tsext-head .tsext-strategy-panel select {
+      font-size: 15px !important;
+      min-height: 36px !important;
+      border-radius: 8px !important;
+    }
+
+    /* ---- فیلترها: پیش‌فرض جمع، با دکمه باز می‌شود ---- */
+    html.tsext-pro #tsext-display-settings {
+      display: none !important;
+    }
+    html.tsext-pro #tsext-host.m-filters-open #tsext-display-settings {
+      display: flex !important;
+      flex-direction: column !important;
+      flex-wrap: nowrap !important;
+      padding: 4px 8px 6px !important;
+      gap: 5px !important;
+      overflow: visible !important;
+      background: color-mix(in srgb, var(--tsext-panel2) 50%, var(--tsext-panel)) !important;
+      border-bottom: 1px solid var(--tsext-border) !important;
+    }
+    html.tsext-pro #tsext-display-settings .tsext-ds-row {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+      gap: 5px !important;
+      margin: 0 !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    html.tsext-pro #tsext-display-settings .tsext-ds-row::-webkit-scrollbar { display: none; }
+    html.tsext-pro #tsext-display-settings select,
+    html.tsext-pro #tsext-display-settings .tsext-ds-select {
+      font-size: 12px !important;
+      min-height: 30px !important;
+      height: 30px !important;
+      border-radius: 7px !important;
+      padding: 0 5px !important;
+    }
+    html.tsext-pro #tsext-display-settings label,
+    html.tsext-pro .tsext-ds-inline {
+      font-size: 11px !important;
+      gap: 2px !important;
+      flex: 0 0 auto !important;
+      white-space: nowrap !important;
+    }
+    html.tsext-pro #tsext-price-mode-badge {
+      font-size: 10px !important;
+      padding: 2px 6px !important;
+      white-space: nowrap !important;
+    }
+    html.tsext-pro .tsext-ds-row-class {
+      gap: 4px !important;
+      padding: 1px 0 !important;
+      min-height: 30px !important;
+      align-items: center !important;
+    }
+    html.tsext-pro #tsext-class-filter-host,
+    html.tsext-pro .tsext-class-filter-host {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      gap: 4px !important;
+      align-items: center !important;
+    }
+    html.tsext-pro .tsext-ds-row-class button,
+    html.tsext-pro .tsext-ds-row-class .tsext-chip,
+    html.tsext-pro #tsext-class-filter-host button,
+    html.tsext-pro #tsext-class-filter-host .tsext-chip {
+      min-height: 28px !important;
+      height: 28px !important;
+      min-width: 30px !important;
+      padding: 0 6px !important;
+      font-size: 11px !important;
+      border-radius: 7px !important;
+      flex: 0 0 auto !important;
+    }
+
+    /* هدر لیست */
+    html.tsext-pro #tsext-list-hdr {
+      padding: 1px 6px 0 !important;
+    }
+    html.tsext-pro #tsext-list-hdr .tsext-cols { display: none !important; }
+    html.tsext-pro #tsext-list-hdr .tsext-hdr {
+      font-size: 10px !important;
+      padding: 1px 4px !important;
+    }
+
+    /* ---- لیست: ردیف‌های فشرده واقعی ---- */
+    html.tsext-pro #tsext-list-body {
+      padding: 3px 6px 8px !important;
+      -webkit-overflow-scrolling: touch;
+    }
+    html.tsext-pro #tsext-list-body .tsext-bar {
+      min-width: 0 !important;
+      width: 100% !important;
+      position: relative !important;
+      margin: 0 0 3px !important;
+      border-radius: 8px !important;
+      overflow: hidden !important;
+    }
+    html.tsext-pro #tsext-host #tsext-list-body .tsext-bar-main {
+      display: grid !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      grid-template-columns: auto minmax(0, 1fr) auto !important;
+      grid-template-areas:
+        "cls name profit"
+        "cls meta profit"
+        "cls risk profit" !important;
+      align-items: center !important;
+      column-gap: 6px !important;
+      row-gap: 0 !important;
+      padding: 5px 8px !important;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html.tsext-pro #tsext-list-body .tsext-bar-main:active {
+      background: color-mix(in srgb, var(--tsext-accent) 8%, transparent) !important;
+    }
+    html.tsext-pro #tsext-list-body .tsext-bar-strip {
+      position: absolute !important;
+      inset-block: 0 !important;
+      inset-inline-start: 0 !important;
+      width: 3px !important;
+      min-width: 3px !important;
+      max-width: 3px !important;
+    }
+    html.tsext-pro #tsext-list-body .tsext-bar-class {
+      grid-area: cls !important;
+      align-self: center !important;
+      font-size: 9px !important;
+    }
+    html.tsext-pro #tsext-list-body .tsext-bar-name {
+      grid-area: name !important;
+      font-size: 12px !important;
+      font-weight: 800 !important;
+      min-width: 0 !important;
+      line-height: 1.2 !important;
+    }
+    html.tsext-pro #tsext-list-body .tsext-bar-profit {
+      grid-area: profit !important;
+      font-size: 13px !important;
+      font-weight: 900 !important;
+      text-align: center !important;
+      white-space: nowrap !important;
+      line-height: 1.15 !important;
+    }
+    html.tsext-pro #tsext-list-body .tsext-bar-risk {
+      grid-area: risk !important;
+      justify-self: start !important;
+      font-size: 9.5px !important;
+      line-height: 1.15 !important;
+    }
+    html.tsext-pro #tsext-list-body .tsext-bar-strike,
+    html.tsext-pro #tsext-list-body .tsext-bar-days,
+    html.tsext-pro #tsext-list-body .tsext-bar-date {
+      font-size: 10px !important;
+      color: var(--tsext-muted) !important;
+      white-space: nowrap !important;
+      width: auto !important;
+      min-width: 0 !important;
+      padding: 0 !important;
+      line-height: 1.15 !important;
+    }
+    html.tsext-pro #tsext-list-body .tsext-bar-actions { display: none !important; }
+    html.tsext-pro #tsext-list-body .tsext-bar-strike { grid-area: meta !important; justify-self: start !important; }
+    html.tsext-pro #tsext-list-body .tsext-bar-days { grid-area: meta !important; justify-self: center !important; }
+    html.tsext-pro #tsext-list-body .tsext-bar-date { grid-area: meta !important; justify-self: end !important; }
+    html.tsext-pro #tsext-list-body .tsext-bar-class .tsext-cls,
+    html.tsext-pro #tsext-list-body [class*="tsext-cls"] {
+      font-size: 9px !important;
+      padding: 0 4px !important;
+      min-height: 15px !important;
+    }
+
+    /* پنل جزئیات */
+    html.tsext-pro body.tsext-pro #tsext-obpanel {
+      position: fixed !important;
+      inset: auto 0 calc(var(--m-nav-h) + var(--m-safe-bottom)) 0 !important;
+      top: auto !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 80vh !important;
+      height: 80dvh !important;
+      max-height: calc(100dvh - var(--pr-top-h) - var(--m-nav-h) - var(--m-safe-bottom) - 4px) !important;
+      border-radius: 14px 14px 0 0 !important;
+      border: 1px solid var(--tsext-border) !important;
+      border-bottom: 0 !important;
+      box-shadow: 0 -12px 36px rgba(0, 0, 0, .4) !important;
+      z-index: 80 !important;
+      overflow: hidden !important;
+    }
+    html.tsext-pro #tsext-obpanel::before {
+      content: "" !important;
+      display: block !important;
+      width: 34px !important;
+      height: 3px !important;
+      border-radius: 99px !important;
+      background: color-mix(in srgb, var(--tsext-muted) 50%, transparent) !important;
+      margin: 6px auto 0 !important;
+    }
+    html.tsext-pro #tsext-obpanel-body,
+    html.tsext-pro #tsext-obpanel-body.tsext-ob-split {
+      display: flex !important;
+      flex-direction: column !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      grid-template-columns: none !important;
+      grid-template-rows: none !important;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px !important;
+    }
+    html.tsext-pro #tsext-ob-calc,
+    html.tsext-pro #tsext-ob-books {
+      overflow: visible !important;
+      flex: 0 0 auto !important;
+      border: 0 !important;
+    }
+    html.tsext-pro #tsext-ob-calc .tsext-grid {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 5px !important;
+    }
+    html.tsext-pro #tsext-obpanel .tsext-obpanel-head .tsext-btn {
+      width: 34px !important;
+      height: 34px !important;
+      min-width: 34px !important;
+    }
+    html.tsext-pro #tsext-ob-books .tsext-ob-table { font-size: 11.5px !important; }
+    html.tsext-pro #tsext-obpanel input,
+    html.tsext-pro #tsext-obpanel select {
+      font-size: 15px !important;
+      min-height: 34px !important;
+    }
+
+    html.tsext-pro #tsext-status {
+      font-size: 10px !important;
+      padding: 0 8px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    #tsext-web-notices {
+      bottom: calc(var(--m-nav-h) + var(--m-safe-bottom) + 8px) !important;
+    }
+    html.tsext-pro button,
+    html.tsext-pro .tsext-btn {
+      min-height: 30px;
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
+}
+
+/* ---- برچسب فیلدهای کارت (بدون سرستون شلوغ) ---- */
+@media (max-width: 820px) {
+  /* سود: برچسب خیلی کوچک بالای عدد */
+  html.tsext-pro #tsext-list-body .tsext-bar-profit {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-profit::before {
+    content: "سود ماهانه" !important;
+    display: block !important;
+    font-size: 8.5px !important;
+    font-weight: 600 !important;
+    color: var(--tsext-muted) !important;
+    line-height: 1.1 !important;
+    opacity: 0.9 !important;
+  }
+
+  /* متا: برچسب قبل از هر مقدار */
+  html.tsext-pro #tsext-list-body .tsext-bar-strike::before {
+    content: "اعمال " !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    color: var(--tsext-muted) !important;
+    opacity: 0.95 !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-days::before {
+    content: "" !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-days::after {
+    content: " روز" !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    color: var(--tsext-muted) !important;
+    opacity: 0.95 !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-date::before {
+    content: "سررسید " !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    color: var(--tsext-muted) !important;
+    opacity: 0.95 !important;
+  }
+
+  /* متا را با فاصله و جداکننده خوانا کن */
+  html.tsext-pro #tsext-host #tsext-list-body .tsext-bar-main {
+    grid-template-areas:
+      "cls name profit"
+      "cls meta profit"
+      "cls risk risk" !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro #tsext-list-body .tsext-bar-days,
+  html.tsext-pro #tsext-list-body .tsext-bar-date {
+    display: inline !important;
+    width: auto !important;
+  }
+  /* چون سه تا روی یک grid-area هستند، با flex روی یک ظرف مجازی سخت است —
+     پس فاصله افقی و ترتیب را با margin حفظ می‌کنیم */
+  html.tsext-pro #tsext-list-body .tsext-bar-strike {
+    margin-inline-end: 8px !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-days {
+    margin-inline-end: 8px !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-risk {
+    grid-area: risk !important;
+  }
+
+  /* راهنمای یک‌خطی بالای لیست (خیلی کم‌جا) */
+  html.tsext-pro #tsext-list-hdr {
+    display: block !important;
+    padding: 2px 8px 3px !important;
+  }
+  html.tsext-pro #tsext-list-hdr .tsext-cols {
+    display: none !important;
+  }
+  html.tsext-pro #tsext-list-hdr::after {
+    content: "کلاس · نماد · اعمال · روز تا سررسید · تاریخ سررسید · سود ماهانه" !important;
+    display: block !important;
+    font-size: 9px !important;
+    color: var(--tsext-muted) !important;
+    opacity: 0.85 !important;
+    padding: 1px 2px !important;
+    line-height: 1.3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+}
+
+/* خارج از @layer — غلبه بر tsext.css موتور جدید */
+@media (max-width: 820px) {
+  html.tsext-pro body.tsext-pro #tsext-host {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-head {
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    overflow: visible !important;
+  }
+  html.tsext-pro #tsext-tabs {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    top: auto !important;
+    z-index: 2147483000 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    height: 54px !important;
+    padding: 6px 10px !important;
+    gap: 5px !important;
+    background: var(--tsext-panel, #0d1520) !important;
+    border: 0 !important;
+    border-top: 1px solid var(--tsext-border, #333) !important;
+    border-bottom: 1px solid var(--tsext-border, #333) !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 -4px 18px rgba(0, 0, 0, .18) !important;
+  }
+  html.tsext-pro #tsext-tabs .tsext-tab {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  html.tsext-pro #tsext-display-settings { display: none !important; }
+  html.tsext-pro #tsext-host.m-filters-open #tsext-display-settings {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  html.tsext-pro #tsext-head .tsext-strategy-panel,
+  html.tsext-pro #tsext-head .tsext-strategy-panel.active {
+    display: none !important;
+  }
+  html.tsext-pro #tsext-host.m-settings-open #tsext-head .tsext-strategy-panel.active {
+    display: block !important;
+    position: fixed !important;
+    inset: 72px 0 calc(64px + env(safe-area-inset-bottom, 0px)) 0 !important;
+    z-index: 85 !important;
+    overflow-y: auto !important;
+    background: var(--tsext-panel) !important;
+  }
+}
+
+/* ===== فشرده = همان فیلدها، فقط کوچک‌تر تا ردیف بیشتر جا شود ===== */
+@media (max-width: 820px) {
+  /* کامل */
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar {
+    margin-bottom: 6px !important;
+  }
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-main {
+    padding: 9px 10px !important;
+    row-gap: 2px !important;
+  }
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-name {
+    font-size: 13px !important;
+  }
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-profit {
+    font-size: 14px !important;
+  }
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-profit::before {
+    font-size: 8.5px !important;
+  }
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-days,
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-date {
+    font-size: 11px !important;
+  }
+
+  /* فشرده — همان چیزها، مقیاس کوچک‌تر */
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar {
+    margin-bottom: 2px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-main {
+    padding: 3px 7px !important;
+    row-gap: 0 !important;
+    column-gap: 5px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-name {
+    font-size: 11.5px !important;
+    line-height: 1.15 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit {
+    font-size: 12px !important;
+    line-height: 1.1 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit::before {
+    font-size: 7.5px !important;
+    line-height: 1 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-days,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-date,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-risk {
+    font-size: 9.5px !important;
+    line-height: 1.15 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-class .tsext-cls,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body [class*="tsext-cls"] {
+    font-size: 8.5px !important;
+    min-height: 14px !important;
+    padding: 0 3px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-hdr::after {
+    font-size: 8px !important;
+    padding: 0 2px !important;
+  }
+
+  html.tsext-pro #m-compact-btn { display: none !important; }
+}
+
+/* ===== خروج واضح از تنظیمات ===== */
+#m-settings-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(8, 12, 20, 0.45);
+}
+#m-settings-backdrop.m-show {
+  display: block;
+}
+#m-settings-bar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 86;
+  height: 48px;
+  padding: 0 12px;
+  padding-top: env(safe-area-inset-top, 0px);
+  box-sizing: content-box;
+  background: var(--tsext-panel, #111827);
+  border-bottom: 1px solid var(--tsext-border, #334155);
+  align-items: center;
+  justify-content: space-between;
+  direction: rtl;
+  box-shadow: 0 4px 16px rgba(0,0,0,.18);
+}
+#m-settings-bar.m-show {
+  display: flex;
+}
+.m-settings-bar-title {
+  font: 800 14px/1 Vazirmatn, Tahoma, sans-serif;
+  color: var(--tsext-fg, #e5e7eb);
+}
+#m-settings-close {
+  border: 0;
+  border-radius: 10px;
+  min-height: 36px;
+  padding: 0 14px;
+  font: 800 13px/1 Vazirmatn, Tahoma, sans-serif;
+  background: var(--tsext-accent, #2563eb);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+#m-settings-close:active {
+  transform: scale(0.97);
+}
+@media (min-width: 821px) {
+  #m-settings-backdrop, #m-settings-bar { display: none !important; }
+}
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-host.m-settings-open #tsext-head .tsext-strategy-panel.active {
+    top: 52px !important;
+  }
+}
+
+
+/* ===== حداکثر فضا برای لیست قراردادها ===== */
+@media (max-width: 820px) {
+  /* کروم جمع‌وجور */
+  html.tsext-pro #pr-disclaimer-bar {
+    font-size: 8.5px !important;
+    padding: 2px 6px !important;
+    line-height: 1.28 !important;
+  }
+  html.tsext-pro #pr-disclaimer-bar .pr-disc-text {
+    font-size: 8.5px !important;
+    line-height: 1.28 !important;
+  }
+  html.tsext-pro #pr-topbar {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    padding: 0 6px !important;
+    gap: 4px !important;
+  }
+  html.tsext-pro #m-settings-btn,
+  html.tsext-pro #m-filters-btn,
+  html.tsext-pro #pr-digits-btn,
+  html.tsext-pro #tsext-theme-cycle {
+    min-height: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+  }
+  html.tsext-pro #pr-watchlist {
+    padding: 3px 6px !important;
+    gap: 4px !important;
+  }
+  html.tsext-pro #pr-wl-input {
+    height: 30px !important;
+    min-height: 30px !important;
+    font-size: 13px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn {
+    min-height: 30px !important;
+    font-size: 11px !important;
+    min-width: 52px !important;
+  }
+  html.tsext-pro .pr-wl-chip {
+    min-height: 24px !important;
+    padding: 1px 8px !important;
+    font-size: 11px !important;
+  }
+  html.tsext-pro #pr-wlbar {
+    height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
+    padding: 0 6px !important;
+  }
+  html.tsext-pro #pr-wl-title { font-size: 11px !important; }
+  html.tsext-pro #tsext-status {
+    font-size: 9.5px !important;
+    padding: 0 6px !important;
+    line-height: 18px !important;
+  }
+  html.tsext-pro #tsext-list-hdr {
+    padding: 0 6px !important;
+  }
+  html.tsext-pro #tsext-list-hdr::after {
+    font-size: 8px !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+  }
+  html.tsext-pro #tsext-list-body {
+    padding: 2px 5px 6px !important;
+  }
+
+  /* کارت پیش‌فرض (کامل) — جمع‌وجور تمیز */
+  html.tsext-pro #tsext-list-body .tsext-bar {
+    margin: 0 0 3px !important;
+    border-radius: 7px !important;
+  }
+  html.tsext-pro #tsext-host #tsext-list-body .tsext-bar-main {
+    padding: 5px 7px !important;
+    column-gap: 5px !important;
+    row-gap: 0 !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-name {
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-profit {
+    font-size: 12.5px !important;
+    line-height: 1.1 !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-profit::before {
+    font-size: 7.5px !important;
+  }
+  html.tsext-pro #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro #tsext-list-body .tsext-bar-days,
+  html.tsext-pro #tsext-list-body .tsext-bar-date,
+  html.tsext-pro #tsext-list-body .tsext-bar-risk {
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+  }
+
+  /* فشرده — همان فیلدها، خیلی جمع‌تر */
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar {
+    margin: 0 0 1px !important;
+    border-radius: 5px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-main {
+    padding: 2px 6px !important;
+    column-gap: 4px !important;
+    row-gap: 0 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-name {
+    font-size: 11px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit {
+    font-size: 11.5px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit::before {
+    font-size: 7px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-days,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-date,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-risk {
+    font-size: 9px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-class .tsext-cls,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body [class*="tsext-cls"] {
+    font-size: 8px !important;
+    min-height: 13px !important;
+    padding: 0 3px !important;
+  }
+
+  /* تب پایین کمی بالاتر + ارتفاع کمتر */
+  html.tsext-pro #tsext-tabs {
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+    height: 48px !important;
+    padding: 4px 8px !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  html.tsext-pro #tsext-tabs .tsext-tab {
+    font-size: 10.5px !important;
+    padding: 4px 2px !important;
+  }
+}
+
+/* آیکن و متن تب با هم در مرکز نوار */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-tabs .tsext-tab {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    overflow: hidden !important;
+  }
+  html.tsext-pro #tsext-tabs .tsext-tab::before {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    font-size: 12px !important;
+    border-radius: 6px !important;
+    flex: 0 0 auto !important;
+  }
+}
+
+/* ===== تب‌ها: کشتن استایل دسکتاپ عمودی ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-tabs,
+  html.tsext-pro #tsext-host #tsext-tabs {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 4px !important;
+    padding: 4px 6px !important;
+    margin: 0 !important;
+    background: var(--tsext-panel, #0d1520) !important;
+    border-top: 1px solid var(--tsext-border, #333) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 -3px 14px rgba(0,0,0,.15) !important;
+    z-index: 2147483000 !important;
+    box-sizing: border-box !important;
+  }
+  html.tsext-pro #tsext-tabs .tsext-tab,
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 2px 4px !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 1px !important;
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+    text-align: center !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+  }
+  html.tsext-pro #tsext-tabs .tsext-tab:last-child {
+    margin: 0 !important;
+  }
+  html.tsext-pro #tsext-tabs .tsext-tab:before,
+  html.tsext-pro #tsext-tabs .tsext-tab::before,
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab:before {
+    position: static !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    max-height: 18px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    border-radius: 5px !important;
+    flex-shrink: 0 !important;
+    transform: none !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  /* آیکن‌ها — همان کاراکترهای موتور */
+  html.tsext-pro #tsext-tabs .tsext-tab[data-s=pospanj]:before,
+  html.tsext-pro #tsext-tabs .tsext-tab[data-s=pospanj]::before {
+    content: "\2726" !important;
+    color: #10b981 !important;
+  }
+  html.tsext-pro #tsext-tabs .tsext-tab[data-s=combo]:before,
+  html.tsext-pro #tsext-tabs .tsext-tab[data-s=combo]::before {
+    content: "\21c4" !important;
+    color: #06b6d4 !important;
+  }
+  html.tsext-pro #tsext-tabs .tsext-tab[data-s=jamp]:before,
+  html.tsext-pro #tsext-tabs .tsext-tab[data-s=jamp]::before {
+    content: "\2197" !important;
+    color: #8b5cf6 !important;
+  }
+
+  html.tsext-pro body.tsext-pro #tsext-host {
+    padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* ===== فشرده = جمع‌وجور کردن کل صفحه ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-host.m-dense #pr-disclaimer-bar,
+  html.tsext-pro #tsext-list.tsext-compact ~ * { }
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-topbar,
+  html.tsext-pro #tsext-host.m-dense #pr-topbar {
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-watchlist,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-watchlist {
+    padding: 2px 5px !important;
+    gap: 3px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-input,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-input {
+    height: 28px !important;
+    min-height: 28px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-add-btn,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-add-btn {
+    min-height: 28px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wlbar,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wlbar {
+    height: 22px !important;
+    min-height: 22px !important;
+    max-height: 22px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-status,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-status {
+    font-size: 9px !important;
+    line-height: 16px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-disclaimer-bar,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-disclaimer-bar {
+    font-size: 8px !important;
+    padding: 1px 5px !important;
+  }
+
+  /* لیست خیلی متراکم */
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar {
+    margin: 0 0 1px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-main {
+    padding: 2px 5px !important;
+  }
+}
+
+/* ===== دیدبان جمع‌وجورتر ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-watchlist {
+    padding: 2px 5px !important;
+    gap: 3px !important;
+  }
+  html.tsext-pro #pr-wl-input {
+    height: 28px !important;
+    min-height: 28px !important;
+    font-size: 12.5px !important;
+    padding: 0 8px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn {
+    min-height: 28px !important;
+    min-width: 48px !important;
+    font-size: 11px !important;
+    padding: 0 8px !important;
+  }
+  html.tsext-pro #pr-wl-chips {
+    gap: 3px !important;
+  }
+  html.tsext-pro .pr-wl-chip {
+    min-height: 22px !important;
+    padding: 0 7px !important;
+    font-size: 10.5px !important;
+    border-radius: 999px !important;
+  }
+  html.tsext-pro .pr-wl-empty {
+    font-size: 10px !important;
+    padding: 0 !important;
+  }
+  html.tsext-pro #pr-wlbar {
+    height: 22px !important;
+    min-height: 22px !important;
+    max-height: 22px !important;
+    padding: 0 5px !important;
+  }
+  html.tsext-pro #pr-wl-title {
+    font-size: 10.5px !important;
+  }
+  html.tsext-pro #pr-wlbar .tsext-btn,
+  html.tsext-pro #pr-wlbar button {
+    min-height: 22px !important;
+    min-width: 22px !important;
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 11px !important;
+  }
+
+  /* فشرده: کروم و لیست هر دو */
+  html.tsext-pro #tsext-host.m-dense #pr-topbar {
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-disclaimer-bar {
+    font-size: 8px !important;
+    padding: 1px 5px !important;
+    line-height: 1.25 !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-watchlist {
+    padding: 1px 4px !important;
+    gap: 2px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-input {
+    height: 26px !important;
+    min-height: 26px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-add-btn {
+    min-height: 26px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense .pr-wl-chip {
+    min-height: 20px !important;
+    font-size: 10px !important;
+    padding: 0 6px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wlbar {
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-status {
+    font-size: 9px !important;
+    line-height: 15px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-list-hdr::after {
+    font-size: 7.5px !important;
+  }
+}
+
+/* ===== دیدبان خیلی جمع‌وجور ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-watchlist {
+    padding: 1px 4px !important;
+    gap: 2px !important;
+  }
+  html.tsext-pro #pr-watchlist .pr-wl-add {
+    gap: 4px !important;
+  }
+  html.tsext-pro #pr-wl-input {
+    height: 26px !important;
+    min-height: 26px !important;
+    font-size: 12px !important;
+    padding: 0 6px !important;
+    border-radius: 6px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn {
+    min-height: 26px !important;
+    min-width: 44px !important;
+    font-size: 10.5px !important;
+    padding: 0 6px !important;
+    border-radius: 6px !important;
+  }
+  html.tsext-pro #pr-wl-chips {
+    gap: 2px !important;
+    max-height: 48px !important;
+    overflow-y: auto !important;
+  }
+  html.tsext-pro .pr-wl-chip {
+    min-height: 20px !important;
+    padding: 0 6px !important;
+    font-size: 10px !important;
+    border-radius: 999px !important;
+  }
+  html.tsext-pro .pr-wl-empty {
+    font-size: 9.5px !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+  }
+  html.tsext-pro #pr-wlbar {
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    padding: 0 4px !important;
+  }
+  html.tsext-pro #pr-wl-title {
+    font-size: 10px !important;
+  }
+  html.tsext-pro #pr-wlbar .tsext-btn,
+  html.tsext-pro #pr-wlbar button {
+    min-height: 20px !important;
+    min-width: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 10px !important;
+  }
+}
+
+/* ===== جزئیات جمع‌وجورتر (اسکرول کمتر) ===== */
+@media (max-width: 820px) {
+  html.tsext-pro body.tsext-pro #tsext-obpanel {
+    height: 72vh !important;
+    height: 72dvh !important;
+    max-height: calc(100dvh - 36px - 52px - env(safe-area-inset-bottom, 0px) - 8px) !important;
+    border-radius: 12px 12px 0 0 !important;
+  }
+  html.tsext-pro #tsext-obpanel::before {
+    height: 2px !important;
+    margin: 4px auto 0 !important;
+  }
+  html.tsext-pro #tsext-obpanel .tsext-obpanel-head {
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 0 6px !important;
+    gap: 4px !important;
+  }
+  html.tsext-pro #tsext-obpanel-title {
+    font-size: 12px !important;
+  }
+  html.tsext-pro #tsext-obpanel .tsext-obpanel-head .tsext-btn {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    font-size: 12px !important;
+  }
+  html.tsext-pro #tsext-obpanel-body,
+  html.tsext-pro #tsext-obpanel-body.tsext-ob-split {
+    padding: 4px 6px 6px !important;
+    gap: 4px !important;
+  }
+  html.tsext-pro #tsext-ob-calc .tsext-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 3px !important;
+  }
+  html.tsext-pro #tsext-obpanel input,
+  html.tsext-pro #tsext-obpanel select,
+  html.tsext-pro #tsext-obpanel .tsext-input {
+    font-size: 12px !important;
+    min-height: 28px !important;
+    height: 28px !important;
+    padding: 0 6px !important;
+  }
+  html.tsext-pro #tsext-obpanel label,
+  html.tsext-pro #tsext-obpanel .tsext-mini,
+  html.tsext-pro #tsext-obpanel .tsext-label {
+    font-size: 10px !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+  }
+  html.tsext-pro #tsext-obpanel .tsext-btn {
+    min-height: 28px !important;
+    font-size: 11px !important;
+    padding: 0 8px !important;
+  }
+  html.tsext-pro #tsext-ob-books .tsext-ob-table {
+    font-size: 10.5px !important;
+  }
+  html.tsext-pro #tsext-ob-books .tsext-ob-table th,
+  html.tsext-pro #tsext-ob-books .tsext-ob-table td {
+    padding: 2px 4px !important;
+    line-height: 1.2 !important;
+  }
+  html.tsext-pro #tsext-obpanel .tsext-card,
+  html.tsext-pro #tsext-obpanel .tsext-panel,
+  html.tsext-pro #tsext-obpanel [class*="tsext-ob-"] {
+    margin-bottom: 4px !important;
+  }
+  html.tsext-pro #tsext-obpanel h3,
+  html.tsext-pro #tsext-obpanel h4 {
+    font-size: 11px !important;
+    margin: 2px 0 !important;
+  }
+}
+
+/* ===== دیدبان: حداقل ارتفاع ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-watchlist {
+    padding: 0 4px !important;
+    gap: 1px !important;
+    min-height: 0 !important;
+  }
+  html.tsext-pro #pr-wl-input {
+    height: 24px !important;
+    min-height: 24px !important;
+    font-size: 11.5px !important;
+    padding: 0 5px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn {
+    min-height: 24px !important;
+    min-width: 40px !important;
+    font-size: 10px !important;
+    padding: 0 5px !important;
+  }
+  html.tsext-pro #pr-wl-chips {
+    gap: 2px !important;
+    max-height: 40px !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+  }
+  html.tsext-pro .pr-wl-chip {
+    min-height: 18px !important;
+    padding: 0 5px !important;
+    font-size: 9.5px !important;
+  }
+  html.tsext-pro .pr-wl-empty {
+    display: none !important; /* متن راهنما فضا می‌گیرد؛ ورودی خودش مشخص است */
+  }
+  html.tsext-pro #pr-wlbar {
+    height: 18px !important;
+    min-height: 18px !important;
+    max-height: 18px !important;
+    padding: 0 4px !important;
+  }
+  html.tsext-pro #pr-wl-title {
+    font-size: 9.5px !important;
+  }
+  html.tsext-pro #pr-wlbar .tsext-btn,
+  html.tsext-pro #pr-wlbar button {
+    min-height: 18px !important;
+    min-width: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 9px !important;
+  }
+}
+
+/* ===== تنظیمات: خروج خیلی واضح ===== */
+#m-settings-bar {
+  min-height: 48px !important;
+}
+#m-settings-bar .m-settings-bar-title {
+  font-size: 13px !important;
+}
+#m-settings-close {
+  min-height: 40px !important;
+  min-width: 96px !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  border-radius: 12px !important;
+  background: #dc2626 !important;
+  color: #fff !important;
+  box-shadow: 0 2px 10px rgba(220, 38, 38, .35) !important;
+}
+#m-settings-backdrop.m-show {
+  background: rgba(0, 0, 0, 0.55) !important;
+}
+
+/* ===== جزئیات: ضربدر بزرگ و واضح ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-obpanel .tsext-obpanel-head {
+    min-height: 40px !important;
+    height: 40px !important;
+    padding: 0 8px 0 6px !important;
+  }
+  html.tsext-pro #tsext-obpanel-close {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border-radius: 12px !important;
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    background: #dc2626 !important;
+    color: #fff !important;
+    border: 0 !important;
+    box-shadow: 0 2px 10px rgba(220, 38, 38, .35) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  html.tsext-pro #tsext-ob-zoom-dec,
+  html.tsext-pro #tsext-ob-zoom-inc {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+}
+
+/* ===== دیدبان: کوچک‌تر از قبل ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-watchlist {
+    padding: 0 3px !important;
+    gap: 0 !important;
+    margin: 0 !important;
+  }
+  html.tsext-pro #pr-watchlist .pr-wl-add {
+    gap: 3px !important;
+    min-height: 0 !important;
+  }
+  html.tsext-pro #pr-wl-input {
+    height: 22px !important;
+    min-height: 22px !important;
+    max-height: 22px !important;
+    font-size: 11px !important;
+    padding: 0 4px !important;
+    border-radius: 5px !important;
+    line-height: 22px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn {
+    min-height: 22px !important;
+    height: 22px !important;
+    min-width: 36px !important;
+    font-size: 9.5px !important;
+    padding: 0 4px !important;
+    border-radius: 5px !important;
+    line-height: 1 !important;
+  }
+  html.tsext-pro #pr-wl-chips {
+    gap: 2px !important;
+    max-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  html.tsext-pro .pr-wl-chip {
+    min-height: 16px !important;
+    height: 16px !important;
+    padding: 0 5px !important;
+    font-size: 9px !important;
+    line-height: 16px !important;
+    border-radius: 999px !important;
+  }
+  html.tsext-pro #pr-wlbar {
+    height: 16px !important;
+    min-height: 16px !important;
+    max-height: 16px !important;
+    padding: 0 3px !important;
+    margin: 0 !important;
+  }
+  html.tsext-pro #pr-wl-title {
+    font-size: 9px !important;
+    line-height: 16px !important;
+  }
+  html.tsext-pro #pr-wlbar .tsext-btn,
+  html.tsext-pro #pr-wlbar button {
+    min-height: 16px !important;
+    min-width: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 9px !important;
+    padding: 0 !important;
+  }
+}
+
+/* ===== هدر جزئیات: عنوان + ضربدر مثل اول، بدون حاشیه مزاحم ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-obpanel .tsext-obpanel-head {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 0 6px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--tsext-border, #333) !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+  html.tsext-pro #tsext-obpanel-title {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    color: var(--tsext-fg, #e5e7eb) !important;
+  }
+  html.tsext-pro #tsext-obpanel .tsext-obpanel-head > div {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+  html.tsext-pro #tsext-obpanel-close {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    border-radius: 10px !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    background: #dc2626 !important;
+    color: #fff !important;
+    border: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+  html.tsext-pro #tsext-ob-zoom-dec,
+  html.tsext-pro #tsext-ob-zoom-inc {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    margin: 0 !important;
+  }
+  html.tsext-pro #tsext-obpanel::before {
+    display: none !important; /* نوار کشیدن فضای هدر را شلوغ می‌کرد */
+  }
+}
+
+/* ===== ضربدر جزئیات: مثل قبل (بدون قرمز) ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-obpanel-close {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    background: var(--tsext-input, transparent) !important;
+    color: var(--tsext-fg, inherit) !important;
+    border: 1px solid var(--tsext-border, #333) !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ===== کادر نماد پایه + افزودن: کوتاه‌تر ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-wl-input {
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    font-size: 10.5px !important;
+    padding: 0 4px !important;
+    line-height: 20px !important;
+  }
+  html.tsext-pro #pr-wl-input::placeholder {
+    font-size: 10px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn {
+    min-height: 20px !important;
+    height: 20px !important;
+    min-width: 32px !important;
+    font-size: 9px !important;
+    padding: 0 4px !important;
+  }
+  html.tsext-pro #pr-watchlist .pr-wl-add {
+    max-width: 100% !important;
+  }
+}
+
+/* ===== تنظیمات: نه تمام‌صفحه؛ شیت متناسب ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-host.m-settings-open #tsext-head .tsext-strategy-panel.active {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    top: auto !important;
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px)) !important;
+    max-height: min(58vh, 420px) !important;
+    height: auto !important;
+    inset: auto 8px calc(60px + env(safe-area-inset-bottom, 0px)) 8px !important;
+    border-radius: 14px !important;
+    border: 1px solid var(--tsext-border) !important;
+    box-shadow: 0 12px 40px rgba(0,0,0,.35) !important;
+    overflow-y: auto !important;
+    padding: 8px !important;
+    z-index: 85 !important;
+  }
+}
+#m-settings-bar {
+  /* فقط نوار بستن؛ پنل دیگر کل ارتفاع را نمی‌گیرد */
+}
+
+/* ===== نماد / افزودن / عنوان دیدبان — یک پله کوچک‌تر ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-wl-input {
+    height: 18px !important;
+    min-height: 18px !important;
+    max-height: 18px !important;
+    font-size: 10px !important;
+    padding: 0 3px !important;
+    line-height: 18px !important;
+    border-radius: 4px !important;
+  }
+  html.tsext-pro #pr-wl-input::placeholder {
+    font-size: 9.5px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn {
+    min-height: 18px !important;
+    height: 18px !important;
+    min-width: 28px !important;
+    font-size: 8.5px !important;
+    padding: 0 3px !important;
+    border-radius: 4px !important;
+  }
+  html.tsext-pro #pr-wlbar {
+    height: 14px !important;
+    min-height: 14px !important;
+    max-height: 14px !important;
+    padding: 0 2px !important;
+  }
+  html.tsext-pro #pr-wl-title {
+    font-size: 8.5px !important;
+    line-height: 14px !important;
+  }
+  html.tsext-pro #pr-wlbar .tsext-btn,
+  html.tsext-pro #pr-wlbar button {
+    min-height: 14px !important;
+    min-width: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+    font-size: 8px !important;
+  }
+}
+
+/* ===== کادر نماد + افزودن: دو پله کوچک‌تر ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-wl-input {
+    height: 15px !important;
+    min-height: 15px !important;
+    max-height: 15px !important;
+    font-size: 9px !important;
+    padding: 0 2px !important;
+    line-height: 15px !important;
+    border-radius: 3px !important;
+  }
+  html.tsext-pro #pr-wl-input::placeholder {
+    font-size: 8.5px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn {
+    min-height: 15px !important;
+    height: 15px !important;
+    min-width: 24px !important;
+    font-size: 7.5px !important;
+    padding: 0 2px !important;
+    border-radius: 3px !important;
+  }
+}
+
+/* ===== نماد / افزودن / دیدبان فرصت‌ها — کمی کوچک‌تر ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-wl-input {
+    height: 13px !important;
+    min-height: 13px !important;
+    max-height: 13px !important;
+    font-size: 8.5px !important;
+    padding: 0 2px !important;
+    line-height: 13px !important;
+    border-radius: 3px !important;
+  }
+  html.tsext-pro #pr-wl-input::placeholder {
+    font-size: 8px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn {
+    min-height: 13px !important;
+    height: 13px !important;
+    min-width: 22px !important;
+    font-size: 7px !important;
+    padding: 0 2px !important;
+    border-radius: 3px !important;
+  }
+  html.tsext-pro #pr-wlbar {
+    height: 12px !important;
+    min-height: 12px !important;
+    max-height: 12px !important;
+    padding: 0 2px !important;
+  }
+  html.tsext-pro #pr-wl-title {
+    font-size: 7.5px !important;
+    line-height: 12px !important;
+  }
+  html.tsext-pro #pr-wlbar .tsext-btn,
+  html.tsext-pro #pr-wlbar button {
+    min-height: 12px !important;
+    min-width: 12px !important;
+    width: 12px !important;
+    height: 12px !important;
+    font-size: 7px !important;
+  }
+}
+
+/* ===== تنظیمات ⚙ و فیلتر ☰: بزرگ‌تر + سمت راست ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-top-right {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    margin-inline-start: auto !important;
+    gap: 6px !important;
+    order: 99 !important;
+  }
+  html.tsext-pro #m-settings-btn,
+  html.tsext-pro #m-filters-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    border-radius: 10px !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+
+/* ===== دیدبان: اندازه نهایی (specificity بالا برای غلبه بر قوانین قبلی) ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-watchlist,
+  html.tsext-pro body.tsext-pro #pr-watchlist,
+  html.tsext-pro #tsext-host #pr-watchlist {
+    padding: 5px 8px !important;
+    gap: 6px !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+  }
+  html.tsext-pro #pr-watchlist .pr-wl-add,
+  html.tsext-pro body.tsext-pro #pr-watchlist .pr-wl-add,
+  html.tsext-pro #tsext-host #pr-watchlist .pr-wl-add {
+    padding: 5px 7px !important;
+    gap: 7px !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  html.tsext-pro #pr-wl-input,
+  html.tsext-pro body.tsext-pro #pr-wl-input,
+  html.tsext-pro #tsext-host #pr-wl-input,
+  html.tsext-pro body.tsext-pro #tsext-host #pr-wl-input {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    font-size: 13px !important;
+    line-height: 30px !important;
+    padding: 0 10px !important;
+    border-radius: 8px !important;
+  }
+  html.tsext-pro #pr-wl-input::placeholder,
+  html.tsext-pro #tsext-host #pr-wl-input::placeholder {
+    font-size: 12px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn,
+  html.tsext-pro body.tsext-pro #pr-wl-add-btn,
+  html.tsext-pro #tsext-host #pr-wl-add-btn,
+  html.tsext-pro body.tsext-pro #tsext-host #pr-wl-add-btn,
+  html.tsext-pro #pr-watchlist .pr-wl-add button {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    min-width: 54px !important;
+    font-size: 12px !important;
+    padding: 0 12px !important;
+    border-radius: 8px !important;
+    line-height: 1 !important;
+  }
+  html.tsext-pro #pr-wlbar,
+  html.tsext-pro body.tsext-pro #pr-wlbar,
+  html.tsext-pro #tsext-host #pr-wlbar {
+    height: 26px !important;
+    min-height: 26px !important;
+    max-height: 26px !important;
+    padding: 0 6px !important;
+  }
+  html.tsext-pro #pr-wl-title,
+  html.tsext-pro body.tsext-pro #pr-wl-title,
+  html.tsext-pro #pr-wl-title * {
+    font-size: 12.5px !important;
+    line-height: 26px !important;
+  }
+}
+
+/* ===== سلب‌مسئولیت کاملاً مخفی (اولویت نهایی) ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #pr-disclaimer-bar,
+  html.tsext-pro body.tsext-pro #pr-disclaimer-bar,
+  html.tsext-pro #tsext-host #pr-disclaimer-bar {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    border: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* ===== چیپ‌های نماد + فاصله لیست + فشردهٔ محسوس ===== */
+@media (max-width: 820px) {
+  /* چیپ‌ها — یک ردیف + اسکرول افقی (غلبه بر قوانین قبلی) */
+  html.tsext-pro #pr-wl-chips,
+  html.tsext-pro body.tsext-pro #pr-wl-chips,
+  html.tsext-pro #tsext-host #pr-wl-chips,
+  html.tsext-pro #pr-watchlist #pr-wl-chips {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    max-height: none !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+    scroll-behavior: smooth !important;
+    gap: 6px !important;
+    padding: 2px 0 4px !important;
+    align-items: center !important;
+    scrollbar-width: thin !important;
+  }
+  html.tsext-pro #pr-wl-chips::-webkit-scrollbar,
+  html.tsext-pro #tsext-host #pr-wl-chips::-webkit-scrollbar {
+    height: 3px !important;
+  }
+  html.tsext-pro .pr-wl-chip,
+  html.tsext-pro #tsext-host .pr-wl-chip,
+  html.tsext-pro body.tsext-pro .pr-wl-chip,
+  html.tsext-pro #pr-wl-chips .pr-wl-chip {
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
+    min-height: 26px !important;
+    height: auto !important;
+    padding: 4px 10px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    border-radius: 999px !important;
+    line-height: 1.2 !important;
+    max-width: none !important;
+    white-space: nowrap !important;
+  }
+
+  /* حالت عادی: فاصله و پدینگ خوانا */
+  html.tsext-pro #tsext-list-body {
+    padding: 4px 6px 10px !important;
+  }
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar {
+    margin: 0 0 8px !important;
+    border-radius: 9px !important;
+  }
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-main {
+    padding: 10px 11px !important;
+    row-gap: 3px !important;
+  }
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-name {
+    font-size: 13.5px !important;
+  }
+  html.tsext-pro #tsext-list:not(.tsext-compact) #tsext-list-body .tsext-bar-profit {
+    font-size: 14.5px !important;
+  }
+
+  /* حالت فشرده: تفاوت واضح — ردیف‌های خیلی جمع‌تر */
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body {
+    padding: 2px 4px 6px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar {
+    margin: 0 0 1px !important;
+    border-radius: 5px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-main {
+    padding: 2px 5px !important;
+    column-gap: 3px !important;
+    row-gap: 0 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-name {
+    font-size: 10.5px !important;
+    line-height: 1.1 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit {
+    font-size: 11px !important;
+    line-height: 1.05 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit::before {
+    font-size: 6.5px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-days,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-date,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-risk {
+    font-size: 8.5px !important;
+    line-height: 1.1 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-class .tsext-cls,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body [class*="tsext-cls"] {
+    font-size: 7.5px !important;
+    min-height: 12px !important;
+    padding: 0 2px !important;
+  }
+  /* فشرده: همهٔ بخش‌ها جمع‌تر — تفاوت واضح */
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-input,
+  html.tsext-pro #tsext-host.m-dense #pr-wl-input,
+  html.tsext-pro html.m-dense #pr-wl-input,
+  html.tsext-pro body.m-dense #pr-wl-input {
+    height: 22px !important;
+    min-height: 22px !important;
+    max-height: 22px !important;
+    font-size: 11.5px !important;
+    line-height: 22px !important;
+    padding: 0 6px !important;
+    border-radius: 6px !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-add-btn,
+  html.tsext-pro #tsext-host.m-dense #pr-wl-add-btn,
+  html.tsext-pro html.m-dense #pr-wl-add-btn,
+  html.tsext-pro body.m-dense #pr-wl-add-btn {
+    height: 22px !important;
+    min-height: 22px !important;
+    max-height: 22px !important;
+    min-width: 42px !important;
+    font-size: 10.5px !important;
+    padding: 0 6px !important;
+    border-radius: 6px !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) .pr-wl-chip,
+  html.tsext-pro #tsext-host.m-dense .pr-wl-chip,
+  html.tsext-pro html.m-dense .pr-wl-chip {
+    min-height: 18px !important;
+    padding: 1px 7px !important;
+    font-size: 10px !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-watchlist,
+  html.tsext-pro #tsext-host.m-dense #pr-watchlist {
+    padding: 1px 4px !important;
+    gap: 2px !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wlbar,
+  html.tsext-pro #tsext-host.m-dense #pr-wlbar {
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-topbar,
+  html.tsext-pro #tsext-host.m-dense #pr-topbar,
+  html.tsext-pro html.m-dense #pr-topbar {
+    height: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
+    padding: 0 6px !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #m-settings-btn,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #m-filters-btn,
+  html.tsext-pro #tsext-host.m-dense #m-settings-btn,
+  html.tsext-pro #tsext-host.m-dense #m-filters-btn {
+    min-height: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    font-size: 11px !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-status,
+  html.tsext-pro #tsext-host.m-dense #tsext-status {
+    font-size: 9px !important;
+    line-height: 14px !important;
+  }
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-list-hdr,
+  html.tsext-pro #tsext-host.m-dense #tsext-list-hdr {
+    min-height: 16px !important;
+    padding: 0 4px !important;
+    font-size: 9px !important;
+  }
+  /* لیست فشرده: حتی جمع‌تر */
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar {
+    margin: 0 !important;
+    border-radius: 4px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-main {
+    padding: 1px 4px !important;
+    column-gap: 3px !important;
+    row-gap: 0 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-name {
+    font-size: 10px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit {
+    font-size: 10.5px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-days,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-date,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-risk {
+    font-size: 8px !important;
+  }
+}
+
+
+/* ===== رفع فضای خالی بین نوار بالا و دیدبان + فشردهٔ سراسری ===== */
+@media (max-width: 820px) {
+  /* گرید بدون ردیف خالی — خارج از لایه برای غلبه بر pro.css */
+  html.tsext-pro body.tsext-pro #tsext-host,
+  html.tsext-pro #tsext-host,
+  html.tsext-pro body.tsext-pro #tsext-host.tsext-with-ob {
+    gap: 0 !important;
+    row-gap: 0 !important;
+    column-gap: 0 !important;
+    grid-template-areas:
+      "pr-top"
+      "pr-watch"
+      "pr-wl"
+      "pr-list"
+      "pr-status" !important;
+    grid-template-rows:
+      var(--pr-top-h, 42px)
+      auto
+      auto
+      minmax(0, 1fr)
+      var(--pr-status-h, 16px) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  /* سلب‌مسئولیت و سایدبار: صفر فضا */
+  html.tsext-pro #pr-disclaimer-bar,
+  html.tsext-pro #pr-split-1,
+  html.tsext-pro #pr-split-2,
+  html.tsext-pro #pr-side,
+  html.tsext-pro #tsext-side,
+  html.tsext-pro [grid-area="prside"],
+  html.tsext-pro #tsext-host > #pr-side {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: none !important;
+  }
+
+  /* نوار بالا بزرگ‌تر و چسبیده به دیدبان */
+  html.tsext-pro #pr-topbar,
+  html.tsext-pro body.tsext-pro #pr-topbar,
+  html.tsext-pro #tsext-host #pr-topbar {
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 8px !important;
+    gap: 6px !important;
+    border-bottom-width: 1px !important;
+  }
+  html.tsext-pro #pr-topbar:after {
+    display: none !important;
+    height: 0 !important;
+  }
+  html.tsext-pro #m-settings-btn,
+  html.tsext-pro #m-filters-btn,
+  html.tsext-pro #pr-digits-btn,
+  html.tsext-pro #tsext-theme-cycle {
+    min-height: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    font-size: 12.5px !important;
+  }
+  html.tsext-pro #pr-topbar .tsext-logo {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  /* دیدبان: بدون فاصله از بالا */
+  html.tsext-pro #pr-watchlist,
+  html.tsext-pro body.tsext-pro #pr-watchlist,
+  html.tsext-pro #tsext-host #pr-watchlist {
+    margin: 0 !important;
+    margin-top: 0 !important;
+    padding: 3px 6px !important;
+    gap: 4px !important;
+    border-top: none !important;
+  }
+
+  /* کادر نماد ۳۰px */
+  html.tsext-pro #pr-wl-input,
+  html.tsext-pro body.tsext-pro #pr-wl-input,
+  html.tsext-pro #tsext-host #pr-wl-input,
+  html.tsext-pro body.tsext-pro #tsext-host #pr-wl-input {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    font-size: 13px !important;
+    line-height: 30px !important;
+    padding: 0 10px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn,
+  html.tsext-pro body.tsext-pro #pr-wl-add-btn,
+  html.tsext-pro #tsext-host #pr-wl-add-btn,
+  html.tsext-pro body.tsext-pro #tsext-host #pr-wl-add-btn {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    min-width: 54px !important;
+    font-size: 12px !important;
+    padding: 0 12px !important;
+  }
+
+  /* نوار عنوان دیدبان کمی جمع */
+  html.tsext-pro #pr-wlbar,
+  html.tsext-pro #tsext-host #pr-wlbar {
+    height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
+    margin: 0 !important;
+    padding: 0 6px !important;
+  }
+
+  /* وضعیت پایین جمع‌تر */
+  html.tsext-pro #tsext-status,
+  html.tsext-pro #pr-status {
+    min-height: 16px !important;
+    height: auto !important;
+    max-height: 18px !important;
+    padding: 0 6px !important;
+    margin: 0 !important;
+    font-size: 10px !important;
+    line-height: 16px !important;
+  }
+
+  /* لیست فضای بیشتر */
+  html.tsext-pro #tsext-list,
+  html.tsext-pro #tsext-list-body {
+    margin-top: 0 !important;
+    padding-top: 2px !important;
+  }
+}
+
+/* ===== فشردهٔ سراسری قوی ===== */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-host.m-dense,
+  html.tsext-pro html.m-dense #tsext-host,
+  html.tsext-pro body.m-dense #tsext-host,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) {
+    --pr-top-h: 30px !important;
+    --pr-status-h: 14px !important;
+    grid-template-rows:
+      30px
+      auto
+      auto
+      minmax(0, 1fr)
+      14px !important;
+  }
+
+  html.tsext-pro #tsext-host.m-dense #pr-topbar,
+  html.tsext-pro html.m-dense #pr-topbar,
+  html.tsext-pro body.m-dense #pr-topbar,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-topbar {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    padding: 0 5px !important;
+    gap: 3px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #m-settings-btn,
+  html.tsext-pro #tsext-host.m-dense #m-filters-btn,
+  html.tsext-pro #tsext-host.m-dense #pr-digits-btn,
+  html.tsext-pro #tsext-host.m-dense #tsext-theme-cycle,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #m-settings-btn,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #m-filters-btn {
+    min-height: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    font-size: 10.5px !important;
+    padding: 0 5px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-topbar .tsext-logo,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-topbar .tsext-logo {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  html.tsext-pro #tsext-host.m-dense #pr-watchlist,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-watchlist {
+    padding: 1px 3px !important;
+    gap: 1px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-input,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-input {
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    font-size: 11px !important;
+    line-height: 20px !important;
+    padding: 0 5px !important;
+    border-radius: 5px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-add-btn,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-add-btn {
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    min-width: 38px !important;
+    font-size: 10px !important;
+    padding: 0 5px !important;
+    border-radius: 5px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense .pr-wl-chip,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) .pr-wl-chip {
+    min-height: 16px !important;
+    padding: 0 6px !important;
+    font-size: 9.5px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wlbar,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wlbar {
+    height: 18px !important;
+    min-height: 18px !important;
+    max-height: 18px !important;
+    padding: 0 4px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-title,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-title {
+    font-size: 10px !important;
+    line-height: 18px !important;
+  }
+
+  html.tsext-pro #tsext-host.m-dense #tsext-status,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-status {
+    font-size: 8.5px !important;
+    line-height: 13px !important;
+    max-height: 14px !important;
+    padding: 0 4px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-list-hdr,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-list-hdr {
+    min-height: 14px !important;
+    padding: 0 3px !important;
+    font-size: 8.5px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-list-hdr::after,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-list-hdr::after {
+    font-size: 7.5px !important;
+  }
+
+  /* لیست فوق‌فشرده */
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body {
+    padding: 1px 3px 4px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar {
+    margin: 0 !important;
+    border-radius: 3px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-main {
+    padding: 0 3px !important;
+    column-gap: 2px !important;
+    row-gap: 0 !important;
+    min-height: 0 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-name {
+    font-size: 9.5px !important;
+    line-height: 1.05 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit {
+    font-size: 10px !important;
+    line-height: 1.05 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit::before {
+    font-size: 6px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-days,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-date,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-risk {
+    font-size: 7.5px !important;
+    line-height: 1.05 !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-class .tsext-cls,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body [class*="tsext-cls"] {
+    font-size: 7px !important;
+    min-height: 11px !important;
+    padding: 0 2px !important;
+  }
+
+  /* تب پایین کمی جمع‌تر در فشرده */
+  html.tsext-pro #tsext-host.m-dense #tsext-tabs,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-tabs {
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: 2px 4px !important;
+  }
+}
+
+
+/* ===== رفع فاصلهٔ باقی‌مانده + وضعیت بالای تب‌ها ===== */
+@media (max-width: 820px) {
+  /* المان‌های یتیم گرید را مخفی کن تا ردیف خالی نسازند */
+  html.tsext-pro #tsext-host > #pr-disclaimer-bar,
+  html.tsext-pro #tsext-host > #pr-side,
+  html.tsext-pro #tsext-host > #pr-split-1,
+  html.tsext-pro #tsext-host > #pr-split-2,
+  html.tsext-pro #tsext-host > #pr-detail,
+  html.tsext-pro #tsext-host > [style*="prside"],
+  html.tsext-pro #pr-side,
+  html.tsext-pro #pr-detail {
+    display: none !important;
+    grid-area: unset !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 0 !important;
+  }
+
+  /* تخصیص صریح نواحی گرید */
+  html.tsext-pro #pr-topbar { grid-area: pr-top !important; }
+  html.tsext-pro #pr-watchlist { grid-area: pr-watch !important; }
+  html.tsext-pro #pr-wlbar { grid-area: pr-wl !important; }
+  html.tsext-pro #tsext-list,
+  html.tsext-pro #tsext-maincol #tsext-list { grid-area: pr-list !important; }
+  html.tsext-pro #tsext-status { grid-area: pr-status !important; }
+
+  /* فاصلهٔ صفر بین نوار بالا و دیدبان */
+  html.tsext-pro #pr-topbar,
+  html.tsext-pro #pr-watchlist,
+  html.tsext-pro #pr-wlbar {
+    margin: 0 !important;
+    margin-block: 0 !important;
+  }
+  html.tsext-pro #pr-topbar {
+    border-bottom: 1px solid var(--tsext-border, #20304f) !important;
+  }
+  html.tsext-pro #pr-watchlist {
+    border-top: none !important;
+    box-shadow: none !important;
+  }
+
+  /* فضای پایین: تب‌ها + وضعیت — وضعیت بالای تب‌ها دیده شود */
+  html.tsext-pro body.tsext-pro #tsext-host,
+  html.tsext-pro #tsext-host {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* وضعیت ثابت بالای تب پایین */
+  html.tsext-pro #tsext-status,
+  html.tsext-pro body.tsext-pro #tsext-status,
+  html.tsext-pro #tsext-host #tsext-status {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+    top: auto !important;
+    z-index: 2147482990 !important;
+    height: 22px !important;
+    min-height: 22px !important;
+    max-height: 22px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    font-size: 11px !important;
+    line-height: 22px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    background: var(--tsext-panel, #0d1520) !important;
+    border-top: 1px solid var(--tsext-border, #333) !important;
+    box-sizing: border-box !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  html.tsext-pro #tsext-status #pr-status-text,
+  html.tsext-pro #pr-status-text {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+    line-height: 22px !important;
+  }
+
+  /* تب‌ها زیر وضعیت */
+  html.tsext-pro #tsext-tabs,
+  html.tsext-pro #tsext-host #tsext-tabs {
+    bottom: env(safe-area-inset-bottom, 0px) !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    z-index: 2147483000 !important;
+  }
+
+  /* گرید بدون ردیف status (چون fixed شده) تا فضا آزاد شود */
+  html.tsext-pro body.tsext-pro #tsext-host,
+  html.tsext-pro #tsext-host {
+    grid-template-areas:
+      "pr-top"
+      "pr-watch"
+      "pr-wl"
+      "pr-list" !important;
+    grid-template-rows:
+      var(--pr-top-h, 42px)
+      auto
+      auto
+      minmax(0, 1fr) !important;
+  }
+}
+
+/* فشرده: وضعیت و تب‌ها کمی جمع‌تر ولی خوانا */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-host.m-dense,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+    grid-template-rows:
+      30px
+      auto
+      auto
+      minmax(0, 1fr) !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-status,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-status {
+    height: 18px !important;
+    min-height: 18px !important;
+    max-height: 18px !important;
+    font-size: 9.5px !important;
+    line-height: 18px !important;
+    bottom: calc(48px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 0 6px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-status #pr-status-text,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-status-text {
+    font-size: 9.5px !important;
+    line-height: 18px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-tabs,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-tabs {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    bottom: env(safe-area-inset-bottom, 0px) !important;
+  }
+}
+
+
+/* ===== تناسب نهایی: نوار تنظیمات + بدون حاشیهٔ مرده + فشردهٔ متعادل ===== */
+@media (max-width: 820px) {
+  /* نوار تنظیمات کمی بزرگ‌تر */
+  html.tsext-pro body.tsext-pro #tsext-host,
+  html.tsext-pro #tsext-host {
+    --pr-top-h: 46px !important;
+    gap: 0 !important;
+    row-gap: 0 !important;
+    /* فقط تب‌ها در padding — وضعیت روی لیست می‌نشیند بدون نوار مرده */
+    padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px)) !important;
+    grid-template-areas:
+      "pr-top"
+      "pr-watch"
+      "pr-wl"
+      "pr-list" !important;
+    grid-template-rows:
+      46px
+      auto
+      auto
+      minmax(0, 1fr) !important;
+  }
+
+  html.tsext-pro #pr-topbar,
+  html.tsext-pro body.tsext-pro #pr-topbar,
+  html.tsext-pro #tsext-host #pr-topbar {
+    height: 46px !important;
+    min-height: 46px !important;
+    max-height: 46px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    gap: 6px !important;
+  }
+  html.tsext-pro #m-settings-btn,
+  html.tsext-pro #m-filters-btn,
+  html.tsext-pro #pr-digits-btn,
+  html.tsext-pro #tsext-theme-cycle {
+    min-height: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    font-size: 13px !important;
+  }
+  html.tsext-pro #pr-topbar .tsext-logo {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  /* دیدبان چسبیده */
+  html.tsext-pro #pr-watchlist,
+  html.tsext-pro #tsext-host #pr-watchlist {
+    margin: 0 !important;
+    padding: 4px 6px !important;
+    gap: 4px !important;
+  }
+  html.tsext-pro #pr-wl-input,
+  html.tsext-pro #tsext-host #pr-wl-input {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    font-size: 13px !important;
+    line-height: 30px !important;
+  }
+  html.tsext-pro #pr-wl-add-btn,
+  html.tsext-pro #tsext-host #pr-wl-add-btn {
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    min-width: 54px !important;
+    font-size: 12px !important;
+  }
+  html.tsext-pro #pr-wlbar,
+  html.tsext-pro #tsext-host #pr-wlbar {
+    height: 22px !important;
+    min-height: 22px !important;
+    max-height: 22px !important;
+    margin: 0 !important;
+    padding: 0 6px !important;
+  }
+
+  /* لیست تا نزدیک تب‌ها — بدون نوار خالی بالای وضعیت */
+  html.tsext-pro #tsext-list,
+  html.tsext-pro #tsext-list-body {
+    margin: 0 !important;
+    padding-bottom: 24px !important; /* فقط به اندازهٔ ارتفاع وضعیت */
+  }
+
+  /* وضعیت: روی لیست، بدون پس‌زمینهٔ پهن/حاشیهٔ مرده */
+  html.tsext-pro #tsext-status,
+  html.tsext-pro body.tsext-pro #tsext-status,
+  html.tsext-pro #tsext-host #tsext-status {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: calc(52px + env(safe-area-inset-bottom, 0px)) !important;
+    top: auto !important;
+    z-index: 2147482990 !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    background: color-mix(in srgb, var(--tsext-panel, #0d1520) 92%, transparent) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    font-size: 10.5px !important;
+    line-height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  html.tsext-pro #tsext-status #pr-status-text,
+  html.tsext-pro #pr-status-text {
+    font-size: 10.5px !important;
+    line-height: 20px !important;
+    background: transparent !important;
+  }
+
+  /* تب‌ها */
+  html.tsext-pro #tsext-tabs,
+  html.tsext-pro #tsext-host #tsext-tabs {
+    bottom: env(safe-area-inset-bottom, 0px) !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    margin: 0 !important;
+  }
+}
+
+/* فشرده: کادر نماد متناسب‌تر (نه خیلی باریک) + بقیه جمع */
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-host.m-dense,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) {
+    --pr-top-h: 34px !important;
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)) !important;
+    grid-template-rows:
+      34px
+      auto
+      auto
+      minmax(0, 1fr) !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-topbar,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-topbar {
+    height: 34px !important;
+    min-height: 34px !important;
+    max-height: 34px !important;
+    padding: 0 6px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #m-settings-btn,
+  html.tsext-pro #tsext-host.m-dense #m-filters-btn,
+  html.tsext-pro #tsext-host.m-dense #pr-digits-btn,
+  html.tsext-pro #tsext-host.m-dense #tsext-theme-cycle,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #m-settings-btn,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #m-filters-btn {
+    min-height: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    font-size: 11.5px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-topbar .tsext-logo,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-topbar .tsext-logo {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* کادر نماد فشرده: ۲۶px (نه ۲۰) — متناسب */
+  html.tsext-pro #tsext-host.m-dense #pr-watchlist,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-watchlist {
+    padding: 2px 5px !important;
+    gap: 3px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-input,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-input,
+  html.tsext-pro #tsext-host.m-dense #tsext-host #pr-wl-input {
+    height: 26px !important;
+    min-height: 26px !important;
+    max-height: 26px !important;
+    font-size: 12.5px !important;
+    line-height: 26px !important;
+    padding: 0 8px !important;
+    border-radius: 7px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-add-btn,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-add-btn {
+    height: 26px !important;
+    min-height: 26px !important;
+    max-height: 26px !important;
+    min-width: 48px !important;
+    font-size: 11.5px !important;
+    padding: 0 10px !important;
+    border-radius: 7px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense .pr-wl-chip,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) .pr-wl-chip {
+    min-height: 22px !important;
+    padding: 2px 8px !important;
+    font-size: 11px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wlbar,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wlbar {
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #pr-wl-title,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #pr-wl-title {
+    font-size: 11px !important;
+    line-height: 20px !important;
+  }
+
+  html.tsext-pro #tsext-host.m-dense #tsext-list-body,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-list-body {
+    padding-bottom: 20px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-status,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-status {
+    height: 18px !important;
+    min-height: 18px !important;
+    max-height: 18px !important;
+    font-size: 9.5px !important;
+    line-height: 18px !important;
+    bottom: calc(48px + env(safe-area-inset-bottom, 0px)) !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: color-mix(in srgb, var(--tsext-panel, #0d1520) 90%, transparent) !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-tabs,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-tabs {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    bottom: env(safe-area-inset-bottom, 0px) !important;
+  }
+
+  /* لیست فشرده مرتب */
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar {
+    margin: 0 0 1px !important;
+    border-radius: 5px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-main {
+    padding: 3px 6px !important;
+    column-gap: 4px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-name {
+    font-size: 11px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-profit {
+    font-size: 11.5px !important;
+  }
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-days,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-date,
+  html.tsext-pro #tsext-list.tsext-compact #tsext-list-body .tsext-bar-risk {
+    font-size: 9px !important;
+  }
+}
+
+
+/* ===== حذف حاشیه/نوار مرده بالای وضعیت ===== */
+@media (max-width: 820px) {
+  /* لیست بدون padding خالی در انتها */
+  html.tsext-pro #tsext-list-body,
+  html.tsext-pro #tsext-host #tsext-list-body,
+  html.tsext-pro body.tsext-pro #tsext-list-body {
+    padding-bottom: 4px !important;
+    margin-bottom: 0 !important;
+  }
+  html.tsext-pro #tsext-list,
+  html.tsext-pro #tsext-host #tsext-list {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* وضعیت: فقط متن، بدون نوار/پس‌زمینهٔ پهن */
+  html.tsext-pro #tsext-status,
+  html.tsext-pro body.tsext-pro #tsext-status,
+  html.tsext-pro #tsext-host #tsext-status,
+  html.tsext-pro #tsext-status:empty {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: calc(52px + env(safe-area-inset-bottom, 0px)) !important;
+    height: 18px !important;
+    min-height: 18px !important;
+    max-height: 18px !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    outline: none !important;
+    font-size: 10.5px !important;
+    line-height: 18px !important;
+    z-index: 2147482990 !important;
+    display: flex !important;
+    align-items: center !important;
+    pointer-events: none !important;
+  }
+  html.tsext-pro #tsext-status #pr-status-text,
+  html.tsext-pro #pr-status-text {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 10.5px !important;
+    line-height: 18px !important;
+    text-shadow: 0 0 4px var(--tsext-panel, #fff), 0 0 8px var(--tsext-panel, #fff) !important;
+  }
+
+  /* هر نوار/اعلان خالی پایین را حذف کن */
+  html.tsext-pro #tsext-web-notices:empty,
+  html.tsext-pro #tsext-web-notices:not(:has(*)) {
+    display: none !important;
+    height: 0 !important;
+  }
+  html.tsext-pro #tsext-web-notices {
+    bottom: calc(52px + env(safe-area-inset-bottom, 0px)) !important;
+    max-height: 24px !important;
+  }
+
+  /* فضای پایین host فقط برای تب‌ها */
+  html.tsext-pro body.tsext-pro #tsext-host,
+  html.tsext-pro #tsext-host {
+    padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+@media (max-width: 820px) {
+  html.tsext-pro #tsext-host.m-dense #tsext-list-body,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-list-body {
+    padding-bottom: 4px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense #tsext-status,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) #tsext-status {
+    height: 16px !important;
+    min-height: 16px !important;
+    max-height: 16px !important;
+    bottom: calc(48px + env(safe-area-inset-bottom, 0px)) !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    font-size: 9.5px !important;
+    line-height: 16px !important;
+  }
+  html.tsext-pro #tsext-host.m-dense,
+  html.tsext-pro body.tsext-pro #tsext-host:has(#tsext-list.tsext-compact) {
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fa" dir="rtl" class="tsext-pro" data-tsext-build="12d92899e02b" data-tsext-version="1.0.0">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<!-- v1.24: همان CSP سخت‌گیرانهٔ manifest، این‌جا هم (در تست file:// هم اعمال می‌شود) — frame-ancestors فقط در manifest معتبر است -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cdn.tsetmc.com https://*.tsetmc.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>دستیار هوشمند آپشن — دیدبان زندهٔ اختیار معامله</title>
+<link rel="icon" href="icons/icon128.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon192.png">
+<meta name="theme-color" content="#0d1520">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script src="web-adapter.js?v=20261019h"></script>
+<link rel="stylesheet" href="fonts/vazirmatn.css?v=20261019h">
+<link rel="stylesheet" href="mobile.css?v=20261019h">
+<link rel="stylesheet" href="tsext.css?v=20261019h">
+<link rel="stylesheet" href="pro.css?v=20261019h">
+</head>
+<body class="tsext-pro">
+  <!-- موتور اصلی (بدون هیچ تغییری — همان content.js). بوت تنبل: boot.js فقط در کم‌کاری
+       content.js را تزریق می‌کند تا چیدمان اولیه صفحه (CSS) رندر شود و تجزیهٔ سنگین
+       در ابتدای لود بلوک نشود؛ محتوا/رفتار عیناً همان قبل است. -->
+  <script src="content.js?v=20261019h"></script>
+  <script src="mobile.js?v=20261019h"></script>
+  <!-- override نهایی چیدمان/تب/وضعیت pro — استاتیک، نه تزریق‌شده توسط pro.js.
+       باید بعد از تگ اسکریپت content.js بیاید تا در DOM از استایل پویای آن (06c-styles.js) جلوتر باشد
+       و در کشمکش !important برنده شود؛ محتوا و رفتار عیناً همان چیزی است که قبلاً pro.js در runtime
+       می‌ساخت (تگ id=tsext-pro-override-final) — فقط منبع از JS به HTML استاتیک منتقل شده. -->
+  <style id="tsext-pro-override-final">html.tsext-pro #tsext-obpanel #tsext-obpanel-body{overflow:hidden !important;scrollbar-gutter:stable} html.tsext-pro #tsext-obpanel #tsext-obpanel-body.tsext-ob-split{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;grid-template-rows:minmax(0,1fr) !important;gap:0 !important;overflow:hidden !important;align-items:stretch !important;min-height:0 !important} html.tsext-pro #tsext-obpanel #tsext-obpanel-body.tsext-ob-split.tsext-ob-solo{grid-template-columns:minmax(0,1fr) !important} html.tsext-pro #tsext-ob-calc{overflow-y:auto !important;overflow-x:hidden !important;min-height:0 !important;border-inline-end:2px solid var(--tsext-border) !important} html.tsext-pro #tsext-ob-books{overflow-y:auto !important;overflow-x:hidden !important;min-height:0 !important;background:color-mix(in srgb,var(--tsext-panel2) 45%,var(--tsext-panel)) !important;display:flex !important;flex-direction:column !important} html.tsext-pro #tsext-host[dir] .tsext-cols, html.tsext-pro #tsext-host[dir] .tsext-cols [data-resize], html.tsext-pro #tsext-host[dir] .tsext-cols .tsext-cols-strip, html.tsext-pro #tsext-host[dir] .tsext-cols .tsext-col, html.tsext-pro #tsext-host #tsext-list-body .tsext-bar-main, html.tsext-pro #tsext-host #tsext-list-body .tsext-bar-main > *{transform:none !important} html.tsext-pro #tsext-host #tsext-list-body .tsext-bar, html.tsext-pro #tsext-host #tsext-list-body .tsext-bar-main, html.tsext-pro #tsext-host #tsext-list-hdr .tsext-cols{min-width:0 !important;width:auto !important} html.tsext-pro #tsext-host .tsext-bar-strip{width:5px !important;min-width:5px !important;max-width:5px !important;padding:0 !important} html.tsext-pro #tsext-host #tsext-list-hdr .tsext-hdr, html.tsext-pro #tsext-host #tsext-list-hdr .tsext-legend, html.tsext-pro #tsext-host #tsext-list-hdr .tsext-price-basis{min-width:0 !important;white-space:normal !important} html.tsext-pro #tsext-host .tsext-cols, html.tsext-pro #tsext-host .tsext-bar-main{grid-template-columns:var(--tsext-grid-cols) !important;column-gap:var(--tsext-grid-gap,6px) !important;width:100% !important;max-width:100% !important;min-width:0 !important} html.tsext-pro #tsext-host .tsext-cols-actions, html.tsext-pro #tsext-host .tsext-bar-actions{width:auto !important;min-width:0 !important;max-width:none !important;justify-self:stretch !important;box-sizing:border-box !important;padding-inline:0 !important;margin:0 !important} html.tsext-pro #tsext-host .tsext-bar-open{display:none !important} html.tsext-pro #tsext-host .tsext-bar-obbtn{width:100% !important;min-width:0 !important;justify-content:center !important} html.tsext-pro #tsext-list-body{padding-inline:8px !important} html.tsext-pro #tsext-host #tsext-list-hdr .tsext-cols, html.tsext-pro #tsext-host #tsext-list-body .tsext-bar-main{padding-inline:0 !important;margin-inline:0 !important} html.tsext-pro #tsext-host #tsext-list-body .tsext-bar{border-inline-width:0 !important} html.tsext-pro #tsext-head .tsext-strategy-panel .tsext-row:has(input[id^="tsext-underlying-"]){display:flex !important} html.tsext-pro input[id^="tsext-underlying-"]{display:none !important} html.tsext-pro #pr-search{display:none !important} html.tsext-pro #tsext-tabs{display:flex!important;flex-direction:column!important;gap:0!important;padding:20px 14px 26px!important} html.tsext-pro #tsext-tabs .tsext-tab{margin:0 0 18px 0!important;min-height:64px!important;padding:18px 20px!important;border-radius:14px!important;font-size:14px!important;font-weight:900!important;letter-spacing:.01em!important;border-width:2px!important;box-shadow:0 3px 10px rgba(0,0,0,.08)!important} html.tsext-pro #tsext-tabs .tsext-tab:last-child{margin-bottom:8px!important} html.tsext-pro #tsext-tabs .tsext-tab::before{width:32px!important;height:32px!important;font-size:15px!important;border-radius:10px!important} html.tsext-pro #tsext-tabs .tsext-tab.active{font-size:14.5px!important;box-shadow:0 6px 18px color-mix(in srgb,var(--tsext-accent) 28%,transparent),inset 5px 0 0 var(--tsext-accent)!important;border-color:var(--tsext-accent)!important} html.tsext-pro #tsext-host .tsext-bar-risk.tsext-risk-high, html.tsext-pro #tsext-host .tsext-bar[data-c="−B"] .tsext-bar-risk, html.tsext-pro #tsext-host .tsext-bar[data-c="-B"] .tsext-bar-risk{border-radius:999px !important;padding:3px 7px !important}</style>
+</body>
+</html>

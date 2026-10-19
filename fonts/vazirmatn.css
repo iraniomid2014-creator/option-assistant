@@ -1,0 +1,11 @@
+/* Vazirmatn variable — نسخهٔ 33.0.3 — لایسنس SIL OFL (فایل OFL.txt کنار این فایل)
+   منبع: https://github.com/rastikerdar/vazirmatn
+   یک فایل، همهٔ وزن‌های ۱۰ تا ۹۰ — بدون نیاز به اینترنت. */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('vazirmatn.woff2') format('woff2 supports variations'),
+       url('vazirmatn.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
