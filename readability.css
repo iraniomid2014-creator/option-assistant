@@ -1,0 +1,55 @@
+/* readability.css — خوانایی متن‌ها در هر سه تم (روشن / تیره / کنتراست)
+   این لایه عمداً «اولین» لایهٔ اعلام‌شده است؛ چون برای قوانین !important لایهٔ اول قوی‌ترین است،
+   پس بر رنگ‌های ثابت (hard-coded) قدیمی در tsext.css / pro.css / theme-v2.css غلبه می‌کند.
+   همهٔ رنگ‌ها از توکن‌های --rx-* می‌آیند (حداقل نسبت کنتراست ۴٫۵ به ۱ روی پس‌زمینهٔ پنل هر تم). */
+@layer tsext-fix;
+@layer tsext-fix {
+  #tsext-host[data-tsext-theme="light"]    { --rx-lbl:#475569; --rx-val:#0f172a; --rx-pos:#15803d; --rx-neg:#b91c1c; --rx-wait:#475569; --rx-warn:#92400e; --rx-ok-a:#15803d; --rx-ok-b:#166534; }
+  #tsext-host[data-tsext-theme="dark"]     { --rx-lbl:#cbd5e1; --rx-val:#f8fafc; --rx-pos:#4ade80; --rx-neg:#fda4af; --rx-wait:#cbd5e1; --rx-warn:#fcd34d; --rx-ok-a:#15803d; --rx-ok-b:#166534; }
+  #tsext-host[data-tsext-theme="contrast"] { --rx-lbl:#e5e5e5; --rx-val:#ffffff; --rx-pos:#86efac; --rx-neg:#fca5a5; --rx-wait:#e5e5e5; --rx-warn:#fde047; --rx-ok-a:#15803d; --rx-ok-b:#166534; }
+
+  /* ── پنل جزئیات: کارت‌های خلاصه ── */
+  html #tsext-host #tsext-ob-calc .tsext-hero-card .h-lbl { color: var(--rx-lbl) !important; }
+  html #tsext-host #tsext-ob-calc .tsext-hero-card .h-val { color: var(--rx-val) !important; }
+  html #tsext-host #tsext-ob-calc .tsext-hero-card.pos .h-val,
+  html #tsext-host #tsext-ob-calc .tsext-hero-card.main.pos .h-val { color: var(--rx-pos) !important; }
+  html #tsext-host #tsext-ob-calc .tsext-hero-card.neg .h-val,
+  html #tsext-host #tsext-ob-calc .tsext-hero-card.main.neg .h-val { color: var(--rx-neg) !important; }
+
+  /* ── پنل جزئیات: سلول‌ها، بخش‌ها و حکم نهایی ── */
+  html #tsext-host #tsext-ob-calc .tsext-cell .lbl,
+  html #tsext-host #tsext-ob-calc .tsext-sec { color: var(--rx-lbl) !important; }
+  html #tsext-host #tsext-ob-calc .tsext-cell .val { color: var(--rx-val) !important; }
+  html #tsext-host #tsext-ob-calc .tsext-cell .val.pos,
+  html #tsext-host #tsext-ob-calc .tsext-verdict.pos { color: var(--rx-pos) !important; }
+  html #tsext-host #tsext-ob-calc .tsext-cell .val.neg,
+  html #tsext-host #tsext-ob-calc .tsext-verdict.neg { color: var(--rx-neg) !important; }
+  html #tsext-host #tsext-ob-calc .tsext-verdict:not(.pos):not(.neg) { color: var(--rx-val) !important; }
+
+  /* ── تیک‌سود و زیرشاخه‌ها (رفت‌وبرگشت / آربیتراژ / اسپرد) ── */
+  html #tsext-host.tsext-s-tick .tsext-tick-status.is-ready {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, var(--rx-ok-a), var(--rx-ok-b)) !important;
+    border-color: var(--rx-ok-b) !important;
+  }
+  html #tsext-host.tsext-s-tick .tsext-tick-status.is-wait { color: var(--rx-wait) !important; }
+  html #tsext-host.tsext-s-tick .tsext-tick-gap.is-ready,
+  html #tsext-host .tsext-tc-chip.is-ready { color: var(--rx-pos) !important; }
+  html #tsext-host .tsext-tc-chip.is-wait,
+  html #tsext-host .tsext-tc-tip,
+  html #tsext-host .tsext-tc-foot,
+  html #tsext-host .tsext-tc-empty { color: var(--rx-lbl) !important; }
+  html #tsext-host .tsext-tc-svg text { fill: var(--rx-lbl) !important; }
+  html #tsext-host .tsext-sp-note { color: var(--rx-warn) !important; }
+  html #tsext-host .tsext-sp-l,
+  html #tsext-host .tsext-sp-d,
+  html #tsext-host .tsext-arb-diff { color: var(--rx-val) !important; }
+  html #tsext-host .tsext-sp-sub,
+  html #tsext-host .tsext-arb-key,
+  html #tsext-host .tsext-arb-gap,
+  html #tsext-host .tsext-arb-total { color: var(--rx-lbl) !important; }
+  html #tsext-host #tsext-obpanel .tsext-ob-title { color: var(--rx-val) !important; }
+  html #tsext-host #tsext-obpanel .tsext-ob-empty,
+  html #tsext-host #tsext-obpanel .tsext-ob-foot,
+  html #tsext-host #tsext-obpanel .tsext-ob-info { color: var(--rx-lbl) !important; }
+}

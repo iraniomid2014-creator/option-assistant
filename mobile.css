@@ -2913,3 +2913,103 @@
     padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+/* =====================================================================
+   v1.2 — نوار تب پایین (لمسی، سریع، آیکن SVG) + حالت فشرده‌تر موبایل
+   آخرین بلوک فایل است؛ در لایهٔ tsext-mobile (قوی‌ترین لایه برای !important).
+   ارتفاع‌ها از متغیرهای --m-nav-h (کامل ۵۸px / فشرده ۴۸px) می‌آیند و mobile.js همین را تنظیم می‌کند.
+   ===================================================================== */
+@layer tsext-mobile {
+@media (max-width: 820px) {
+  html.tsext-pro { --m-nav-h: 58px; }
+  html.tsext-pro.m-dense { --m-nav-h: 48px; }
+
+  html.tsext-pro body.tsext-pro #tsext-host #tsext-tabs {
+    position: fixed !important;
+    left: 0 !important; right: 0 !important; top: auto !important; bottom: 0 !important;
+    width: 100% !important;
+    height: calc(var(--m-nav-h) + env(safe-area-inset-bottom, 0px)) !important;
+    min-height: calc(var(--m-nav-h) + env(safe-area-inset-bottom, 0px)) !important;
+    max-height: calc(var(--m-nav-h) + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 5px 8px calc(5px + env(safe-area-inset-bottom, 0px)) !important;
+    gap: 6px !important;
+    display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: stretch !important;
+    box-sizing: border-box !important;
+    background: var(--tsext-panel) !important;
+    border-top: 1px solid var(--tsext-border) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 -6px 18px rgba(0,0,0,.10) !important;
+    overflow: hidden !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab {
+    position: relative !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important; width: auto !important;
+    height: 100% !important; min-height: 44px !important; max-height: none !important;
+    margin: 0 !important; padding: 2px 2px !important;
+    display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important;
+    gap: 2px !important;
+    font-size: 11px !important; font-weight: 800 !important; line-height: 1.2 !important; letter-spacing: 0 !important;
+    white-space: nowrap !important; text-overflow: ellipsis !important; overflow: hidden !important;
+    border: 0 !important; border-radius: 14px !important;
+    background: transparent !important; box-shadow: none !important;
+    color: var(--tsext-muted) !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none !important; -webkit-user-select: none !important;
+    transition: background-color .12s ease, color .12s ease, transform .08s ease !important;
+  }
+  /* آیکن قدیمی (کاراکتر یونیکد) حذف؛ آیکن SVG جایگزین می‌شود */
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab::before { display: none !important; content: none !important; }
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab .m-ico {
+    display: block !important; flex: 0 0 auto !important;
+    width: 22px !important; height: 22px !important;
+    color: currentColor !important; pointer-events: none !important;
+  }
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab .m-ico svg { display: block; width: 100%; height: 100%; }
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab .m-lbl {
+    display: block !important; max-width: 100% !important; overflow: hidden !important; text-overflow: ellipsis !important;
+    pointer-events: none !important;
+  }
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab:active { transform: scale(.95) !important; background: color-mix(in srgb, var(--tsext-accent) 10%, transparent) !important; }
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab.active,
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab[aria-selected="true"] {
+    color: var(--tsext-accent) !important;
+    background: color-mix(in srgb, var(--tsext-accent) 15%, transparent) !important;
+    box-shadow: inset 0 -3px 0 var(--tsext-accent) !important;
+  }
+  html.tsext-pro #tsext-host #tsext-tabs .tsext-tab.active .m-ico { transform: translateY(-1px); }
+
+  /* فشرده: نوار پایین کم‌ارتفاع‌تر؛ آیکن و نوشته کوچک‌تر ولی خوانا */
+  html.tsext-pro.m-dense #tsext-host #tsext-tabs { padding-top: 3px !important; padding-bottom: calc(3px + env(safe-area-inset-bottom, 0px)) !important; gap: 4px !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-tabs .tsext-tab { min-height: 40px !important; border-radius: 11px !important; font-size: 10.5px !important; gap: 0 !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-tabs .tsext-tab .m-ico { width: 18px !important; height: 18px !important; }
+
+  /* کل صفحه جا را برای نوار پایین نگه می‌دارد */
+  html.tsext-pro body.tsext-pro #tsext-host { padding-bottom: calc(var(--m-nav-h) + env(safe-area-inset-bottom, 0px)) !important; }
+
+  /* ── حالت فشرده‌تر: قاب بالا، دیدبان، سرستون و ردیف‌ها (فونت‌ها زیر ۹٫۵px نمی‌روند) ── */
+  html.tsext-pro.m-dense #tsext-host #pr-topbar { height: 32px !important; min-height: 32px !important; max-height: 32px !important; padding: 0 5px !important; gap: 3px !important; }
+  html.tsext-pro.m-dense #tsext-host #pr-watchlist { padding: 1px 4px !important; gap: 1px !important; }
+  html.tsext-pro.m-dense #tsext-host #pr-wlbar { height: 18px !important; min-height: 18px !important; max-height: 18px !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-hdr { min-height: 14px !important; font-size: 9.5px !important; line-height: 1.1 !important; padding: 0 4px !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body { padding: 1px 3px 4px !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar { margin: 0 0 1px !important; border-radius: 4px !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-main { padding: 1px 4px !important; row-gap: 0 !important; column-gap: 3px !important; min-height: 0 !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-name { font-size: 10.5px !important; line-height: 1.1 !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-profit { font-size: 11px !important; line-height: 1.05 !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-days,
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-date,
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-risk { font-size: 9.5px !important; line-height: 1.1 !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-obbtn { min-height: 22px !important; height: 22px !important; padding: 0 8px !important; font-size: 10px !important; }
+
+  /* ── روانی اسکرول و لمس ── */
+  html.tsext-pro #tsext-host #tsext-list-body { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  html.tsext-pro #tsext-host button, html.tsext-pro #tsext-host .tsext-bar { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  /* ناحیهٔ لمس دکمه‌های بالا: حداقل ۴۰px در حالت کامل */
+  html.tsext-pro:not(.m-dense) #pr-topbar button { min-height: 40px !important; min-width: 40px !important; }
+  html.tsext-pro:not(.m-dense) #tsext-host .tsext-bar-obbtn { min-height: 36px !important; }
+}
+}

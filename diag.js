@@ -15,7 +15,7 @@
     fetch(url + '?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text().then(function (x) { line(r.ok, label + ' — کد ' + r.status + ' — ' + x.length + ' بایت'); }); })
       .catch(function (e) { line(false, label + ' — ' + e); });
   }
-  load('index.html', 'index.html'); load('content.js', 'content.js'); load('web-adapter.js', 'web-adapter.js'); load('pro.css', 'pro.css'); load('theme-v2.css', 'theme-v2.css'); load('holidays.js', 'holidays.js'); load('mobile.css', 'mobile.css'); load('version.json', 'version.json');
+  load('index.html', 'index.html'); load('content.js', 'content.js'); load('web-adapter.js', 'web-adapter.js'); load('pro.css', 'pro.css'); load('theme-v2.css', 'theme-v2.css'); load('holidays.js', 'holidays.js'); load('mobile.css', 'mobile.css'); load('readability.css', 'readability.css'); load('version.json', 'version.json');
   fetch('https://cdn.tsetmc.com/api/ClosingPrice/GetClosingPriceInfo/46348559193224090?t=' + Date.now())
     .then(function (r) { return r.json().then(function () { line(true, 'اتصال مستقیم به tsetmc — کد ' + r.status); }); })
     .catch(function (e) { line(false, 'اتصال مستقیم به tsetmc — ' + e); });

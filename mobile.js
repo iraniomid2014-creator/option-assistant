@@ -44,9 +44,9 @@
     var topbar = document.getElementById('pr-topbar');
     if (topbar) {
       if (isCompact) {
-        topbar.style.setProperty('height', '34px', 'important');
-        topbar.style.setProperty('min-height', '34px', 'important');
-        topbar.style.setProperty('max-height', '34px', 'important');
+        topbar.style.setProperty('height', '32px', 'important');
+        topbar.style.setProperty('min-height', '32px', 'important');
+        topbar.style.setProperty('max-height', '32px', 'important');
         topbar.style.setProperty('padding', '0 6px', 'important');
         topbar.style.setProperty('margin', '0', 'important');
       } else {
@@ -61,12 +61,12 @@
       if (isCompact) {
         btn.style.setProperty('min-height', '28px', 'important');
         btn.style.setProperty('height', '28px', 'important');
-        btn.style.setProperty('min-width', '28px', 'important');
+        btn.style.setProperty('min-width', '30px', 'important');
         btn.style.setProperty('font-size', '11.5px', 'important');
       } else {
-        btn.style.setProperty('min-height', '36px', 'important');
-        btn.style.setProperty('height', '36px', 'important');
-        btn.style.setProperty('min-width', '36px', 'important');
+        btn.style.setProperty('min-height', '40px', 'important');
+        btn.style.setProperty('height', '40px', 'important');
+        btn.style.setProperty('min-width', '40px', 'important');
         btn.style.setProperty('font-size', '13px', 'important');
       }
     });
@@ -255,22 +255,22 @@
     var wl = document.getElementById('pr-watchlist');
     var compact = !!(document.querySelector('#tsext-list.tsext-compact') || document.getElementById('tsext-host')?.classList.contains('m-dense'));
     /* عادی: ۳۰px — فشرده: ۲۶px (متناسب، نه باریک) */
-    var h = compact ? 26 : 30;
+    var h = compact ? 24 : 30;
     var fs = compact ? '12.5px' : '13px';
     var btnFs = compact ? '11.5px' : '12px';
     var btnMinW = compact ? '48px' : '54px';
     var padX = compact ? '8px' : '10px';
     var btnPadX = compact ? '10px' : '12px';
-    var barH = compact ? 20 : 22;
+    var barH = compact ? 18 : 22;
     var titleFs = compact ? '11px' : '12px';
     if (wl) {
-      wl.style.setProperty('padding', compact ? '1px 3px' : '3px 6px', 'important');
+      wl.style.setProperty('padding', compact ? '0 3px' : '3px 6px', 'important');
       wl.style.setProperty('gap', compact ? '1px' : '4px', 'important');
       wl.style.setProperty('margin', '0', 'important');
       wl.style.setProperty('min-height', '0', 'important');
     }
     if (add) {
-      add.style.setProperty('padding', compact ? '2px 4px' : '4px 6px', 'important');
+      add.style.setProperty('padding', compact ? '1px 3px' : '4px 6px', 'important');
       add.style.setProperty('gap', compact ? '4px' : '6px', 'important');
       add.style.setProperty('min-height', '0', 'important');
       add.style.setProperty('height', 'auto', 'important');
@@ -348,57 +348,71 @@
   }
 
 
+  /* آیکن‌های SVG نوار تب (به‌جای کاراکترهای یونیکد که روی بعضی گوشی‌ها خالی دیده می‌شدند) */
+  var TAB_ICONS = {
+    pospanj: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>',
+    combo:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h14"/><path d="M14 4l4 4-4 4"/><path d="M20 16H6"/><path d="M10 12l-4 4 4 4"/></svg>',
+    jamp:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6 4 4 6-8"/><path d="M15 7h5v5"/></svg>',
+    tick:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M9.5 2.5h5"/></svg>'
+  };
+  function ensureTabIcons(tabs) {
+    Array.prototype.forEach.call(tabs.children, function (tab) {
+      if (!tab.classList || !tab.classList.contains('tsext-tab')) return;
+      if (tab.querySelector('.m-ico')) return;
+      var key = tab.getAttribute('data-s') || '';
+      var label = (tab.textContent || '').trim();
+      var ico = document.createElement('span');
+      ico.className = 'm-ico';
+      ico.setAttribute('aria-hidden', 'true');
+      ico.innerHTML = TAB_ICONS[key] || TAB_ICONS.pospanj;
+      var lbl = document.createElement('span');
+      lbl.className = 'm-lbl';
+      lbl.textContent = label;
+      tab.textContent = '';
+      tab.appendChild(ico);
+      tab.appendChild(lbl);
+    });
+    if (!tabs._mIcoObs && window.MutationObserver) {
+      tabs._mIcoObs = true;
+      var t = null;
+      new MutationObserver(function () {
+        clearTimeout(t);
+        t = setTimeout(function () {
+          if (!isMobile()) return;
+          ensureTabIcons(tabs);
+          Array.prototype.forEach.call(tabs.children, function (tab) {
+            tab.setAttribute('aria-selected', tab.classList.contains('active') ? 'true' : 'false');
+          });
+        }, 30);
+      }).observe(tabs, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    }
+  }
+
   function forceMobileChrome() {
     if (!isMobile()) return;
     var tabs = document.getElementById('tsext-tabs');
+    var denseNow = isCompactNow();
+    var navH = denseNow ? 48 : 58;
+    try { document.documentElement.style.setProperty('--m-nav-h', navH + 'px'); } catch (e) {}
     if (tabs) {
-      var s = tabs.style;
-      s.setProperty('position', 'fixed', 'important');
-      s.setProperty('left', '0', 'important');
-      s.setProperty('right', '0', 'important');
-      s.setProperty('bottom', 'calc(10px + env(safe-area-inset-bottom, 0px))', 'important');
-      s.setProperty('top', 'auto', 'important');
-      s.setProperty('z-index', '2147483000', 'important');
-      s.setProperty('display', 'flex', 'important');
-      s.setProperty('flex-direction', 'row', 'important');
-      s.setProperty('width', '100%', 'important');
-      s.setProperty('height', '48px', 'important');
-      s.setProperty('padding', '4px 8px', 'important');
-      s.setProperty('margin', '0', 'important');
-      s.setProperty('gap', '5px', 'important');
-      s.setProperty('box-sizing', 'border-box', 'important');
-      s.setProperty('border-radius', '0', 'important');
+      /* ظاهر نوار تب را CSS (بلوک v1.2 در mobile.css) تعیین می‌کند؛ اینجا فقط ساختار: آیکن SVG + برچسب */
+      ensureTabIcons(tabs);
+      /* استایل‌های inline قدیمی را پاک کن تا CSS نهایی اعمال شود */
+      ['position','left','right','bottom','top','z-index','display','flex-direction','width','height','min-height','max-height',
+       'padding','margin','gap','box-sizing','border-radius'].forEach(function (k) { tabs.style.removeProperty(k); });
+      tabs.style.setProperty('z-index', '2147483000', 'important');
       Array.prototype.forEach.call(tabs.children, function (tab) {
-        tab.style.setProperty('flex', '1 1 0', 'important');
-        tab.style.setProperty('min-width', '0', 'important');
-        tab.style.setProperty('width', 'auto', 'important');
-        tab.style.setProperty('min-height', '0', 'important');
-        tab.style.setProperty('height', 'auto', 'important');
-        tab.style.setProperty('margin', '0', 'important');
-        tab.style.setProperty('padding', '2px 4px', 'important');
-        tab.style.setProperty('display', 'flex', 'important');
-        tab.style.setProperty('flex-direction', 'column', 'important');
-        tab.style.setProperty('align-items', 'center', 'important');
-        tab.style.setProperty('justify-content', 'center', 'important');
-        tab.style.setProperty('gap', '1px', 'important');
-        tab.style.setProperty('font-size', '10px', 'important');
-        tab.style.setProperty('line-height', '1.15', 'important');
-        tab.style.setProperty('box-shadow', 'none', 'important');
+        ['flex','min-width','width','min-height','height','margin','padding','display','flex-direction','align-items',
+         'justify-content','gap','font-size','line-height','box-shadow'].forEach(function (k) { tab.style.removeProperty(k); });
+        if (!tab.hasAttribute('role')) tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-selected', tab.classList.contains('active') ? 'true' : 'false');
       });
-      s.setProperty('height', '52px', 'important');
-      s.setProperty('min-height', '52px', 'important');
-      s.setProperty('max-height', '52px', 'important');
-      s.setProperty('bottom', 'env(safe-area-inset-bottom, 0px)', 'important');
-      s.setProperty('padding', '4px 6px', 'important');
-      s.setProperty('flex-direction', 'row', 'important');
     }
     var h = host();
     if (h) {
       var compact = h.classList.contains('m-dense') || !!(document.querySelector('#tsext-list.tsext-compact'));
       /* فقط ارتفاع تب‌ها — بدون نوار مرده بالای وضعیت */
-      h.style.setProperty('padding-bottom', compact
-        ? 'calc(48px + env(safe-area-inset-bottom, 0px))'
-        : 'calc(52px + env(safe-area-inset-bottom, 0px))', 'important');
+      h.style.setProperty('padding-bottom', 'calc(' + navH + 'px + env(safe-area-inset-bottom, 0px))', 'important');
     }
     var statusEl = document.getElementById('tsext-status');
     if (statusEl) {
@@ -407,9 +421,7 @@
       statusEl.style.setProperty('position', 'fixed', 'important');
       statusEl.style.setProperty('left', '0', 'important');
       statusEl.style.setProperty('right', '0', 'important');
-      statusEl.style.setProperty('bottom', compact2
-        ? 'calc(48px + env(safe-area-inset-bottom, 0px))'
-        : 'calc(52px + env(safe-area-inset-bottom, 0px))', 'important');
+      statusEl.style.setProperty('bottom', 'calc(' + navH + 'px + env(safe-area-inset-bottom, 0px))', 'important');
       statusEl.style.setProperty('top', 'auto', 'important');
       statusEl.style.setProperty('z-index', '2147482990', 'important');
       statusEl.style.setProperty('height', compact2 ? '16px' : '18px', 'important');
