@@ -44,30 +44,30 @@
     var topbar = document.getElementById('pr-topbar');
     if (topbar) {
       if (isCompact) {
-        topbar.style.setProperty('height', '32px', 'important');
-        topbar.style.setProperty('min-height', '32px', 'important');
-        topbar.style.setProperty('max-height', '32px', 'important');
+        topbar.style.setProperty('height', '34px', 'important');
+        topbar.style.setProperty('min-height', '34px', 'important');
+        topbar.style.setProperty('max-height', '34px', 'important');
         topbar.style.setProperty('padding', '0 6px', 'important');
         topbar.style.setProperty('margin', '0', 'important');
       } else {
-        topbar.style.setProperty('height', '46px', 'important');
-        topbar.style.setProperty('min-height', '46px', 'important');
-        topbar.style.setProperty('max-height', '46px', 'important');
+        topbar.style.setProperty('height', '54px', 'important');
+        topbar.style.setProperty('min-height', '54px', 'important');
+        topbar.style.setProperty('max-height', '54px', 'important');
         topbar.style.setProperty('padding', '0 8px', 'important');
         topbar.style.setProperty('margin', '0', 'important');
       }
     }
     document.querySelectorAll('#m-settings-btn, #m-filters-btn, #pr-digits-btn, #tsext-theme-cycle').forEach(function (btn) {
       if (isCompact) {
-        btn.style.setProperty('min-height', '28px', 'important');
-        btn.style.setProperty('height', '28px', 'important');
-        btn.style.setProperty('min-width', '30px', 'important');
+        btn.style.setProperty('min-height', '26px', 'important');
+        btn.style.setProperty('height', '26px', 'important');
+        btn.style.setProperty('min-width', '32px', 'important');
         btn.style.setProperty('font-size', '11.5px', 'important');
       } else {
-        btn.style.setProperty('min-height', '40px', 'important');
-        btn.style.setProperty('height', '40px', 'important');
-        btn.style.setProperty('min-width', '40px', 'important');
-        btn.style.setProperty('font-size', '13px', 'important');
+        btn.style.setProperty('min-height', '44px', 'important');
+        btn.style.setProperty('height', '44px', 'important');
+        btn.style.setProperty('min-width', '44px', 'important');
+        btn.style.setProperty('font-size', '14px', 'important');
       }
     });
     var status = document.getElementById('tsext-status') || document.getElementById('pr-status-text');
@@ -86,7 +86,7 @@
     if (listHdr) {
       if (isCompact) {
         listHdr.style.setProperty('padding', '0 4px', 'important');
-        listHdr.style.setProperty('min-height', '16px', 'important');
+        listHdr.style.setProperty('min-height', '13px', 'important');
         listHdr.style.setProperty('font-size', '9px', 'important');
       } else {
         listHdr.style.removeProperty('padding');
@@ -94,6 +94,7 @@
         listHdr.style.removeProperty('font-size');
       }
     }
+    try { document.documentElement.style.setProperty('--pr-top-h', (isCompact ? 34 : 54) + 'px'); } catch (e) {}
     // بازخوانی کروم دیدبان با اندازهٔ جدید
     try { forceWatchlistChrome(); } catch (e) {}
   }
@@ -255,13 +256,13 @@
     var wl = document.getElementById('pr-watchlist');
     var compact = !!(document.querySelector('#tsext-list.tsext-compact') || document.getElementById('tsext-host')?.classList.contains('m-dense'));
     /* عادی: ۳۰px — فشرده: ۲۶px (متناسب، نه باریک) */
-    var h = compact ? 24 : 30;
+    var h = compact ? 22 : 30;
     var fs = compact ? '12.5px' : '13px';
     var btnFs = compact ? '11.5px' : '12px';
     var btnMinW = compact ? '48px' : '54px';
     var padX = compact ? '8px' : '10px';
     var btnPadX = compact ? '10px' : '12px';
-    var barH = compact ? 18 : 22;
+    var barH = compact ? 16 : 22;
     var titleFs = compact ? '11px' : '12px';
     if (wl) {
       wl.style.setProperty('padding', compact ? '0 3px' : '3px 6px', 'important');
@@ -392,7 +393,7 @@
     if (!isMobile()) return;
     var tabs = document.getElementById('tsext-tabs');
     var denseNow = isCompactNow();
-    var navH = denseNow ? 48 : 58;
+    var navH = denseNow ? 44 : 58;
     try { document.documentElement.style.setProperty('--m-nav-h', navH + 'px'); } catch (e) {}
     if (tabs) {
       /* ظاهر نوار تب را CSS (بلوک v1.2 در mobile.css) تعیین می‌کند؛ اینجا فقط ساختار: آیکن SVG + برچسب */
