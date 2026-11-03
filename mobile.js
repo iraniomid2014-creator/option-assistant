@@ -61,12 +61,12 @@
       if (isCompact) {
         btn.style.setProperty('min-height', '26px', 'important');
         btn.style.setProperty('height', '26px', 'important');
-        btn.style.setProperty('min-width', '32px', 'important');
+        btn.style.setProperty('min-width', btn.id === 'tsext-theme-cycle' ? '62px' : btn.id === 'pr-digits-btn' ? '52px' : '44px', 'important');
         btn.style.setProperty('font-size', '11.5px', 'important');
       } else {
         btn.style.setProperty('min-height', '44px', 'important');
         btn.style.setProperty('height', '44px', 'important');
-        btn.style.setProperty('min-width', '44px', 'important');
+        btn.style.setProperty('min-width', btn.id === 'tsext-theme-cycle' ? '64px' : btn.id === 'pr-digits-btn' ? '52px' : '44px', 'important');
         btn.style.setProperty('font-size', '14px', 'important');
       }
     });
@@ -121,6 +121,8 @@
   }
 
   function isCompactNow() {
+    /* موبایل: همیشه فشرده (گزینهٔ فشرده/کامل در موبایل حذف شده است) */
+    if (isMobile()) return true;
     var list = listEl();
     if (list && list.classList.contains('tsext-compact')) return true;
     var sel = compactSelect();
@@ -133,7 +135,16 @@
     applyCompactUI(!isCompactNow());
   }
 
+  function hideCompactChoice() {
+    var sel = compactSelect();
+    if (!sel) return;
+    var lab = sel.closest ? sel.closest('label') : null;
+    (lab || sel).style.setProperty('display', isMobile() ? 'none' : '', 'important');
+    if (!isMobile()) (lab || sel).style.removeProperty('display');
+  }
+
   function ensureCompactBtn() {
+    hideCompactChoice();
     /* کلید سریع حذف شد — فقط همگام‌سازی select فیلترها */
     applyCompactUI(isCompactNow());
   }
@@ -610,6 +621,74 @@
       }
     });
   }
+
+  /* ===== زوم با دو انگشت (pinch) روی لیست — بدون دکمه =====
+     حداقل = اندازهٔ پیش‌فرض صفحه (۱×)؛ حداکثر ۲٫۲×. اندازه ذخیره می‌شود. */
+  var Z_MIN = 1, Z_MAX = 2.2, zoomNow = 1;
+  function clampZ(z) { return Math.max(Z_MIN, Math.min(Z_MAX, z)); }
+  function applyZoom(z, anchor) {
+    z = clampZ(z);
+    var body = document.getElementById('tsext-list-body');
+    var old = zoomNow;
+    var sl = 0, st = 0;
+    if (body) { sl = body.scrollLeft; st = body.scrollTop; }
+    zoomNow = z;
+    var root = document.documentElement;
+    root.style.setProperty('--m-zoom', String(Math.round(z * 1000) / 1000));
+    root.classList.toggle('m-zoomed', z > 1.001);
+    if (body && anchor && old > 0 && Math.abs(z - old) > 1e-4) {
+      /* نقطهٔ زیر انگشت‌ها ثابت بماند */
+      var r = body.getBoundingClientRect();
+      var k = z / old;
+      var rtl = getComputedStyle(body).direction === 'rtl';
+      var cy = anchor.y - r.top;
+      body.scrollTop = (st + cy) * k - cy;
+      if (rtl) {
+        var cxr = r.right - anchor.x;
+        body.scrollLeft = -(((-sl) + cxr) * k - cxr);
+      } else {
+        var cx = anchor.x - r.left;
+        body.scrollLeft = (sl + cx) * k - cx;
+      }
+    }
+  }
+  function saveZoom() { try { localStorage.setItem('tsext_m_zoom', String(zoomNow)); } catch (e) {} }
+  function bindPinchZoom() {
+    var list = listEl();
+    if (!list || list._mPinch) return;
+    list._mPinch = true;
+    try { var saved = parseFloat(localStorage.getItem('tsext_m_zoom')); if (saved && isMobile()) applyZoom(saved); } catch (e) {}
+    var d0 = 0, z0 = 1, active = false;
+    function dist(t) { var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY; return Math.sqrt(dx * dx + dy * dy); }
+    function mid(t) { return { x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 }; }
+    list.addEventListener('touchstart', function (e) {
+      if (!isMobile()) return;
+      if (e.touches.length === 2) { active = true; d0 = dist(e.touches); z0 = zoomNow; }
+    }, { passive: true });
+    list.addEventListener('touchmove', function (e) {
+      if (!active || !isMobile() || e.touches.length !== 2) return;
+      e.preventDefault();
+      var d = dist(e.touches);
+      if (d0 < 10) return;
+      applyZoom(z0 * (d / d0), mid(e.touches));
+    }, { passive: false });
+    function end(e) {
+      if (active && (!e.touches || e.touches.length < 2)) { active = false; saveZoom(); }
+    }
+    list.addEventListener('touchend', end, { passive: true });
+    list.addEventListener('touchcancel', end, { passive: true });
+    /* سافاری iOS: جلوگیری از زوم کل صفحه */
+    ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (n) {
+      list.addEventListener(n, function (e) { if (isMobile()) e.preventDefault(); });
+    });
+  }
+  /* روی دسکتاپ زوم اعمال نشود */
+  function syncZoomWithViewport() {
+    if (!isMobile()) document.documentElement.style.setProperty('--m-zoom', '1');
+    else { try { var sv = parseFloat(localStorage.getItem('tsext_m_zoom')); if (sv) applyZoom(sv); } catch (e) {} }
+  }
+  if (mq.addEventListener) mq.addEventListener('change', syncZoomWithViewport);
+  var zTries = 0, zT = setInterval(function () { zTries++; bindPinchZoom(); if ((listEl() && listEl()._mPinch) || zTries > 150) clearInterval(zT); }, 200);
 
   var tries = 0;
   var t = setInterval(function () {

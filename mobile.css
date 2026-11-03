@@ -3025,3 +3025,50 @@
   html.tsext-pro.m-dense #pr-topbar #pr-market { height: 24px !important; min-height: 24px !important; padding-block: 0 !important; font-size: 11px !important; }
   html.tsext-pro.m-dense #pr-topbar #pr-tools, html.tsext-pro.m-dense #pr-topbar #pr-top-right { height: 32px !important; min-height: 0 !important; padding-block: 0 !important; }
 }}
+
+@layer tsext-mobile { @media (max-width: 820px) {
+  /* گزینهٔ فشرده/کامل در موبایل حذف شده؛ موبایل همیشه فشرده است */
+  html.tsext-pro #tsext-host label:has(#tsext-compact-mode) { display: none !important; }
+  /* دکمه‌های نوار بالا در حالت فشرده: عریض‌تر (ارتفاع همان ۲۶px) */
+  html.tsext-pro.m-dense #pr-topbar #m-settings-btn,
+  html.tsext-pro.m-dense #pr-topbar #m-filters-btn { min-width: 44px !important; font-size: 15px !important; }
+  html.tsext-pro.m-dense #pr-topbar #pr-digits-btn { min-width: 52px !important; }
+  html.tsext-pro.m-dense #pr-topbar #tsext-theme-cycle { min-width: 62px !important; padding-inline: 8px !important; }
+  html.tsext-pro.m-dense #pr-topbar #pr-tools, html.tsext-pro.m-dense #pr-topbar #pr-top-right { gap: 4px !important; }
+}}
+
+/* ===== v1.3 — ردیف لیست دو‌خطی (به‌جای سه‌خطی) تا نمادهای بیشتری دیده شود =====
+   خط ۱: نام (+ ستارهٔ علاقه‌مندی)   |  خط ۲: اعمال · روز · ریسک   |  ستون آخر: سود ماهانه */
+@layer tsext-mobile { @media (max-width: 820px) {
+  html.tsext-pro.m-dense #tsext-host:not(.tsext-s-tick) #tsext-list-body .tsext-bar-main {
+    grid-template-columns: 16px minmax(0, 1fr) auto auto !important;
+    grid-template-rows: auto auto !important;
+    grid-template-areas: "cls name name profit" "cls meta risk profit" !important;
+    align-items: center !important;
+    row-gap: 0 !important;
+    padding-block: 1px !important;
+  }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-name { min-height: 0 !important; height: auto !important; line-height: 1.15 !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-fav {
+    width: 20px !important; min-width: 20px !important; height: 20px !important; min-height: 0 !important;
+    padding: 0 !important; margin: 0 !important; font-size: 13px !important; line-height: 1 !important;
+  }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-risk {
+    display: inline-flex !important; align-items: center !important; box-sizing: border-box !important;
+    height: 16px !important; min-height: 0 !important; max-height: 16px !important;
+    padding: 0 7px !important; font-size: 9px !important; line-height: 1 !important; border-width: 1px !important;
+    justify-self: end !important; align-self: center !important; margin: 0 !important; white-space: nowrap !important;
+  }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-profit { height: auto !important; min-height: 0 !important; padding-block: 1px !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-strike,
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-days { height: auto !important; line-height: 1.15 !important; }
+  html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-class { height: auto !important; align-self: center !important; }
+}}
+
+/* ===== v1.3 — زوم دو‌انگشتی لیست ===== */
+@layer tsext-mobile { @media (max-width: 820px) {
+  html.tsext-pro #tsext-list { touch-action: pan-x pan-y !important; }
+  html.tsext-pro #tsext-list-body { zoom: var(--m-zoom, 1); }
+  /* عرض چیدمان ثابت می‌ماند؛ با زوم، لیست افقی اسکرول می‌شود (مثل زوم تصویر). سرستون زوم نمی‌شود */
+  html.tsext-pro.m-zoomed #tsext-list-body .tsext-bar { min-width: min(270px, calc(100vw - 8px)) !important; }
+}}
