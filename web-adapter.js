@@ -2,7 +2,7 @@
    web-adapter.js — لایهٔ تطبیق «نسخهٔ وب» دستیار هوشمند آپشن
    --------------------------------------------------------------------------
    content.js (موتور اصلی) عیناً و بدون هیچ تغییری همان فایل اکستنشن است.
-   این فایل فقط قبل از آن بارگذاری می‌شود و سه کار انجام می‌دهد:
+   این فایل فقط قبل از آن بارگذاری می‌شود و چهار کار انجام می‌دهد:
 
    ۱) به‌روزرسانی خودکار
       • هنگام باز شدن صفحه، version.json (بدون کش) خوانده می‌شود؛ اگر نسخهٔ سرور
@@ -20,6 +20,8 @@
         و با یک پیام روشن نشان داده می‌شود؛ با اولین موفقیت، پیام خودکار محو می‌شود.
 
    ۳) shim بسیار کوچک chrome.runtime.getManifest() تا نسخه در پنل تشخیصی نمایش داده شود.
+
+   ۴) نمایش نسخه: عنوان صفحه و یک نشان کوچک گوشهٔ پایین (همان کاری که boot.js در افزونه می‌کند).
    ========================================================================== */
 (function () {
   'use strict';
@@ -50,6 +52,27 @@
       };
     }
   } catch (e) {}
+
+  /* ---------------------------------------------------------------- ۴) نمایش نسخه */
+  // مثل boot.js افزونه: عنوان صفحه + نشان کوچک گوشهٔ پایین. نسخه از data-tsext-version روی <html> می‌آید
+  // (همان منبعی که version.json با آن مقایسه می‌شود)؛ روی گوشی نوار تب‌های پایین روی نشان را می‌پوشاند.
+  function showVersion() {
+    try {
+      if (!VERSION) return;
+      document.title = 'دستیار هوشمند آپشن — v' + VERSION;
+      var badge = document.getElementById('tsext-version-badge');
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.id = 'tsext-version-badge';
+        badge.setAttribute('dir', 'ltr');
+        badge.style.cssText = 'position:fixed;bottom:8px;left:10px;z-index:99999;font:11px/1.4 Vazirmatn,Tahoma,sans-serif;opacity:.55;pointer-events:none;user-select:none;color:inherit';
+        (document.body || document.documentElement).appendChild(badge);
+      }
+      badge.textContent = 'v' + VERSION;
+    } catch (e) {}
+  }
+  if (document.readyState === 'complete') { showVersion(); setTimeout(showVersion, 500); }
+  else window.addEventListener('load', function () { showVersion(); setTimeout(showVersion, 500); }, { once: true });
 
   /* --------------------------------------------------------------- UI نوارها */
   // ⚠ استایل‌ها عمداً «inline از طریق CSSOM» هستند، نه تگ <style> با متن:
