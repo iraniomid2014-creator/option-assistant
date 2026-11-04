@@ -3067,8 +3067,96 @@
 
 /* ===== v1.3 — زوم دو‌انگشتی لیست ===== */
 @layer tsext-mobile { @media (max-width: 820px) {
-  html.tsext-pro #tsext-list { touch-action: pan-x pan-y !important; }
-  html.tsext-pro #tsext-list-body { zoom: var(--m-zoom, 1); }
+  html.tsext-pro #tsext-list-body, html.tsext-pro #tsext-obpanel-body, html.tsext-pro #tsext-display-settings,
+  html.tsext-pro #tsext-head .tsext-strategy-panel { touch-action: pan-x pan-y !important; zoom: var(--m-zoom, 1) !important; }
   /* عرض چیدمان ثابت می‌ماند؛ با زوم، لیست افقی اسکرول می‌شود (مثل زوم تصویر). سرستون زوم نمی‌شود */
   html.tsext-pro.m-zoomed #tsext-list-body .tsext-bar { min-width: min(270px, calc(100vw - 8px)) !important; }
 }}
+
+/* ===== v1.4 — دکمه‌های نوار بالا و ردیف افزودن نماد هم‌قد «نام نماد در دیدبان» (۳۸px) ===== */
+@layer tsext-mobile { @media (max-width: 820px) {
+  html.tsext-pro.m-dense #pr-topbar #m-settings-btn,
+  html.tsext-pro.m-dense #pr-topbar #m-filters-btn { width: clamp(40px, 13vw, 52px) !important; min-width: 0 !important; font-size: 17px !important; padding-inline: 0 !important; }
+  html.tsext-pro.m-dense #pr-topbar #pr-digits-btn { width: clamp(46px, 15vw, 58px) !important; min-width: 0 !important; font-size: 15px !important; padding-inline: 0 !important; }
+  html.tsext-pro.m-dense #pr-topbar #tsext-theme-cycle { width: clamp(54px, 17.5vw, 68px) !important; min-width: 0 !important; font-size: 13px !important; padding-inline: 4px !important; }
+  html.tsext-pro.m-dense #pr-topbar #pr-tools, html.tsext-pro.m-dense #pr-topbar #pr-top-right { height: 42px !important; gap: 4px !important; }
+  html.tsext-pro.m-dense #pr-topbar #pr-market { height: 30px !important; min-width: 0 !important; flex-shrink: 1 !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+  html.tsext-pro.m-dense #pr-topbar .tsext-logo { flex-shrink: 0 !important; }
+  /* ردیف نمادِ پایه + افزودن: فقط ارتفاع (عرض تغییری نمی‌کند) */
+  html.tsext-pro.m-dense #tsext-host #pr-watchlist .pr-wl-add { padding: 2px 3px !important; }
+  html.tsext-pro.m-dense #tsext-host #pr-wl-input,
+  html.tsext-pro.m-dense #tsext-host #pr-wl-add-btn { height: 38px !important; min-height: 38px !important; max-height: 38px !important; }
+}}
+@layer tsext-mobile { @media (max-width: 820px) {
+  html.tsext-pro.m-dense body.tsext-pro #tsext-host.m-dense:not(#_x):not(#_y) {
+    --pr-top-h: 44px !important;
+    grid-template-rows: var(--pr-top-h) auto 0 auto minmax(0, 1fr) var(--pr-status-h, 16px) !important;
+  }
+  html.tsext-pro.m-dense body.tsext-pro #tsext-host.m-dense:not(#_x) #pr-topbar { height: 44px !important; min-height: 44px !important; max-height: 44px !important; }
+}}
+
+@layer tsext-mobile { @media (max-width: 820px) {
+  html.tsext-pro.m-dense #pr-topbar #pr-top-right,
+  html.tsext-pro.m-dense #pr-topbar #pr-tools { flex-wrap: nowrap !important; min-width: 0 !important; }
+  html.tsext-pro.m-dense #pr-topbar { flex-wrap: nowrap !important; }
+  html.tsext-pro.m-dense #pr-topbar #pr-top-right { flex: 1 1 0% !important; }
+  html.tsext-pro.m-dense #pr-topbar #pr-market { padding-inline: 8px !important; font-size: 10.5px !important; }
+}}
+
+/* =====================================================================
+   v1.5 — شیت تنظیمات: بازبودنش در هر سه تم کاملاً مشخص است
+   پس‌زمینهٔ تیره + لبهٔ رنگی بالای شیت + سایهٔ بلند + سربرگ با عنوان و دکمهٔ «بستن» + کشیدن به پایین
+   ===================================================================== */
+@layer tsext-mobile {
+#m-sheet-backdrop { display: none; }
+@media (max-width: 820px) {
+  html.m-sheet-open #m-sheet-backdrop {
+    display: block; position: fixed; left: 0; right: 0; top: 0;
+    bottom: calc(var(--m-nav-h, 50px) + env(safe-area-inset-bottom, 0px));
+    z-index: 2147481000; background: rgba(2, 6, 14, .58);
+    animation: m-fade .16s ease-out;
+  }
+  html.tsext-pro #tsext-host.m-settings-open #tsext-head .tsext-strategy-panel.active {
+    position: fixed !important;
+    left: 0 !important; right: 0 !important; top: auto !important; inset: auto 0 calc(var(--m-nav-h, 50px) + env(safe-area-inset-bottom, 0px)) 0 !important;
+    max-height: min(74dvh, 580px) !important; height: auto !important;
+    overflow-y: auto !important; overscroll-behavior: contain !important;
+    z-index: 2147481500 !important;
+    padding: 0 12px 16px !important; margin: 0 !important;
+    background: var(--tsext-panel) !important;
+    border: 0 !important; border-top: 4px solid var(--tsext-accent) !important;
+    border-radius: 22px 22px 0 0 !important;
+    box-shadow: 0 -18px 48px rgba(0,0,0,.55), 0 0 0 1px color-mix(in srgb, var(--tsext-accent) 35%, transparent) !important;
+    animation: m-sheet-up .2s ease-out;
+  }
+  .m-sheet-head { display: none; }
+  html.tsext-pro #tsext-host.m-settings-open .tsext-strategy-panel.active > .m-sheet-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    position: sticky; top: 0; z-index: 3;
+    margin: 0 -12px 10px; padding: 16px 14px 8px;
+    background: color-mix(in srgb, var(--tsext-accent) 12%, var(--tsext-panel));
+    border-bottom: 1px solid var(--tsext-border);
+    touch-action: none; user-select: none; -webkit-user-select: none;
+  }
+  .m-sheet-grip { position: absolute; top: 6px; left: 50%; width: 42px; height: 5px; margin-left: -21px; border-radius: 3px; background: var(--tsext-muted); opacity: .75; }
+  .m-sheet-title { display: flex; align-items: center; gap: 7px; min-width: 0; color: var(--tsext-bright); font: 900 14px/1.2 Vazirmatn, Tahoma, sans-serif; }
+  .m-sheet-title svg { color: var(--tsext-accent); flex: 0 0 auto; }
+  .m-sheet-title-sub { color: var(--tsext-accent); font-weight: 800; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .m-sheet-title-sub:not(:empty)::before { content: "· "; }
+  .m-sheet-x {
+    display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto;
+    min-height: 40px; padding: 0 14px; border-radius: 12px; cursor: pointer;
+    border: 1.5px solid var(--tsext-accent);
+    background: var(--tsext-accent); color: #fff;
+    font: 900 13px/1 Vazirmatn, Tahoma, sans-serif;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  }
+  html #tsext-host[data-tsext-theme="contrast"] .m-sheet-x { color: #000; }
+  html #tsext-host[data-tsext-theme="dark"] .m-sheet-x { color: #0b1020; }
+  .m-sheet-x:active { transform: scale(.96); }
+  /* دکمهٔ تنظیمات وقتی شیت باز است */
+  html.tsext-pro #tsext-host.m-settings-open #m-settings-btn { box-shadow: 0 0 0 3px color-mix(in srgb, var(--tsext-accent) 40%, transparent) !important; }
+}
+@keyframes m-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes m-sheet-up { from { transform: translateY(40px); opacity: .4 } to { transform: none; opacity: 1 } }
+}
