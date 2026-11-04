@@ -3065,10 +3065,8 @@
   html.tsext-pro.m-dense #tsext-host #tsext-list-body .tsext-bar-class { height: auto !important; align-self: center !important; }
 }}
 
-/* ===== v1.3 — زوم دو‌انگشتی لیست ===== */
+/* ===== v1.3/1.6 — زوم دو‌انگشتی: منطق و استایل اصلی در touch-zoom.js است (زوم روی فرزندان کانتینر) ===== */
 @layer tsext-mobile { @media (max-width: 820px) {
-  html.tsext-pro #tsext-list-body, html.tsext-pro #tsext-obpanel-body, html.tsext-pro #tsext-display-settings,
-  html.tsext-pro #tsext-head .tsext-strategy-panel { touch-action: pan-x pan-y !important; zoom: var(--m-zoom, 1) !important; }
   /* عرض چیدمان ثابت می‌ماند؛ با زوم، لیست افقی اسکرول می‌شود (مثل زوم تصویر). سرستون زوم نمی‌شود */
   html.tsext-pro.m-zoomed #tsext-list-body .tsext-bar { min-width: min(270px, calc(100vw - 8px)) !important; }
 }}
