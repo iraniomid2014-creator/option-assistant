@@ -3158,3 +3158,24 @@
 @keyframes m-fade { from { opacity: 0 } to { opacity: 1 } }
 @keyframes m-sheet-up { from { transform: translateY(40px); opacity: .4 } to { transform: none; opacity: 1 } }
 }
+
+/* =====================================================================
+   v1.6 — هم‌ترازی با زوم (touch-zoom.js متغیرها را می‌گذارد)
+   ۱) سرستون لیست: وقتی لیست زوم و افقی اسکرول می‌شود، راهنمای بالای لیست هم به همان عرض کشیده می‌شود
+      (کلمه‌ها روی عرض کل پخش می‌شوند) و با اسکرول افقی هم‌حرکت است.
+   ۲) شیت تنظیمات: ارتفاعش موقع زوم قفل می‌ماند (--tz-sheet-h)؛ محتوای زوم‌شده داخل شیت اسکرول می‌شود.
+   ===================================================================== */
+@layer tsext-mobile { @media (max-width: 820px) {
+  html.tsext-pro #tsext-list-hdr[data-tz-h] { overflow: hidden !important; }
+  html.tsext-pro #tsext-list-hdr[data-tz-h]::after {
+    box-sizing: border-box !important;
+    width: max(100%, calc(var(--tz-w, 100%) - 12px)) !important;
+    position: relative !important;
+    left: var(--tz-hx, 0px) !important;
+    text-align: justify !important;
+    text-align-last: justify !important;
+  }
+  html.tsext-pro.m-zoomed #tsext-host.m-settings-open #tsext-head .tsext-strategy-panel.active {
+    height: var(--tz-sheet-h, auto) !important;
+  }
+}}
